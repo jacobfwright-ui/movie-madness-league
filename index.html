@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Movie Madness League</title>
 
   <style>
@@ -33,12 +33,18 @@
       font-family: Arial, Helvetica, sans-serif;
     }
 
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
     button {
       border: 0;
       border-radius: 9px;
       padding: 0.75rem 1rem;
       cursor: pointer;
-      font: inherit;
       font-weight: 800;
       transition: transform 0.15s ease, opacity 0.15s ease;
     }
@@ -462,6 +468,51 @@
       margin-bottom: 0.35rem;
     }
 
+    .suggestion-form {
+      display: grid;
+      gap: 0.85rem;
+      max-width: 850px;
+    }
+
+    .suggestion-form label {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: #dbeafe;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .suggestion-form input,
+    .suggestion-form select,
+    .suggestion-form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #3d5078;
+      border-radius: 8px;
+      outline: none;
+      background: #0d1527;
+      color: #f4f7ff;
+      font: inherit;
+    }
+
+    .suggestion-form input:focus,
+    .suggestion-form select:focus,
+    .suggestion-form textarea:focus {
+      border-color: #7dd3fc;
+      box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.15);
+    }
+
+    .suggestion-form textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .form-note {
+      color: #aab8d4;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
     .table-wrap {
       overflow-x: auto;
     }
@@ -538,6 +589,7 @@
         <h2>Current Bracket</h2>
         <span class="muted">Returning movies receive seeds No. 1–16 in the next tournament.</span>
       </div>
+
       <div class="bracket-wrap">
         <div id="bracket" class="bracket"></div>
       </div>
@@ -548,6 +600,7 @@
         <h2>Next Tournament Returners</h2>
         <span id="returnerStatus" class="muted"></span>
       </div>
+
       <div id="returners"></div>
     </section>
 
@@ -560,7 +613,78 @@
           Win percentage = actor movie wins ÷ actor movie matchup appearances. Minimum three appearances.
         </span>
       </div>
+
       <div id="actorLeaderboards" class="leaderboard-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <h2>Suggest a Feature</h2>
+          <p class="muted">
+            Have an idea for a future Movie Madness feature, movie set, bracket rule, or dashboard improvement?
+          </p>
+        </div>
+      </div>
+
+      <form
+        class="suggestion-form"
+        action="https://formspree.io/f/xaeqlynz"
+        method="POST"
+      >
+        <div>
+          <label for="suggestion-name">Name — optional</label>
+          <input
+            id="suggestion-name"
+            type="text"
+            name="name"
+            placeholder="Your name"
+          >
+        </div>
+
+        <div>
+          <label for="suggestion-email">Email for follow-up — optional</label>
+          <input
+            id="suggestion-email"
+            type="email"
+            name="email"
+            placeholder="name@example.com"
+          >
+        </div>
+
+        <div>
+          <label for="suggestion-type">Suggestion type</label>
+          <select
+            id="suggestion-type"
+            name="suggestion_type"
+          >
+            <option value="New feature">New feature</option>
+            <option value="Movie suggestion">Movie suggestion</option>
+            <option value="Bracket rule">Bracket rule</option>
+            <option value="Actor statistics">Actor statistics</option>
+            <option value="Website design">Website design</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="suggestion-message">Feature suggestion</label>
+          <textarea
+            id="suggestion-message"
+            name="suggestion"
+            required
+            placeholder="Example: Add a rematch option for movies eliminated in the first round."
+          ></textarea>
+        </div>
+
+        <button type="submit" class="button-primary">
+          Submit Suggestion
+        </button>
+
+        <div class="form-note">
+          Do not include sensitive or personal information. Email is optional and is used only for follow-up.
+        </div>
+      </form>
     </section>
 
     <section class="panel">
@@ -568,6 +692,7 @@
         <h2>Movie Hall of Fame</h2>
         <span class="muted">Career records across all tournaments in this browser.</span>
       </div>
+
       <div class="table-wrap">
         <table>
           <thead>
@@ -1012,7 +1137,11 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     }
 
     function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {
+        console.warn("Browser storage is unavailable. Progress will not be saved.");
+      }
     }
 
     function ensureCatalogHasPreloadedMovies() {
@@ -1938,7 +2067,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         state = savedState;
       } else {
         state = {
-          version: 4,
+          version: 5,
           catalog: [],
           stats: {},
           tournaments: []
@@ -1951,7 +2080,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         startInitialTournament();
       }
 
-      state.version = 4;
+      state.version = 5;
 
       saveState();
       render();
