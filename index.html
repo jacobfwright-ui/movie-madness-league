@@ -1584,49 +1584,94 @@ Kill Bill: Vol. 1|2003|Action thriller|Uma Thurman|David Carradine
       return "Final 4";
     }
 
-    function finalizeRegularTournament(tournament) {
-      const top16Ids = tournament.rounds[1].matches
-        .map(match => match.winnerId)
-        .filter(Boolean);
+   function getMatchLoser(match) {
+  if (!match.winnerId) {
+    return null;
+  }
 
-      const rankedTop16 = top16Ids
-        .map(movieId => ({
-          id: movieId,
-          wins: winsInTournament(tournament, movieId),
-          previousSeed: getSeed(tournament, movieId)
-        }))
-        .sort((a, b) => {
-          if (b.wins !== a.wins) return b.wins - a.wins;
-          return a.previousSeed - b.previousSeed;
-        });
+  return match.movieAId === match.winnerId
+    ? match.movieBId
+    : match.movieAId;
+}
 
-      tournament.qualifiers = rankedTop16
-        .slice(0, QUALIFIERS_PER_TOURNAMENT)
-        .map((movie, index) => ({
-          ...movie,
-          qualifierRank: index + 1,
-          qualifyingTournament: tournament.regularNumber
-        }));
+function finalizeRegularTournament(tournament) {
+  const sweet16Ids = tournament.rounds[1].matches
+    .map(match => match.winnerId)
+    .filter(Boolean);
 
-      tournament.returners = rankedTop16
-        .slice(QUALIFIERS_PER_TOURNAMENT)
-        .map((movie, index) => ({
-          ...movie,
-          seed: index + 1
-        }));
+  const finalRoundIndex = tournament.rounds.length - 1;
+  const semifinalRoundIndex = tournament.rounds.length - 2;
 
-      tournament.qualifiers.forEach(qualifier => {
-        const alreadyQualified = state.ultimateQualifiers.some(
-          item => item.id === qualifier.id
-        );
+  const championshipMatch = tournament.rounds[finalRoundIndex].matches[0];
+  const semifinalMatches = tournament.rounds[semifinalRoundIndex].matches;
 
-        if (!alreadyQualified) {
-          state.ultimateQualifiers.push({
-            ...qualifier
-          });
-        }
+  const championId = championshipMatch.winnerId;
+  const runnerUpId = getMatchLoser(championshipMatch);
+
+  const semifinalLosers = semifinalMatches
+    .map(match => getMatchLoser(match))
+    .filter(Boolean)
+    .sort((movieAId, movieBId) => {
+      return getSeed(tournament, movieAId) - getSeed(tournament, movieBId);
+    });
+
+  /*
+    These four are removed from regular competition:
+    1. Champion
+    2. Runner-up
+    3–4. Semifinal losers
+  */
+  const finalFourIds = [
+    championId,
+    runnerUpId,
+    ...semifinalLosers
+  ];
+
+  const finalFourSet = new Set(finalFourIds);
+
+  tournament.qualifiers = finalFourIds.map((movieId, index) => ({
+    id: movieId,
+    wins: winsInTournament(tournament, movieId),
+    previousSeed: getSeed(tournament, movieId),
+    qualifierRank: index + 1,
+    qualifyingTournament: tournament.regularNumber
+  }));
+
+  /*
+    Keep only the remaining 12 Sweet 16 movies.
+    The Top 4 are excluded.
+  */
+  tournament.returners = sweet16Ids
+    .filter(movieId => !finalFourSet.has(movieId))
+    .map(movieId => ({
+      id: movieId,
+      wins: winsInTournament(tournament, movieId),
+      previousSeed: getSeed(tournament, movieId)
+    }))
+    .sort((a, b) => {
+      if (b.wins !== a.wins) {
+        return b.wins - a.wins;
+      }
+
+      return a.previousSeed - b.previousSeed;
+    })
+    .map((movie, index) => ({
+      ...movie,
+      seed: index + 1
+    }));
+
+  tournament.qualifiers.forEach(qualifier => {
+    const alreadyQualified = state.ultimateQualifiers.some(
+      item => item.id === qualifier.id
+    );
+
+    if (!alreadyQualified) {
+      state.ultimateQualifiers.push({
+        ...qualifier
       });
     }
+  });
+}
 
     function finalizeTournament(tournament) {
       tournament.status = "complete";
@@ -1742,63 +1787,85 @@ Kill Bill: Vol. 1|2003|Action thriller|Uma Thurman|David Carradine
     }
 
     function startNextRegularTournament() {
-      const currentTournament = getCurrentTournament();
+  const currentTournament = getCurrentTournament();
 
-      if (
-        currentTournament.type !== "regular" ||
-        currentTournament.status !== "complete"
-      ) {
-        return;
-      }
+  if (
+    currentTournament.type !== "regular" ||
+    currentTournament.status !== "complete"
+  ) {
+    return;
+  }
 
-      const nextRegularNumber = currentTournament.regularNumber + 1;
+  const nextRegularNumber = currentTournament.regularNumber + 1;
 
-      if (nextRegularNumber > REGULAR_TOURNAMENT_COUNT) {
-        alert("All regular tournaments are complete.");
-        return;
-      }
+  if (nextRegularNumber > REGULAR_TOURNAMENT_COUNT) {
+    alert("All regular tournaments are complete.");
+    return;
+  }
 
-      const nextSet = getSetForRegularTournament(nextRegularNumber);
+  const nextSet = getSetForRegularTournament(nextRegularNumber);
 
-      if (!nextSet || nextSet.movies.length !== REGULAR_NEWCOMER_COUNT) {
-        alert(
-          `Tournament ${nextRegularNumber} needs ${REGULAR_NEWCOMER_COUNT} new movies.`
-        );
-        return;
-      }
+  if (!nextSet || nextSet.movies.length !== REGULAR_NEWCOMER_COUNT) {
+    alert(
+      `Tournament ${nextRegularNumber} needs ${REGULAR_NEWCOMER_COUNT} new movies.`
+    );
+    return;
+  }
 
-      if (currentTournament.returners.length !== REGULAR_RETURNER_COUNT) {
-        alert(
-          `Tournament ${nextRegularNumber} needs ${REGULAR_RETURNER_COUNT} returning movies.`
-        );
-        return;
-      }
+  const qualifiedMovieIds = new Set(
+    state.ultimateQualifiers.map(qualifier => qualifier.id)
+  );
 
-      const returningEntries = currentTournament.returners.map(returner => ({
-        id: returner.id,
-        seed: returner.seed,
-        origin: "returner"
-      }));
+  /*
+    Safety check:
+    Remove any Ultimate Final qualifier from the returning pool.
+  */
+  const validReturners = currentTournament.returners
+    .filter(returner => !qualifiedMovieIds.has(returner.id))
+    .slice(0, REGULAR_RETURNER_COUNT);
 
-      const newcomerEntries = shuffle(nextSet.movies).map((movie, index) => ({
-        id: movie.id,
-        seed: REGULAR_RETURNER_COUNT + index + 1,
-        origin: "newcomer"
-      }));
+  if (validReturners.length !== REGULAR_RETURNER_COUNT) {
+    alert(
+      `Tournament ${nextRegularNumber} needs ${REGULAR_RETURNER_COUNT} non-Top-4 returners.`
+    );
+    return;
+  }
 
-      startTournament(
-        [...returningEntries, ...newcomerEntries],
-        {
-          type: "regular",
-          fieldSize: REGULAR_FIELD_SIZE,
-          title: `Regular Tournament ${nextRegularNumber}: ${nextSet.name}`,
-          regularNumber: nextRegularNumber
-        }
-      );
+  const validNewcomers = nextSet.movies
+    .filter(movie => !qualifiedMovieIds.has(movie.id));
 
-      saveState();
-      render();
+  if (validNewcomers.length !== REGULAR_NEWCOMER_COUNT) {
+    alert(
+      `Tournament ${nextRegularNumber} does not have enough eligible newcomers.`
+    );
+    return;
+  }
+
+  const returningEntries = validReturners.map(returner => ({
+    id: returner.id,
+    seed: returner.seed,
+    origin: "returner"
+  }));
+
+  const newcomerEntries = shuffle(validNewcomers).map((movie, index) => ({
+    id: movie.id,
+    seed: REGULAR_RETURNER_COUNT + index + 1,
+    origin: "newcomer"
+  }));
+
+  startTournament(
+    [...returningEntries, ...newcomerEntries],
+    {
+      type: "regular",
+      fieldSize: REGULAR_FIELD_SIZE,
+      title: `Regular Tournament ${nextRegularNumber}: ${nextSet.name}`,
+      regularNumber: nextRegularNumber
     }
+  );
+
+  saveState();
+  render();
+}
 
     function startUltimateFinal() {
       const currentTournament = getCurrentTournament();
