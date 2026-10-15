@@ -1630,9 +1630,9 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     }
 
     function watchSearchUrl(movie) {
-      const searchText = `where to watch ${movie.title} ${movie.year}`;
-      return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
-    }
+  const searchText = `where to watch ${movie.title} ${movie.year}`;
+  return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
+}
 
     function localPosterPath(movie) {
       return `./posters/${movie.id}.jpg`;
@@ -1676,51 +1676,51 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     }
 
     function movieCard(movie, roundIndex, matchIndex) {
-      const actors = getActors(movie.id).join(" · ");
-      const watchUrl = watchSearchUrl(movie);
+  const actors = getActors(movie.id).join(" · ");
+  const watchUrl = watchSearchUrl(movie);
 
-      return `
-        <article class="movie-card">
-          ${posterHtml(movie)}
+  return `
+    <article class="movie-card">
+      ${posterHtml(movie)}
 
-          <div class="movie-body">
-            <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
+      <div class="movie-body">
+        <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
 
-            <div class="movie-meta">
-              ${escapeHtml(movie.year || "Year unknown")} ·
-              ${escapeHtml(movie.genre || "Genre not listed")}
-            </div>
+        <div class="movie-meta">
+          ${escapeHtml(movie.year || "Year unknown")} ·
+          ${escapeHtml(movie.genre || "Genre not listed")}
+        </div>
 
-            <div class="actor-list">
-              Starring: ${escapeHtml(actors)}
-            </div>
+        <div class="actor-list">
+          Starring: ${escapeHtml(actors)}
+        </div>
 
-            <p class="synopsis">
-              Choose this movie to advance it in the bracket.
-            </p>
+        <p class="synopsis">
+          Choose this movie to advance it in the bracket.
+        </p>
 
-            <a
-              class="watch-link"
-              href="${escapeHtml(watchUrl)}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Find Where to Watch
-            </a>
+        <a
+          class="watch-link"
+          href="${escapeHtml(watchUrl)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Find Where to Watch
+        </a>
 
-            <button
-              class="button-vote"
-              data-vote="true"
-              data-round="${roundIndex}"
-              data-match="${matchIndex}"
-              data-movie="${escapeHtml(movie.id)}"
-            >
-              Vote for ${escapeHtml(movie.title)}
-            </button>
-          </div>
-        </article>
-      `;
-    }
+        <button
+          class="button-vote"
+          data-vote="true"
+          data-round="${roundIndex}"
+          data-match="${matchIndex}"
+          data-movie="${escapeHtml(movie.id)}"
+        >
+          Vote for ${escapeHtml(movie.title)}
+        </button>
+      </div>
+    </article>
+  `;
+}
 
     function bracketTeam(tournament, movieId, winnerId) {
       if (!movieId) {
