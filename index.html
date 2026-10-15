@@ -106,6 +106,27 @@
       color: #062333;
     }
 
+    .watch-link {
+      display: block;
+      width: 100%;
+      margin-bottom: 0.6rem;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid #4b628f;
+      border-radius: 9px;
+      background: #263b62;
+      color: #e6f4ff;
+      font-size: 0.9rem;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+
+    .watch-link:hover {
+      transform: translateY(-1px);
+      background: #345081;
+    }
+
     .panel {
       margin-bottom: 1rem;
       padding: 1.1rem;
@@ -1333,10 +1354,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
           previousSeed: getSeed(tournament, movieId)
         }))
         .sort((a, b) => {
-          if (b.wins !== a.wins) {
-            return b.wins - a.wins;
-          }
-
+          if (b.wins !== a.wins) return b.wins - a.wins;
           return a.previousSeed - b.previousSeed;
         })
         .map((item, index) => ({
@@ -1363,9 +1381,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     function castVote(roundIndex, matchIndex, winnerId) {
       const tournament = getCurrentTournament();
 
-      if (tournament.status !== "in_progress") {
-        return;
-      }
+      if (tournament.status !== "in_progress") return;
 
       const next = findNextPlayableMatch(tournament);
 
@@ -1452,9 +1468,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     function startPreloadedNextTournament() {
       const currentTournament = getCurrentTournament();
 
-      if (currentTournament.status !== "complete") {
-        return;
-      }
+      if (currentTournament.status !== "complete") return;
 
       const nextSet = getNextReserveSet(currentTournament);
 
@@ -1615,6 +1629,11 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       return "Other";
     }
 
+    function watchSearchUrl(movie) {
+      const searchText = `where to watch ${movie.title} ${movie.year}`;
+      return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
+    }
+
     function localPosterPath(movie) {
       return `./posters/${movie.id}.jpg`;
     }
@@ -1658,6 +1677,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
 
     function movieCard(movie, roundIndex, matchIndex) {
       const actors = getActors(movie.id).join(" · ");
+      const watchUrl = watchSearchUrl(movie);
 
       return `
         <article class="movie-card">
@@ -1678,6 +1698,15 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
             <p class="synopsis">
               Choose this movie to advance it in the bracket.
             </p>
+
+            <a
+              class="watch-link"
+              href="${escapeHtml(watchUrl)}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Find Where to Watch
+            </a>
 
             <button
               class="button-vote"
@@ -1789,7 +1818,6 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
 
     function addMovieGenreToStat(map, movieId, statName) {
       const movie = getMovie(movieId);
-
       if (!movie) return;
 
       const category = genreCategory(movie.genre);
@@ -2256,7 +2284,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         state = savedState;
       } else {
         state = {
-          version: 7,
+          version: 8,
           catalog: [],
           stats: {},
           tournaments: []
@@ -2269,7 +2297,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         startInitialTournament();
       }
 
-      state.version = 7;
+      state.version = 8;
 
       saveState();
       render();
