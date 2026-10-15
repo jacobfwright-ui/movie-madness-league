@@ -646,7 +646,16 @@
       </div>
 
       <div id="genreLeaderboards" class="leaderboard-grid"></div>
-    </section>
+    </section><section class="panel">
+  <div class="panel-heading">
+    <h2>Favorite Genres</h2>
+    <span class="muted">
+      Win percentage = genre movie wins ÷ genre matchup appearances. Minimum three appearances.
+    </span>
+  </div>
+
+  <div id="genreLeaderboards" class="leaderboard-grid"></div>
+</section>
 
     <section class="panel">
       <div class="panel-heading">
@@ -1985,24 +1994,189 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       `;
     }
 
-    function renderGenreLeaderboards(tournament) {
-      const currentStats = calculateGenreStats([tournament]);
-      const careerStats = calculateGenreStats(state.tournaments);
+   function genreCategory(genre = "") {
+  const text = genre.toLowerCase();
 
-      document.querySelector("#genreLeaderboards").innerHTML = `
-        ${genreLeaderboardHtml(
-          currentStats,
-          "Current Tournament Favorite Genres",
-          "Based only on the active tournament's matchup results."
-        )}
+  if (text.includes("horror")) return "Horror";
+  if (text.includes("animation")) return "Animation";
+  if (text.includes("musical") || text.includes("music")) return "Musical";
+  if (text.includes("western")) return "Western";
+  if (text.includes("war")) return "War";
+  if (text.includes("romance")) return "Romance";
+  if (text.includes("fantasy")) return "Fantasy";
 
-        ${genreLeaderboardHtml(
-          careerStats,
-          "Career Favorite Genres",
-          "Based on all completed and active tournaments."
-        )}
-      `;
+  if (
+    text.includes("science fiction") ||
+    text.includes("sci-fi") ||
+    text.includes("dystopian")
+  ) {
+    return "Science Fiction";
+  }
+
+  if (
+    text.includes("crime") ||
+    text.includes("noir") ||
+    text.includes("mystery") ||
+    text.includes("thriller")
+  ) {
+    return "Crime / Thriller";
+  }
+
+  if (text.includes("comedy")) return "Comedy";
+
+  if (
+    text.includes("action") ||
+    text.includes("spy") ||
+    text.includes("martial arts") ||
+    text.includes("adventure") ||
+    text.includes("superhero")
+  ) {
+    return "Action";
+  }
+
+  if (text.includes("drama")) return "Drama";
+
+  return "Other";
+}
+
+function getGenreRecord(map, genreName) {
+  if (!map[genreName]) {
+    map[genreName] = {
+      genre: genreName,
+      appearances: 0,
+      wins: 0,
+      top16s: 0,
+      championships: 0
+    };
+  }
+
+  return map[genreName];
+}
+
+function addMovieGenreToStat(map, movieId, statName) {
+  const movie = getMovie(movieId);
+
+  if (!movie) return;
+
+  const category = genreCategory(movie.genre);
+
+  getGenreRecord(map, category)[statName] += 1;
+}
+
+function calculateGenreStats(tournaments) {
+  const genreMap = {};
+
+  tournaments.forEach(tournament => {
+    tournament.rounds.forEach(round => {
+      round.matches.forEach(match => {
+        if (!match.movieAId || !match.movieBId || !match.winnerId) {
+          return;
+        }
+
+        addMovieGenreToStat(genreMap, match.movieAId, "appearances");
+        addMovieGenreToStat(genreMap, match.movieBId, "appearances");
+        addMovieGenreToStat(genreMap, match.winnerId, "wins");
+      });
+    });
+
+    tournament.rounds[1].matches.forEach(match => {
+      if (match.winnerId) {
+        addMovieGenreToStat(genreMap, match.winnerId, "top16s");
+      }
+    });
+
+    const champion = tournament.rounds[5].matches[0].winnerId;
+
+    if (champion) {
+      addMovieGenreToStat(genreMap, champion, "championships");
     }
+  });
+
+  return Object.values(genreMap)
+    .map(record => ({
+      ...record,
+      winPercentage: record.appearances
+        ? (record.wins / record.appearances) * 100
+        : 0
+    }))
+    .sort((a, b) => {
+      return (
+        b.winPercentage - a.winPercentage ||
+        b.wins - a.wins ||
+        b.appearances - a.appearances ||
+        a.genre.localeCompare(b.genre)
+      );
+    });
+}
+
+function genreLeaderboardHtml(records, title, subtitle) {
+  const qualified = records
+    .filter(record => record.appearances >= MIN_ACTOR_APPEARANCES)
+    .slice(0, 15);
+
+  return `
+    <div class="leaderboard-card">
+      <h3>${escapeHtml(title)}</h3>
+      <p class="muted">${escapeHtml(subtitle)}</p>
+
+      ${
+        qualified.length
+          ? `
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Genre</th>
+                    <th>Win %</th>
+                    <th>Wins</th>
+                    <th>Appear.</th>
+                    <th>Top 16</th>
+                    <th>Titles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${qualified.map(record => `
+                    <tr>
+                      <td><strong>${escapeHtml(record.genre)}</strong></td>
+                      <td>${record.winPercentage.toFixed(0)}%</td>
+                      <td>${record.wins}</td>
+                      <td>${record.appearances}</td>
+                      <td>${record.top16s}</td>
+                      <td>${record.championships}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          `
+          : `
+            <p class="muted">
+              No genre has reached the ${MIN_ACTOR_APPEARANCES}-matchup minimum yet.
+            </p>
+          `
+      }
+    </div>
+  `;
+}
+
+function renderGenreLeaderboards(tournament) {
+  const currentStats = calculateGenreStats([tournament]);
+  const careerStats = calculateGenreStats(state.tournaments);
+
+  document.querySelector("#genreLeaderboards").innerHTML = `
+    ${genreLeaderboardHtml(
+      currentStats,
+      "Current Tournament Favorite Genres",
+      "Based only on the active tournament's matchup results."
+    )}
+
+    ${genreLeaderboardHtml(
+      careerStats,
+      "Career Favorite Genres",
+      "Based on all completed and active tournaments."
+    )}
+  `;
+}
 
     function renderSummary(tournament) {
       const votes = totalVotes(tournament);
