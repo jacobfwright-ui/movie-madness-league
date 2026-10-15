@@ -14,9 +14,12 @@
       --muted: #aab8d4;
       --gold: #f5c75c;
       --blue: #7dd3fc;
+      --green: #71dfa0;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -68,14 +71,21 @@
       margin-bottom: 1.25rem;
     }
 
-    h1, h2, h3, p { margin-top: 0; }
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
 
     h1 {
       margin-bottom: 0.35rem;
       font-size: clamp(1.8rem, 4vw, 2.7rem);
     }
 
-    .muted { color: var(--muted); }
+    .muted {
+      color: var(--muted);
+    }
 
     .actions {
       display: flex;
@@ -346,9 +356,8 @@
 
     .bracket {
       display: grid;
-      grid-template-columns: repeat(6, minmax(225px, 1fr));
       gap: 1rem;
-      min-width: 1450px;
+      min-width: 1180px;
     }
 
     .round-title {
@@ -411,13 +420,15 @@
       text-overflow: ellipsis;
     }
 
-    .returner-grid {
+    .returner-grid,
+    .qualifier-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
       gap: 0.65rem;
     }
 
-    .returner {
+    .returner,
+    .qualifier {
       display: flex;
       align-items: center;
       gap: 0.65rem;
@@ -427,7 +438,8 @@
       background: #10182b;
     }
 
-    .returner-seed {
+    .returner-seed,
+    .qualifier-number {
       display: grid;
       flex: 0 0 auto;
       place-items: center;
@@ -440,12 +452,14 @@
       font-weight: 950;
     }
 
-    .returner-name {
+    .returner-name,
+    .qualifier-name {
       font-weight: 900;
       line-height: 1.2;
     }
 
-    .returner-note {
+    .returner-note,
+    .qualifier-note {
       margin-top: 0.2rem;
       color: var(--muted);
       font-size: 0.78rem;
@@ -591,7 +605,7 @@
       <div>
         <h1>Movie Madness League</h1>
         <div class="muted">
-          A continuing 64-movie bracket. The Sweet 16 return; 48 new movies enter each new tournament.
+          Eight regular tournaments feed a 32-movie Ultimate Final.
         </div>
       </div>
 
@@ -607,7 +621,9 @@
     <section class="panel">
       <div class="panel-heading">
         <h2>Current Bracket</h2>
-        <span class="muted">Returning movies receive seeds No. 1–16 in the next tournament.</span>
+        <span class="muted">
+          Regular tournaments retire their Top 4 into the Ultimate Final pool.
+        </span>
       </div>
 
       <div class="bracket-wrap">
@@ -617,11 +633,20 @@
 
     <section class="panel">
       <div class="panel-heading">
-        <h2>Next Tournament Returners</h2>
+        <h2>Returning Movies</h2>
         <span id="returnerStatus" class="muted"></span>
       </div>
 
       <div id="returners"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>Ultimate Final Qualifiers</h2>
+        <span id="qualifierStatus" class="muted"></span>
+      </div>
+
+      <div id="ultimateQualifiers"></div>
     </section>
 
     <section id="nextTournamentPanel" class="panel hidden"></section>
@@ -630,7 +655,7 @@
       <div class="panel-heading">
         <h2>Favorite Actors</h2>
         <span class="muted">
-          Win percentage = actor movie wins ÷ actor movie matchup appearances. Minimum three appearances.
+          Win percentage = actor movie wins ÷ actor matchup appearances. Minimum three appearances.
         </span>
       </div>
 
@@ -646,16 +671,7 @@
       </div>
 
       <div id="genreLeaderboards" class="leaderboard-grid"></div>
-    </section><section class="panel">
-  <div class="panel-heading">
-    <h2>Favorite Genres</h2>
-    <span class="muted">
-      Win percentage = genre movie wins ÷ genre matchup appearances. Minimum three appearances.
-    </span>
-  </div>
-
-  <div id="genreLeaderboards" class="leaderboard-grid"></div>
-</section>
+    </section>
 
     <section class="panel">
       <div class="panel-heading">
@@ -751,20 +767,17 @@
   <script>
     "use strict";
 
-    const STORAGE_KEY = "movieMadnessLeagueActorV1";
-    const FIELD_SIZE = 64;
-    const RETURNER_COUNT = 16;
-    const NEWCOMER_COUNT = 48;
-    const MIN_ACTOR_APPEARANCES = 3;
+    const STORAGE_KEY = "movieMadnessUltimateFinalV1";
 
-    const ROUND_LABELS = [
-      "Round of 64",
-      "Round of 32",
-      "Sweet 16",
-      "Elite 8",
-      "Final 4",
-      "Championship"
-    ];
+    const REGULAR_FIELD_SIZE = 64;
+    const ULTIMATE_FIELD_SIZE = 32;
+    const REGULAR_TOURNAMENT_COUNT = 8;
+
+    const QUALIFIERS_PER_TOURNAMENT = 4;
+    const REGULAR_RETURNER_COUNT = 12;
+    const REGULAR_NEWCOMER_COUNT = 52;
+
+    const MIN_ACTOR_APPEARANCES = 3;
 
     const INITIAL_MOVIES = moviesFromRows(`
 The Godfather|1972|Crime drama|Marlon Brando|Al Pacino
@@ -833,7 +846,7 @@ Rear Window|1954|Mystery thriller|James Stewart|Grace Kelly
 Singin' in the Rain|1952|Musical comedy|Gene Kelly|Debbie Reynolds
     `, "initial");
 
-    const RESERVE_SETS = [
+    const REGULAR_SETS = [
       {
         name: "Popular Classics and 1970s",
         movies: moviesFromRows(`
@@ -885,7 +898,11 @@ Mad Max|1979|Action science fiction|Mel Gibson|Joanne Samuel
 Moonraker|1979|Spy action|Roger Moore|Lois Chiles
 The Muppet Movie|1979|Family musical comedy|Jim Henson|Frank Oz
 Kramer vs. Kramer|1979|Family drama|Dustin Hoffman|Meryl Streep
-        `, "reserve-1")
+The Wizard of Oz|1939|Fantasy musical|Judy Garland|Ray Bolger
+The Magnificent Seven|1960|Western|Yul Brynner|Steve McQueen
+The Graduate|1967|Comedy-drama|Dustin Hoffman|Anne Bancroft
+Monty Python and the Holy Grail|1975|Fantasy comedy|Graham Chapman|John Cleese
+        `, "regular-2")
       },
 
       {
@@ -939,10 +956,14 @@ Rain Man|1988|Drama|Dustin Hoffman|Tom Cruise
 Batman|1989|Superhero action|Michael Keaton|Jack Nicholson
 The Little Mermaid|1989|Animation musical|Jodi Benson|Pat Carroll
 Indiana Jones and the Last Crusade|1989|Action adventure|Harrison Ford|Sean Connery
-        `, "reserve-2")
+Die Hard|1988|Action thriller|Bruce Willis|Alan Rickman
+Ferris Bueller's Day Off|1986|Teen comedy|Matthew Broderick|Alan Ruck
+The Untouchables|1987|Crime drama|Kevin Costner|Sean Connery
+Back to the Future Part II|1989|Science fiction comedy|Michael J. Fox|Christopher Lloyd
+        `, "regular-3")
       },
 
-      {
+            {
         name: "Popular 1990s Movies",
         movies: moviesFromRows(`
 Home Alone|1990|Family comedy|Macaulay Culkin|Joe Pesci
@@ -993,7 +1014,11 @@ The Mummy|1999|Adventure fantasy|Brendan Fraser|Rachel Weisz
 The Blair Witch Project|1999|Horror|Heather Donahue|Michael C. Williams
 American Beauty|1999|Drama|Kevin Spacey|Annette Bening
 Tarzan|1999|Animation adventure|Tony Goldwyn|Minnie Driver
-        `, "reserve-3")
+The Sixth Sense|1999|Psychological thriller|Bruce Willis|Haley Joel Osment
+The Truman Show|1998|Satirical drama|Jim Carrey|Ed Harris
+Se7en|1995|Crime thriller|Brad Pitt|Morgan Freeman
+The Fifth Element|1997|Science fiction action|Bruce Willis|Milla Jovovich
+        `, "regular-4")
       },
 
       {
@@ -1047,7 +1072,11 @@ Twilight|2008|Fantasy romance|Kristen Stewart|Robert Pattinson
 Kung Fu Panda|2008|Animation action comedy|Jack Black|Dustin Hoffman
 The Hangover|2009|Comedy|Bradley Cooper|Ed Helms
 Avatar|2009|Science fiction adventure|Sam Worthington|Zoe Saldaña
-        `, "reserve-4")
+Memento|2000|Psychological thriller|Guy Pearce|Carrie-Anne Moss
+The Departed|2006|Crime thriller|Leonardo DiCaprio|Matt Damon
+The Prestige|2006|Mystery drama|Hugh Jackman|Christian Bale
+Slumdog Millionaire|2008|Romance drama|Dev Patel|Freida Pinto
+        `, "regular-5")
       },
 
       {
@@ -1101,11 +1130,131 @@ The Super Mario Bros. Movie|2023|Animation adventure|Chris Pratt|Anya Taylor-Joy
 Barbie|2023|Fantasy comedy|Margot Robbie|Ryan Gosling
 Inside Out 2|2024|Animation comedy-drama|Amy Poehler|Maya Hawke
 Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
-        `, "reserve-5")
+Whiplash|2014|Music drama|Miles Teller|J.K. Simmons
+Arrival|2016|Science fiction drama|Amy Adams|Jeremy Renner
+The Grand Budapest Hotel|2014|Comedy-drama|Ralph Fiennes|Tony Revolori
+Gone Girl|2014|Mystery thriller|Ben Affleck|Rosamund Pike
+        `, "regular-6")
+      },
+
+      {
+        name: "Additional Mainstream Favorites I",
+        movies: moviesFromRows(`
+Modern Times|1936|Comedy|Charlie Chaplin|Paulette Goddard
+The Third Man|1949|Mystery thriller|Orson Welles|Joseph Cotten
+Sunset Boulevard|1950|Drama|Gloria Swanson|William Holden
+The Bridge on the River Kwai|1957|War drama|Alec Guinness|William Holden
+Some Like It Hot|1959|Comedy|Marilyn Monroe|Tony Curtis
+The Apartment|1960|Romance comedy-drama|Jack Lemmon|Shirley MacLaine
+The Great Escape|1963|War adventure|Steve McQueen|James Garner
+Dr. Strangelove|1964|Satirical comedy|Peter Sellers|George C. Scott
+The Wild Bunch|1969|Western|William Holden|Ernest Borgnine
+A Clockwork Orange|1971|Dystopian crime drama|Malcolm McDowell|Patrick Magee
+The French Connection|1971|Crime thriller|Gene Hackman|Roy Scheider
+Network|1976|Satirical drama|Faye Dunaway|Peter Finch
+The Warriors|1979|Action thriller|Michael Beck|James Remar
+Raging Bull|1980|Biographical sports drama|Robert De Niro|Joe Pesci
+Chariots of Fire|1981|Historical sports drama|Ben Cross|Ian Charleson
+Tron|1982|Science fiction adventure|Jeff Bridges|Bruce Boxleitner
+Risky Business|1983|Romance comedy|Tom Cruise|Rebecca De Mornay
+The Outsiders|1983|Coming-of-age drama|C. Thomas Howell|Matt Dillon
+Amadeus|1984|Historical drama|F. Murray Abraham|Tom Hulce
+Brazil|1985|Dystopian comedy|Jonathan Pryce|Robert De Niro
+RoboCop|1987|Science fiction action|Peter Weller|Nancy Allen
+Full Metal Jacket|1987|War drama|Matthew Modine|R. Lee Ermey
+Good Morning, Vietnam|1987|War comedy-drama|Robin Williams|Forest Whitaker
+The Last Emperor|1987|Historical drama|John Lone|Peter O'Toole
+The Fugitive|1993|Action thriller|Harrison Ford|Tommy Lee Jones
+Philadelphia|1993|Drama|Tom Hanks|Denzel Washington
+The Crow|1994|Fantasy action|Brandon Lee|Ernie Hudson
+Léon: The Professional|1994|Crime thriller|Jean Reno|Natalie Portman
+Heat|1995|Crime thriller|Al Pacino|Robert De Niro
+Casino|1995|Crime drama|Robert De Niro|Sharon Stone
+The Rock|1996|Action thriller|Sean Connery|Nicolas Cage
+Starship Troopers|1997|Science fiction action|Casper Van Dien|Denise Richards
+The Wedding Singer|1998|Romance comedy|Adam Sandler|Drew Barrymore
+Pleasantville|1998|Fantasy comedy-drama|Tobey Maguire|Reese Witherspoon
+The Iron Giant|1999|Animation science fiction|Eli Marienthal|Vin Diesel
+Galaxy Quest|1999|Science fiction comedy|Tim Allen|Sigourney Weaver
+The Green Mile|1999|Fantasy drama|Tom Hanks|Michael Clarke Duncan
+American Pie|1999|Teen comedy|Jason Biggs|Alyson Hannigan
+The Talented Mr. Ripley|1999|Psychological thriller|Matt Damon|Jude Law
+Remember the Titans|2000|Sports drama|Denzel Washington|Will Patton
+Almost Famous|2000|Coming-of-age comedy-drama|Billy Crudup|Kate Hudson
+Miss Congeniality|2000|Action comedy|Sandra Bullock|Michael Caine
+A Knight's Tale|2001|Adventure comedy|Heath Ledger|Paul Bettany
+Training Day|2001|Crime thriller|Denzel Washington|Ethan Hawke
+Donnie Darko|2001|Psychological science fiction|Jake Gyllenhaal|Jena Malone
+Catch Me If You Can|2002|Biographical crime comedy|Leonardo DiCaprio|Tom Hanks
+Gangs of New York|2002|Historical crime drama|Leonardo DiCaprio|Daniel Day-Lewis
+Signs|2002|Science fiction thriller|Mel Gibson|Joaquin Phoenix
+8 Mile|2002|Music drama|Eminem|Brittany Murphy
+Minority Report|2002|Science fiction thriller|Tom Cruise|Colin Farrell
+The Ring|2002|Horror mystery|Naomi Watts|Martin Henderson
+Bend It Like Beckham|2002|Sports comedy-drama|Parminder Nagra|Keira Knightley
+        `, "regular-7")
+      },
+
+      {
+        name: "Additional Mainstream Favorites II",
+        movies: moviesFromRows(`
+O Brother, Where Art Thou?|2000|Adventure comedy|George Clooney|John Turturro
+The Emperor's New Groove|2000|Animation comedy|David Spade|John Goodman
+Black Hawk Down|2001|War drama|Josh Hartnett|Ewan McGregor
+The Royal Tenenbaums|2001|Comedy-drama|Gene Hackman|Anjelica Huston
+A.I. Artificial Intelligence|2001|Science fiction drama|Haley Joel Osment|Jude Law
+Monster's Ball|2001|Drama|Halle Berry|Billy Bob Thornton
+The Princess Diaries|2001|Family comedy|Anne Hathaway|Julie Andrews
+Harry Potter and the Chamber of Secrets|2002|Fantasy adventure|Daniel Radcliffe|Emma Watson
+Harry Potter and the Prisoner of Azkaban|2004|Fantasy adventure|Daniel Radcliffe|Emma Watson
+Harry Potter and the Goblet of Fire|2005|Fantasy adventure|Daniel Radcliffe|Emma Watson
+The Bourne Supremacy|2004|Spy thriller|Matt Damon|Franka Potente
+The Terminal|2004|Comedy-drama|Tom Hanks|Catherine Zeta-Jones
+50 First Dates|2004|Romance comedy|Adam Sandler|Drew Barrymore
+Anchorman: The Legend of Ron Burgundy|2004|Comedy|Will Ferrell|Christina Applegate
+Saw|2004|Horror thriller|Cary Elwes|Leigh Whannell
+Million Dollar Baby|2004|Sports drama|Hilary Swank|Clint Eastwood
+Sideways|2004|Comedy-drama|Paul Giamatti|Thomas Haden Church
+Wedding Crashers|2005|Romance comedy|Owen Wilson|Vince Vaughn
+Mr. & Mrs. Smith|2005|Action comedy|Brad Pitt|Angelina Jolie
+Constantine|2005|Fantasy action|Keanu Reeves|Rachel Weisz
+The Chronicles of Narnia: The Lion, the Witch and the Wardrobe|2005|Fantasy adventure|Georgie Henley|Skandar Keynes
+The Da Vinci Code|2006|Mystery thriller|Tom Hanks|Audrey Tautou
+300|2006|Historical action|Gerard Butler|Lena Headey
+Little Miss Sunshine|2006|Comedy-drama|Abigail Breslin|Greg Kinnear
+The Holiday|2006|Romance comedy|Cameron Diaz|Kate Winslet
+The Last King of Scotland|2006|Historical drama|Forest Whitaker|James McAvoy
+Knocked Up|2007|Romance comedy|Seth Rogen|Katherine Heigl
+Juno|2007|Coming-of-age comedy|Elliot Page|Michael Cera
+Enchanted|2007|Fantasy musical|Amy Adams|Patrick Dempsey
+The Bucket List|2007|Comedy-drama|Jack Nicholson|Morgan Freeman
+The Curious Case of Benjamin Button|2008|Fantasy drama|Brad Pitt|Cate Blanchett
+Tropic Thunder|2008|Action comedy|Ben Stiller|Robert Downey Jr.
+Gran Torino|2008|Drama|Clint Eastwood|Bee Vang
+The Reader|2008|Romance drama|Kate Winslet|Ralph Fiennes
+The Blind Side|2009|Sports drama|Sandra Bullock|Tim McGraw
+The Princess and the Frog|2009|Animation musical|Anika Noni Rose|Bruno Campos
+Zombieland|2009|Horror comedy|Jesse Eisenberg|Woody Harrelson
+Sherlock Holmes|2009|Mystery action|Robert Downey Jr.|Jude Law
+The Proposal|2009|Romance comedy|Sandra Bullock|Ryan Reynolds
+District 9|2009|Science fiction thriller|Sharlto Copley|Jason Cope
+Coraline|2009|Animation dark fantasy|Dakota Fanning|Teri Hatcher
+Up|2009|Animation adventure|Ed Asner|Christopher Plummer
+Star Trek|2009|Science fiction adventure|Chris Pine|Zachary Quinto
+The Hurt Locker|2009|War thriller|Jeremy Renner|Anthony Mackie
+(500) Days of Summer|2009|Romance comedy-drama|Joseph Gordon-Levitt|Zooey Deschanel
+The Pianist|2002|War drama|Adrien Brody|Thomas Kretschmann
+Lost in Translation|2003|Comedy-drama|Bill Murray|Scarlett Johansson
+School of Rock|2003|Music comedy|Jack Black|Joan Cusack
+Old School|2003|Comedy|Will Ferrell|Vince Vaughn
+The Italian Job|2003|Action crime|Mark Wahlberg|Charlize Theron
+The Last Samurai|2003|Historical action drama|Tom Cruise|Ken Watanabe
+Kill Bill: Vol. 1|2003|Action thriller|Uma Thurman|David Carradine
+        `, "regular-8")
       }
     ];
 
-    let state;
+        let state;
 
     function moviesFromRows(text, pool) {
       return text
@@ -1121,7 +1270,8 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
             title: title.trim(),
             year: String(year || "").trim(),
             genre: String(genre || "Genre not listed").trim(),
-            actors: [actor1 || "Unknown", actor2 || "Unknown"].map(actor => actor.trim()),
+            actors: [actor1 || "Unknown", actor2 || "Unknown"]
+              .map(actor => actor.trim()),
             pool
           };
         });
@@ -1181,32 +1331,32 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       }
     }
 
-    function ensureCatalogHasPreloadedMovies() {
+    function allMovieData() {
+      return [
+        ...INITIAL_MOVIES,
+        ...REGULAR_SETS.flatMap(set => set.movies)
+      ];
+    }
+
+    function ensureCatalogHasMovies() {
       state.catalog = state.catalog || [];
       state.stats = state.stats || {};
       state.tournaments = state.tournaments || [];
+      state.ultimateQualifiers = state.ultimateQualifiers || [];
 
-      const allMovies = [
-        ...INITIAL_MOVIES,
-        ...RESERVE_SETS.flatMap(set => set.movies)
-      ];
+      allMovieData().forEach(movie => {
+        const existing = state.catalog.find(item => item.id === movie.id);
 
-      allMovies.forEach(movie => {
-        const existingMovie = state.catalog.find(item => item.id === movie.id);
-
-        if (existingMovie) {
-          existingMovie.actors = movie.actors;
-          existingMovie.genre = existingMovie.genre || movie.genre;
-          existingMovie.title = existingMovie.title || movie.title;
-          existingMovie.year = existingMovie.year || movie.year;
+        if (existing) {
+          existing.title = movie.title;
+          existing.year = movie.year;
+          existing.genre = movie.genre;
+          existing.actors = movie.actors;
+          existing.pool = movie.pool;
         } else {
           state.catalog.push(clone(movie));
         }
       });
-    }
-
-    function getCurrentTournament() {
-      return state.tournaments[state.tournaments.length - 1];
     }
 
     function getMovie(movieId) {
@@ -1223,7 +1373,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       return movie.actors.filter(Boolean);
     }
 
-    function getStats(movieId) {
+    function getMovieStats(movieId) {
       if (!state.stats[movieId]) {
         state.stats[movieId] = {
           appearances: 0,
@@ -1237,9 +1387,34 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       return state.stats[movieId];
     }
 
+    function getCurrentTournament() {
+      return state.tournaments[state.tournaments.length - 1];
+    }
+
     function getSeed(tournament, movieId) {
-      const entry = tournament.entries.find(item => item.id === movieId);
+      const entry = tournament.entries.find(entry => entry.id === movieId);
       return entry ? entry.seed : "";
+    }
+
+    function getRoundLabels(fieldSize) {
+      if (fieldSize === 32) {
+        return [
+          "Round of 32",
+          "Sweet 16",
+          "Elite 8",
+          "Final 4",
+          "Championship"
+        ];
+      }
+
+      return [
+        "Round of 64",
+        "Round of 32",
+        "Sweet 16",
+        "Elite 8",
+        "Final 4",
+        "Championship"
+      ];
     }
 
     function seedOrder(size) {
@@ -1253,27 +1428,49 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       return order;
     }
 
-    function createEmptyRounds(tournamentNumber) {
-      return [32, 16, 8, 4, 2, 1].map((matchCount, roundIndex) => ({
-        label: ROUND_LABELS[roundIndex],
-        matches: Array.from({ length: matchCount }, (_, matchIndex) => ({
-          id: `t${tournamentNumber}-r${roundIndex}-m${matchIndex}`,
-          movieAId: null,
-          movieBId: null,
-          winnerId: null
-        }))
-      }));
+    function createRounds(fieldSize, tournamentId) {
+      const labels = getRoundLabels(fieldSize);
+      const rounds = [];
+
+      let moviesRemaining = fieldSize;
+
+      labels.forEach((label, roundIndex) => {
+        const matchCount = moviesRemaining / 2;
+
+        rounds.push({
+          label,
+          matches: Array.from({ length: matchCount }, (_, matchIndex) => ({
+            id: `${tournamentId}-r${roundIndex}-m${matchIndex}`,
+            movieAId: null,
+            movieBId: null,
+            winnerId: null
+          }))
+        });
+
+        moviesRemaining /= 2;
+      });
+
+      return rounds;
     }
 
-    function startTournament(entries) {
-      if (entries.length !== FIELD_SIZE) {
-        throw new Error("Each tournament must contain exactly 64 movies.");
+    function startTournament(entries, options) {
+      const {
+        type,
+        fieldSize,
+        title,
+        regularNumber = null
+      } = options;
+
+      if (entries.length !== fieldSize) {
+        throw new Error(
+          `${title} needs exactly ${fieldSize} movies.`
+        );
       }
 
-      const number = state.tournaments.length + 1;
+      const tournamentId = `tournament-${state.tournaments.length + 1}`;
       const bySeed = new Map(entries.map(entry => [entry.seed, entry]));
-      const placements = seedOrder(FIELD_SIZE).map(seed => bySeed.get(seed));
-      const rounds = createEmptyRounds(number);
+      const placements = seedOrder(fieldSize).map(seed => bySeed.get(seed));
+      const rounds = createRounds(fieldSize, tournamentId);
 
       for (let index = 0; index < placements.length; index += 2) {
         const match = rounds[0].matches[index / 2];
@@ -1282,18 +1479,21 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       }
 
       entries.forEach(entry => {
-        getStats(entry.id).appearances += 1;
+        getMovieStats(entry.id).appearances += 1;
       });
 
       state.tournaments.push({
-        id: `tournament-${number}`,
-        number,
-        title: `Movie Madness Tournament ${number}`,
+        id: tournamentId,
+        type,
+        title,
         status: "in_progress",
+        regularNumber,
+        fieldSize,
         entries,
         rounds,
         history: [],
         returners: [],
+        qualifiers: [],
         championId: null
       });
     }
@@ -1305,7 +1505,12 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         origin: "initial"
       }));
 
-      startTournament(entries);
+      startTournament(entries, {
+        type: "regular",
+        fieldSize: REGULAR_FIELD_SIZE,
+        title: "Regular Tournament 1",
+        regularNumber: 1
+      });
     }
 
     function findNextPlayableMatch(tournament) {
@@ -1325,22 +1530,45 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     }
 
     function totalVotes(tournament) {
-      return tournament.rounds.reduce((sum, round) => {
-        return sum + round.matches.filter(match => match.winnerId).length;
-      }, 0);
+      return tournament.rounds.reduce(
+        (sum, round) => sum + round.matches.filter(match => match.winnerId).length,
+        0
+      );
+    }
+
+    function totalMatches(tournament) {
+      return tournament.rounds.reduce(
+        (sum, round) => sum + round.matches.length,
+        0
+      );
     }
 
     function winsInTournament(tournament, movieId) {
-      return tournament.rounds.reduce((count, round) => {
-        return count + round.matches.filter(match => match.winnerId === movieId).length;
-      }, 0);
+      return tournament.rounds.reduce(
+        (count, round) =>
+          count + round.matches.filter(match => match.winnerId === movieId).length,
+        0
+      );
     }
 
-    function finishLabel(wins) {
+    function finishLabel(tournament, wins) {
+      if (tournament.type === "ultimate") {
+        const labels = [
+          "Ultimate Round of 32",
+          "Ultimate Sweet 16",
+          "Ultimate Elite 8",
+          "Ultimate Final 4",
+          "Ultimate Runner-Up",
+          "Ultimate Champion"
+        ];
+
+        return labels[Math.max(0, Math.min(wins, labels.length - 1))];
+      }
+
       const labels = [
         "Round of 64",
         "Round of 32",
-        "Top 16",
+        "Sweet 16",
         "Elite 8",
         "Final 4",
         "Runner-Up",
@@ -1350,13 +1578,18 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       return labels[Math.max(0, Math.min(wins, labels.length - 1))];
     }
 
-    function finalizeTournament(tournament) {
-      tournament.status = "complete";
-      tournament.championId = tournament.rounds[5].matches[0].winnerId;
+    function qualifierFinishLabel(qualifierRank) {
+      if (qualifierRank === 1) return "Champion";
+      if (qualifierRank === 2) return "Runner-Up";
+      return "Final 4";
+    }
 
-      const top16Ids = tournament.rounds[1].matches.map(match => match.winnerId);
+    function finalizeRegularTournament(tournament) {
+      const top16Ids = tournament.rounds[1].matches
+        .map(match => match.winnerId)
+        .filter(Boolean);
 
-      tournament.returners = top16Ids
+      const rankedTop16 = top16Ids
         .map(movieId => ({
           id: movieId,
           wins: winsInTournament(tournament, movieId),
@@ -1365,19 +1598,53 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         .sort((a, b) => {
           if (b.wins !== a.wins) return b.wins - a.wins;
           return a.previousSeed - b.previousSeed;
-        })
-        .map((item, index) => ({
-          ...item,
+        });
+
+      tournament.qualifiers = rankedTop16
+        .slice(0, QUALIFIERS_PER_TOURNAMENT)
+        .map((movie, index) => ({
+          ...movie,
+          qualifierRank: index + 1,
+          qualifyingTournament: tournament.regularNumber
+        }));
+
+      tournament.returners = rankedTop16
+        .slice(QUALIFIERS_PER_TOURNAMENT)
+        .map((movie, index) => ({
+          ...movie,
           seed: index + 1
         }));
 
+      tournament.qualifiers.forEach(qualifier => {
+        const alreadyQualified = state.ultimateQualifiers.some(
+          item => item.id === qualifier.id
+        );
+
+        if (!alreadyQualified) {
+          state.ultimateQualifiers.push({
+            ...qualifier
+          });
+        }
+      });
+    }
+
+    function finalizeTournament(tournament) {
+      tournament.status = "complete";
+
+      const finalMatch = tournament.rounds[tournament.rounds.length - 1].matches[0];
+      tournament.championId = finalMatch.winnerId;
+
+      if (tournament.type === "regular") {
+        finalizeRegularTournament(tournament);
+      }
+
       tournament.entries.forEach(entry => {
-        const stats = getStats(entry.id);
+        const stats = getMovieStats(entry.id);
         const wins = winsInTournament(tournament, entry.id);
 
-        stats.lastFinish = finishLabel(wins);
+        stats.lastFinish = finishLabel(tournament, wins);
 
-        if (wins >= 2) {
+        if (tournament.type === "regular" && wins >= 2) {
           stats.top16s += 1;
         }
 
@@ -1411,7 +1678,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
 
       match.winnerId = winnerId;
       tournament.history.push({ roundIndex, matchIndex, winnerId });
-      getStats(winnerId).totalWins += 1;
+      getMovieStats(winnerId).totalWins += 1;
 
       if (roundIndex < tournament.rounds.length - 1) {
         const nextRound = tournament.rounds[roundIndex + 1];
@@ -1434,7 +1701,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       const tournament = getCurrentTournament();
 
       if (tournament.status === "complete") {
-        alert("Completed tournaments are locked. Reset the league to restart.");
+        alert("Completed tournaments are locked.");
         return;
       }
 
@@ -1450,7 +1717,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
 
       match.winnerId = null;
 
-      const winnerStats = getStats(previousVote.winnerId);
+      const winnerStats = getMovieStats(previousVote.winnerId);
       winnerStats.totalWins = Math.max(0, winnerStats.totalWins - 1);
 
       if (previousVote.roundIndex < tournament.rounds.length - 1) {
@@ -1470,55 +1737,110 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       render();
     }
 
-    function getNextReserveSet(tournament) {
-      return RESERVE_SETS[tournament.number - 1] || null;
+    function getSetForRegularTournament(regularNumber) {
+      return REGULAR_SETS[regularNumber - 2] || null;
     }
 
-    function startPreloadedNextTournament() {
+    function startNextRegularTournament() {
       const currentTournament = getCurrentTournament();
 
-      if (currentTournament.status !== "complete") return;
+      if (
+        currentTournament.type !== "regular" ||
+        currentTournament.status !== "complete"
+      ) {
+        return;
+      }
 
-      const nextSet = getNextReserveSet(currentTournament);
+      const nextRegularNumber = currentTournament.regularNumber + 1;
 
-      if (!nextSet) {
+      if (nextRegularNumber > REGULAR_TOURNAMENT_COUNT) {
+        alert("All regular tournaments are complete.");
+        return;
+      }
+
+      const nextSet = getSetForRegularTournament(nextRegularNumber);
+
+      if (!nextSet || nextSet.movies.length !== REGULAR_NEWCOMER_COUNT) {
         alert(
-          "All five preloaded movie sets have been used. Add another reserve set in the code to continue."
+          `Tournament ${nextRegularNumber} needs ${REGULAR_NEWCOMER_COUNT} new movies.`
         );
         return;
       }
 
-      const usedMovieIds = new Set(
-        state.tournaments.flatMap(tournament =>
-          tournament.entries.map(entry => entry.id)
-        )
-      );
-
-      const availableNewcomers = nextSet.movies.filter(
-        movie => !usedMovieIds.has(movie.id)
-      );
-
-      if (availableNewcomers.length !== NEWCOMER_COUNT) {
+      if (currentTournament.returners.length !== REGULAR_RETURNER_COUNT) {
         alert(
-          `The next reserve set should have ${NEWCOMER_COUNT} unused movies, but ` +
-          `${availableNewcomers.length} are available. Check for duplicates.`
+          `Tournament ${nextRegularNumber} needs ${REGULAR_RETURNER_COUNT} returning movies.`
         );
         return;
       }
 
-      const returnerEntries = currentTournament.returners.map(returner => ({
+      const returningEntries = currentTournament.returners.map(returner => ({
         id: returner.id,
         seed: returner.seed,
         origin: "returner"
       }));
 
-      const newcomerEntries = shuffle(availableNewcomers).map((movie, index) => ({
+      const newcomerEntries = shuffle(nextSet.movies).map((movie, index) => ({
         id: movie.id,
-        seed: RETURNER_COUNT + index + 1,
+        seed: REGULAR_RETURNER_COUNT + index + 1,
         origin: "newcomer"
       }));
 
-      startTournament([...returnerEntries, ...newcomerEntries]);
+      startTournament(
+        [...returningEntries, ...newcomerEntries],
+        {
+          type: "regular",
+          fieldSize: REGULAR_FIELD_SIZE,
+          title: `Regular Tournament ${nextRegularNumber}: ${nextSet.name}`,
+          regularNumber: nextRegularNumber
+        }
+      );
+
+      saveState();
+      render();
+    }
+
+    function startUltimateFinal() {
+      const currentTournament = getCurrentTournament();
+
+      if (
+        currentTournament.type !== "regular" ||
+        currentTournament.status !== "complete" ||
+        currentTournament.regularNumber !== REGULAR_TOURNAMENT_COUNT
+      ) {
+        return;
+      }
+
+      if (state.ultimateQualifiers.length !== ULTIMATE_FIELD_SIZE) {
+        alert(
+          `The Ultimate Final needs ${ULTIMATE_FIELD_SIZE} qualifiers. Current total: ${state.ultimateQualifiers.length}.`
+        );
+        return;
+      }
+
+      const ultimateEntries = [...state.ultimateQualifiers]
+        .sort((a, b) => {
+          if (a.qualifierRank !== b.qualifierRank) {
+            return a.qualifierRank - b.qualifierRank;
+          }
+
+          if (b.wins !== a.wins) {
+            return b.wins - a.wins;
+          }
+
+          return a.qualifyingTournament - b.qualifyingTournament;
+        })
+        .map((qualifier, index) => ({
+          id: qualifier.id,
+          seed: index + 1,
+          origin: "ultimate_qualifier"
+        }));
+
+      startTournament(ultimateEntries, {
+        type: "ultimate",
+        fieldSize: ULTIMATE_FIELD_SIZE,
+        title: "Movie Madness Ultimate Final"
+      });
 
       saveState();
       render();
@@ -1639,9 +1961,9 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     }
 
     function watchSearchUrl(movie) {
-  const searchText = `where to watch ${movie.title} ${movie.year}`;
-  return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
-}
+      const searchText = `where to watch ${movie.title} ${movie.year}`;
+      return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
+    }
 
     function localPosterPath(movie) {
       return `./posters/${movie.id}.jpg`;
@@ -1685,51 +2007,51 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     }
 
     function movieCard(movie, roundIndex, matchIndex) {
-  const actors = getActors(movie.id).join(" · ");
-  const watchUrl = watchSearchUrl(movie);
+      const actors = getActors(movie.id).join(" · ");
+      const watchUrl = watchSearchUrl(movie);
 
-  return `
-    <article class="movie-card">
-      ${posterHtml(movie)}
+      return `
+        <article class="movie-card">
+          ${posterHtml(movie)}
 
-      <div class="movie-body">
-        <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
+          <div class="movie-body">
+            <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
 
-        <div class="movie-meta">
-          ${escapeHtml(movie.year || "Year unknown")} ·
-          ${escapeHtml(movie.genre || "Genre not listed")}
-        </div>
+            <div class="movie-meta">
+              ${escapeHtml(movie.year || "Year unknown")} ·
+              ${escapeHtml(movie.genre || "Genre not listed")}
+            </div>
 
-        <div class="actor-list">
-          Starring: ${escapeHtml(actors)}
-        </div>
+            <div class="actor-list">
+              Starring: ${escapeHtml(actors)}
+            </div>
 
-        <p class="synopsis">
-          Choose this movie to advance it in the bracket.
-        </p>
+            <p class="synopsis">
+              Choose this movie to advance it in the bracket.
+            </p>
 
-        <a
-          class="watch-link"
-          href="${escapeHtml(watchUrl)}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Find Where to Watch
-        </a>
+            <a
+              class="watch-link"
+              href="${escapeHtml(watchUrl)}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Find Where to Watch
+            </a>
 
-        <button
-          class="button-vote"
-          data-vote="true"
-          data-round="${roundIndex}"
-          data-match="${matchIndex}"
-          data-movie="${escapeHtml(movie.id)}"
-        >
-          Vote for ${escapeHtml(movie.title)}
-        </button>
-      </div>
-    </article>
-  `;
-}
+            <button
+              class="button-vote"
+              data-vote="true"
+              data-round="${roundIndex}"
+              data-match="${matchIndex}"
+              data-movie="${escapeHtml(movie.id)}"
+            >
+              Vote for ${escapeHtml(movie.title)}
+            </button>
+          </div>
+        </article>
+      `;
+    }
 
     function bracketTeam(tournament, movieId, winnerId) {
       if (!movieId) {
@@ -1783,16 +2105,19 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
           });
         });
 
-        tournament.rounds[1].matches.forEach(match => {
+        const top16Round = tournament.fieldSize === REGULAR_FIELD_SIZE ? 1 : 0;
+
+        tournament.rounds[top16Round].matches.forEach(match => {
           if (match.winnerId) {
             addMovieActorsToStat(actorMap, match.winnerId, "top16s");
           }
         });
 
-        const champion = tournament.rounds[5].matches[0].winnerId;
+        const finalWinner = tournament.rounds[tournament.rounds.length - 1]
+          .matches[0].winnerId;
 
-        if (champion) {
-          addMovieActorsToStat(actorMap, champion, "championships");
+        if (finalWinner) {
+          addMovieActorsToStat(actorMap, finalWinner, "championships");
         }
       });
 
@@ -1847,16 +2172,19 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
           });
         });
 
-        tournament.rounds[1].matches.forEach(match => {
+        const top16Round = tournament.fieldSize === REGULAR_FIELD_SIZE ? 1 : 0;
+
+        tournament.rounds[top16Round].matches.forEach(match => {
           if (match.winnerId) {
             addMovieGenreToStat(genreMap, match.winnerId, "top16s");
           }
         });
 
-        const champion = tournament.rounds[5].matches[0].winnerId;
+        const finalWinner = tournament.rounds[tournament.rounds.length - 1]
+          .matches[0].winnerId;
 
-        if (champion) {
-          addMovieGenreToStat(genreMap, champion, "championships");
+        if (finalWinner) {
+          addMovieGenreToStat(genreMap, finalWinner, "championships");
         }
       });
 
@@ -1989,221 +2317,73 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         ${actorLeaderboardHtml(
           careerStats,
           "Career Favorite Actors",
-          "Based on results across all completed and active tournaments."
+          "Based on all completed and active tournaments."
         )}
       `;
     }
 
-   function genreCategory(genre = "") {
-  const text = genre.toLowerCase();
+    function renderGenreLeaderboards(tournament) {
+      const currentStats = calculateGenreStats([tournament]);
+      const careerStats = calculateGenreStats(state.tournaments);
 
-  if (text.includes("horror")) return "Horror";
-  if (text.includes("animation")) return "Animation";
-  if (text.includes("musical") || text.includes("music")) return "Musical";
-  if (text.includes("western")) return "Western";
-  if (text.includes("war")) return "War";
-  if (text.includes("romance")) return "Romance";
-  if (text.includes("fantasy")) return "Fantasy";
+      document.querySelector("#genreLeaderboards").innerHTML = `
+        ${genreLeaderboardHtml(
+          currentStats,
+          "Current Tournament Favorite Genres",
+          "Based only on the active tournament's matchup results."
+        )}
 
-  if (
-    text.includes("science fiction") ||
-    text.includes("sci-fi") ||
-    text.includes("dystopian")
-  ) {
-    return "Science Fiction";
-  }
-
-  if (
-    text.includes("crime") ||
-    text.includes("noir") ||
-    text.includes("mystery") ||
-    text.includes("thriller")
-  ) {
-    return "Crime / Thriller";
-  }
-
-  if (text.includes("comedy")) return "Comedy";
-
-  if (
-    text.includes("action") ||
-    text.includes("spy") ||
-    text.includes("martial arts") ||
-    text.includes("adventure") ||
-    text.includes("superhero")
-  ) {
-    return "Action";
-  }
-
-  if (text.includes("drama")) return "Drama";
-
-  return "Other";
-}
-
-function getGenreRecord(map, genreName) {
-  if (!map[genreName]) {
-    map[genreName] = {
-      genre: genreName,
-      appearances: 0,
-      wins: 0,
-      top16s: 0,
-      championships: 0
-    };
-  }
-
-  return map[genreName];
-}
-
-function addMovieGenreToStat(map, movieId, statName) {
-  const movie = getMovie(movieId);
-
-  if (!movie) return;
-
-  const category = genreCategory(movie.genre);
-
-  getGenreRecord(map, category)[statName] += 1;
-}
-
-function calculateGenreStats(tournaments) {
-  const genreMap = {};
-
-  tournaments.forEach(tournament => {
-    tournament.rounds.forEach(round => {
-      round.matches.forEach(match => {
-        if (!match.movieAId || !match.movieBId || !match.winnerId) {
-          return;
-        }
-
-        addMovieGenreToStat(genreMap, match.movieAId, "appearances");
-        addMovieGenreToStat(genreMap, match.movieBId, "appearances");
-        addMovieGenreToStat(genreMap, match.winnerId, "wins");
-      });
-    });
-
-    tournament.rounds[1].matches.forEach(match => {
-      if (match.winnerId) {
-        addMovieGenreToStat(genreMap, match.winnerId, "top16s");
-      }
-    });
-
-    const champion = tournament.rounds[5].matches[0].winnerId;
-
-    if (champion) {
-      addMovieGenreToStat(genreMap, champion, "championships");
+        ${genreLeaderboardHtml(
+          careerStats,
+          "Career Favorite Genres",
+          "Based on all completed and active tournaments."
+        )}
+      `;
     }
-  });
-
-  return Object.values(genreMap)
-    .map(record => ({
-      ...record,
-      winPercentage: record.appearances
-        ? (record.wins / record.appearances) * 100
-        : 0
-    }))
-    .sort((a, b) => {
-      return (
-        b.winPercentage - a.winPercentage ||
-        b.wins - a.wins ||
-        b.appearances - a.appearances ||
-        a.genre.localeCompare(b.genre)
-      );
-    });
-}
-
-function genreLeaderboardHtml(records, title, subtitle) {
-  const qualified = records
-    .filter(record => record.appearances >= MIN_ACTOR_APPEARANCES)
-    .slice(0, 15);
-
-  return `
-    <div class="leaderboard-card">
-      <h3>${escapeHtml(title)}</h3>
-      <p class="muted">${escapeHtml(subtitle)}</p>
-
-      ${
-        qualified.length
-          ? `
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Genre</th>
-                    <th>Win %</th>
-                    <th>Wins</th>
-                    <th>Appear.</th>
-                    <th>Top 16</th>
-                    <th>Titles</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${qualified.map(record => `
-                    <tr>
-                      <td><strong>${escapeHtml(record.genre)}</strong></td>
-                      <td>${record.winPercentage.toFixed(0)}%</td>
-                      <td>${record.wins}</td>
-                      <td>${record.appearances}</td>
-                      <td>${record.top16s}</td>
-                      <td>${record.championships}</td>
-                    </tr>
-                  `).join("")}
-                </tbody>
-              </table>
-            </div>
-          `
-          : `
-            <p class="muted">
-              No genre has reached the ${MIN_ACTOR_APPEARANCES}-matchup minimum yet.
-            </p>
-          `
-      }
-    </div>
-  `;
-}
-
-function renderGenreLeaderboards(tournament) {
-  const currentStats = calculateGenreStats([tournament]);
-  const careerStats = calculateGenreStats(state.tournaments);
-
-  document.querySelector("#genreLeaderboards").innerHTML = `
-    ${genreLeaderboardHtml(
-      currentStats,
-      "Current Tournament Favorite Genres",
-      "Based only on the active tournament's matchup results."
-    )}
-
-    ${genreLeaderboardHtml(
-      careerStats,
-      "Career Favorite Genres",
-      "Based on all completed and active tournaments."
-    )}
-  `;
-}
 
     function renderSummary(tournament) {
       const votes = totalVotes(tournament);
+      const matches = totalMatches(tournament);
 
-      const returnersClinched = tournament.status === "complete"
-        ? tournament.returners.length
-        : tournament.rounds[1].matches.filter(match => match.winnerId).length;
+      const tournamentLabel = tournament.type === "ultimate"
+        ? "Ultimate Final"
+        : `Regular Tournament ${tournament.regularNumber}`;
+
+      const returnerCount = tournament.type === "regular"
+        ? (
+          tournament.status === "complete"
+            ? tournament.returners.length
+            : tournament.rounds[1].matches.filter(match => match.winnerId).length
+        )
+        : 0;
 
       document.querySelector("#summary").innerHTML = `
         <div class="stats">
           <div class="stat">
-            <div class="stat-label">Active Tournament</div>
-            <div class="stat-value">No. ${tournament.number}</div>
+            <div class="stat-label">Active Event</div>
+            <div class="stat-value">${escapeHtml(tournamentLabel)}</div>
           </div>
 
           <div class="stat">
             <div class="stat-label">Bracket Progress</div>
-            <div class="stat-value">${votes} / 63 Votes</div>
+            <div class="stat-value">${votes} / ${matches} Votes</div>
           </div>
 
           <div class="stat">
-            <div class="stat-label">Next-Bracket Returners</div>
-            <div class="stat-value">${returnersClinched} / 16</div>
+            <div class="stat-label">${
+              tournament.type === "ultimate"
+                ? "Ultimate Qualifiers"
+                : "Next Regular Returners"
+            }</div>
+            <div class="stat-value">${
+              tournament.type === "ultimate"
+                ? `${state.ultimateQualifiers.length} / 32`
+                : `${returnerCount} / 12`
+            }</div>
           </div>
 
           <div class="stat">
-            <div class="stat-label">Movies in League Database</div>
+            <div class="stat-label">Movies in Database</div>
             <div class="stat-value">${state.catalog.length}</div>
           </div>
         </div>
@@ -2216,16 +2396,16 @@ function renderGenreLeaderboards(tournament) {
       if (tournament.status === "complete") {
         const champion = getMovie(tournament.championId);
         const actors = getActors(champion.id).join(" · ");
+        const label = tournament.type === "ultimate"
+          ? "Ultimate Final Champion"
+          : `Regular Tournament ${tournament.regularNumber} Champion`;
 
         panel.innerHTML = `
           <div class="champion">
             <div>${posterHtml(champion)}</div>
 
             <div>
-              <div class="champion-badge">
-                Tournament ${tournament.number} Champion
-              </div>
-
+              <div class="champion-badge">${escapeHtml(label)}</div>
               <h2 class="champion-title">${escapeHtml(champion.title)}</h2>
 
               <div class="movie-meta">
@@ -2237,8 +2417,11 @@ function renderGenreLeaderboards(tournament) {
               </div>
 
               <p class="synopsis">
-                The tournament is complete. The Sweet 16 have been ranked and seeded
-                for the next bracket. Load the next reserve set below when ready.
+                ${
+                  tournament.type === "ultimate"
+                    ? "The Ultimate Final is complete. This movie is the overall Movie Madness champion."
+                    : "The Top 4 have qualified for the Ultimate Final. The remaining 12 Sweet 16 movies return to regular competition."
+                }
               </p>
             </div>
           </div>
@@ -2262,11 +2445,11 @@ function renderGenreLeaderboards(tournament) {
           <div>
             <h2 style="margin-bottom:0.25rem;">Current Matchup</h2>
             <div class="muted">
-              ${ROUND_LABELS[next.roundIndex]} · Match ${next.matchIndex + 1}
+              ${escapeHtml(tournament.rounds[next.roundIndex].label)} · Match ${next.matchIndex + 1}
             </div>
           </div>
 
-          <strong>${totalVotes(tournament)} of 63 votes complete</strong>
+          <strong>${totalVotes(tournament)} of ${totalMatches(tournament)} votes complete</strong>
         </div>
 
         <div class="matchup">
@@ -2278,7 +2461,12 @@ function renderGenreLeaderboards(tournament) {
     }
 
     function renderBracket(tournament) {
-      document.querySelector("#bracket").innerHTML = tournament.rounds.map(round => `
+      const bracket = document.querySelector("#bracket");
+
+      bracket.style.gridTemplateColumns =
+        `repeat(${tournament.rounds.length}, minmax(225px, 1fr))`;
+
+      bracket.innerHTML = tournament.rounds.map(round => `
         <section>
           <div class="round-title">${escapeHtml(round.label)}</div>
 
@@ -2296,6 +2484,19 @@ function renderGenreLeaderboards(tournament) {
       const container = document.querySelector("#returners");
       const status = document.querySelector("#returnerStatus");
 
+      if (tournament.type === "ultimate") {
+        status.textContent =
+          "Ultimate Final qualifiers do not return to regular competition.";
+
+        container.innerHTML = `
+          <p class="muted">
+            The Ultimate Final contains the Top 4 qualifiers from all eight regular tournaments.
+          </p>
+        `;
+
+        return;
+      }
+
       const returners = tournament.status === "complete"
         ? tournament.returners
         : tournament.rounds[1].matches
@@ -2307,12 +2508,14 @@ function renderGenreLeaderboards(tournament) {
           }));
 
       status.textContent = tournament.status === "complete"
-        ? "These movies are seeded for the next tournament."
-        : "Movies appear here once they win two matchups and reach the Sweet 16.";
+        ? "The Top 4 qualify for the Ultimate Final. These 12 movies return to the next regular tournament."
+        : "Movies appear here after reaching the Sweet 16. The Top 4 will later be removed into the Ultimate Final pool.";
 
       if (!returners.length) {
         container.innerHTML = `
-          <p class="muted">No movies have clinched a next-tournament berth yet.</p>
+          <p class="muted">
+            No movies have clinched a next-tournament berth yet.
+          </p>
         `;
         return;
       }
@@ -2323,8 +2526,8 @@ function renderGenreLeaderboards(tournament) {
             const movie = getMovie(returner.id);
 
             const note = tournament.status === "complete"
-              ? `Seed ${returner.seed} · ${finishLabel(returner.wins)}`
-              : `Clinched · Provisional seed ${index + 1}`;
+              ? `Next seed ${returner.seed} · ${finishLabel(tournament, returner.wins)}`
+              : `Provisional seed ${index + 1}`;
 
             return `
               <div class="returner">
@@ -2332,6 +2535,50 @@ function renderGenreLeaderboards(tournament) {
                 <div>
                   <div class="returner-name">${escapeHtml(movie.title)}</div>
                   <div class="returner-note">${escapeHtml(note)}</div>
+                </div>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderUltimateQualifiers() {
+      const container = document.querySelector("#ultimateQualifiers");
+      const status = document.querySelector("#qualifierStatus");
+
+      const qualifiers = [...state.ultimateQualifiers]
+        .sort((a, b) => (
+          a.qualifyingTournament - b.qualifyingTournament ||
+          a.qualifierRank - b.qualifierRank
+        ));
+
+      status.textContent =
+        `${qualifiers.length} of ${ULTIMATE_FIELD_SIZE} Ultimate Final spots filled.`;
+
+      if (!qualifiers.length) {
+        container.innerHTML = `
+          <p class="muted">
+            The Top 4 from each regular tournament will qualify here.
+          </p>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="qualifier-grid">
+          ${qualifiers.map((qualifier, index) => {
+            const movie = getMovie(qualifier.id);
+
+            return `
+              <div class="qualifier">
+                <div class="qualifier-number">${index + 1}</div>
+                <div>
+                  <div class="qualifier-name">${escapeHtml(movie.title)}</div>
+                  <div class="qualifier-note">
+                    Tournament ${qualifier.qualifyingTournament} ·
+                    ${escapeHtml(qualifierFinishLabel(qualifier.qualifierRank))}
+                  </div>
                 </div>
               </div>
             `;
@@ -2351,18 +2598,44 @@ function renderGenreLeaderboards(tournament) {
 
       panel.classList.remove("hidden");
 
-      const nextSet = getNextReserveSet(tournament);
-
-      if (!nextSet) {
+      if (tournament.type === "ultimate") {
         panel.innerHTML = `
           <div class="panel-heading">
-            <h2>Preloaded Reserve Sets Complete</h2>
+            <h2>Movie Madness Season Complete</h2>
           </div>
 
           <p class="muted">
-            All five built-in 48-movie reserve sets have been used. Add another
-            set to the RESERVE_SETS array in the code to continue the league.
+            The Ultimate Final is complete. Use Reset All Data to begin a completely new season.
           </p>
+        `;
+
+        return;
+      }
+
+      if (tournament.regularNumber < REGULAR_TOURNAMENT_COUNT) {
+        const nextRegularNumber = tournament.regularNumber + 1;
+        const nextSet = getSetForRegularTournament(nextRegularNumber);
+
+        panel.innerHTML = `
+          <div class="panel-heading">
+            <div>
+              <h2>Start Regular Tournament ${nextRegularNumber}</h2>
+              <p class="muted">
+                The 12 non-Top-4 Sweet 16 movies return. The Top 4 have qualified for the Ultimate Final and will not re-enter regular play.
+              </p>
+            </div>
+
+            <strong>Next Set: ${escapeHtml(nextSet.name)}</strong>
+          </div>
+
+          <div class="stat" style="margin-bottom:1rem;">
+            <div class="stat-label">Incoming New Movies</div>
+            <div class="stat-value">${nextSet.movies.length} Movies</div>
+          </div>
+
+          <button id="startNextRegularTournament" class="button-primary">
+            Start Regular Tournament ${nextRegularNumber}
+          </button>
         `;
 
         return;
@@ -2371,23 +2644,17 @@ function renderGenreLeaderboards(tournament) {
       panel.innerHTML = `
         <div class="panel-heading">
           <div>
-            <h2>Start Tournament ${tournament.number + 1}</h2>
+            <h2>Start the Ultimate Final</h2>
             <p class="muted">
-              The Sweet 16 return as seeds No. 1–16. The next 48 movies are
-              preloaded and ready to join them.
+              All eight regular tournaments are complete. Their Top 4 finishers create a 32-movie Ultimate Final bracket.
             </p>
           </div>
 
-          <strong>Next Set: ${escapeHtml(nextSet.name)}</strong>
+          <strong>${state.ultimateQualifiers.length} / 32 Qualifiers</strong>
         </div>
 
-        <div class="stat" style="margin-bottom:1rem;">
-          <div class="stat-label">Incoming New Movies</div>
-          <div class="stat-value">${nextSet.movies.length} Movies</div>
-        </div>
-
-        <button id="startNextTournament" class="button-primary">
-          Start Tournament ${tournament.number + 1}
+        <button id="startUltimateFinal" class="button-primary">
+          Start Movie Madness Ultimate Final
         </button>
       `;
     }
@@ -2396,7 +2663,7 @@ function renderGenreLeaderboards(tournament) {
       const rows = state.catalog
         .map(movie => ({
           movie,
-          stats: getStats(movie.id)
+          stats: getMovieStats(movie.id)
         }))
         .filter(item => item.stats.appearances > 0)
         .sort((a, b) => (
@@ -2430,6 +2697,7 @@ function renderGenreLeaderboards(tournament) {
       renderCurrentMatchup(tournament);
       renderBracket(tournament);
       renderReturners(tournament);
+      renderUltimateQualifiers();
       renderNextTournamentPanel(tournament);
       renderActorLeaderboards(tournament);
       renderGenreLeaderboards(tournament);
@@ -2442,7 +2710,7 @@ function renderGenreLeaderboards(tournament) {
 
     function resetAllData() {
       const confirmed = window.confirm(
-        "Reset every bracket, vote, actor record, genre record, and saved movie result in this browser?"
+        "Reset the entire eight-tournament season, Ultimate Final pool, votes, actor records, genre records, and saved movie results?"
       );
 
       if (!confirmed) return;
@@ -2458,20 +2726,21 @@ function renderGenreLeaderboards(tournament) {
         state = savedState;
       } else {
         state = {
-          version: 8,
+          version: 9,
           catalog: [],
           stats: {},
-          tournaments: []
+          tournaments: [],
+          ultimateQualifiers: []
         };
       }
 
-      ensureCatalogHasPreloadedMovies();
+      ensureCatalogHasMovies();
 
       if (!state.tournaments.length) {
         startInitialTournament();
       }
 
-      state.version = 8;
+      state.version = 9;
 
       saveState();
       render();
@@ -2496,8 +2765,12 @@ function renderGenreLeaderboards(tournament) {
         resetAllData();
       }
 
-      if (event.target.closest("#startNextTournament")) {
-        startPreloadedNextTournament();
+      if (event.target.closest("#startNextRegularTournament")) {
+        startNextRegularTournament();
+      }
+
+      if (event.target.closest("#startUltimateFinal")) {
+        startUltimateFinal();
       }
     });
 
