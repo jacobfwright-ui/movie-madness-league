@@ -14,13 +14,9 @@
       --muted: #aab8d4;
       --gold: #f5c75c;
       --blue: #7dd3fc;
-      --green: #71dfa0;
-      --red: #fb7185;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -72,21 +68,14 @@
       margin-bottom: 1.25rem;
     }
 
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
 
     h1 {
       margin-bottom: 0.35rem;
       font-size: clamp(1.8rem, 4vw, 2.7rem);
     }
 
-    .muted {
-      color: var(--muted);
-    }
+    .muted { color: var(--muted); }
 
     .actions {
       display: flex;
@@ -196,6 +185,16 @@
       background: #17243d;
     }
 
+    .poster-image {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #17243d;
+    }
+
     .poster-fallback {
       position: absolute;
       inset: 0;
@@ -206,7 +205,7 @@
       padding: 1.1rem;
       background:
         radial-gradient(circle at 78% 17%, var(--poster-c) 0%, transparent 14%),
-        radial-gradient(circle at 20% 82%, rgba(255, 255, 255, 0.16) 0%, transparent 22%),
+        radial-gradient(circle at 20% 82%, rgba(255,255,255,.16) 0%, transparent 22%),
         linear-gradient(145deg, var(--poster-a), var(--poster-b));
     }
 
@@ -221,7 +220,7 @@
           135deg,
           transparent 0,
           transparent 12px,
-          rgba(255, 255, 255, 0.16) 13px,
+          rgba(255,255,255,.16) 13px,
           transparent 15px
         );
     }
@@ -233,7 +232,7 @@
       font-size: 4.5rem;
       font-weight: 900;
       line-height: 1;
-      text-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+      text-shadow: 0 3px 12px rgba(0,0,0,.35);
     }
 
     .genre-label {
@@ -242,9 +241,9 @@
       width: fit-content;
       margin-top: 0.3rem;
       padding: 0.3rem 0.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255,255,255,.35);
       border-radius: 5px;
-      background: rgba(0, 0, 0, 0.25);
+      background: rgba(0,0,0,.25);
       color: var(--poster-c);
       font-size: 0.68rem;
       font-weight: 950;
@@ -256,7 +255,7 @@
       z-index: 1;
       margin: auto -1.1rem -1.1rem;
       padding: 4rem 1.1rem 1.1rem;
-      background: linear-gradient(transparent, rgba(4, 8, 18, 0.9) 36%);
+      background: linear-gradient(transparent, rgba(4,8,18,.9) 36%);
     }
 
     .poster-year {
@@ -268,11 +267,11 @@
 
     .poster-title {
       margin-top: 0.35rem;
-      color: #ffffff;
+      color: #fff;
       font-size: clamp(1.3rem, 3vw, 2.15rem);
       font-weight: 950;
       line-height: 1.03;
-      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.45);
+      text-shadow: 0 3px 10px rgba(0,0,0,.45);
     }
 
     .poster-genre {
@@ -366,7 +365,7 @@
     }
 
     .bracket-team.winner {
-      background: rgba(113, 223, 160, 0.16);
+      background: rgba(113,223,160,.16);
       color: #e7fff0;
       font-weight: 850;
     }
@@ -492,14 +491,13 @@
       outline: none;
       background: #0d1527;
       color: #f4f7ff;
-      font: inherit;
     }
 
     .suggestion-form input:focus,
     .suggestion-form select:focus,
     .suggestion-form textarea:focus {
       border-color: #7dd3fc;
-      box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.15);
+      box-shadow: 0 0 0 3px rgba(125,211,252,.15);
     }
 
     .suggestion-form textarea {
@@ -654,10 +652,7 @@
 
         <div>
           <label for="suggestion-type">Suggestion type</label>
-          <select
-            id="suggestion-type"
-            name="suggestion_type"
-          >
+          <select id="suggestion-type" name="suggestion_type">
             <option value="New feature">New feature</option>
             <option value="Movie suggestion">Movie suggestion</option>
             <option value="Bracket rule">Bracket rule</option>
@@ -1563,11 +1558,24 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
       return { label: "MOVIE", symbol: "◆", colorA: "#1e3a5f", colorB: "#43305f", colorC: "#7dd3fc" };
     }
 
+    function localPosterPath(movie) {
+      return `./posters/${movie.id}.jpg`;
+    }
+
     function posterHtml(movie) {
       const theme = genreTheme(movie.genre);
+      const posterPath = localPosterPath(movie);
 
       return `
         <div class="movie-poster">
+          <img
+            class="poster-image"
+            src="${escapeHtml(posterPath)}"
+            alt="Poster for ${escapeHtml(movie.title)}"
+            loading="lazy"
+            onerror="this.style.display='none'"
+          >
+
           <div
             class="poster-fallback"
             style="
@@ -1691,10 +1699,10 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
           }
         });
 
-        const championshipWinner = tournament.rounds[5].matches[0].winnerId;
+        const champion = tournament.rounds[5].matches[0].winnerId;
 
-        if (championshipWinner) {
-          addMovieActorsToStat(actorMap, championshipWinner, "championships");
+        if (champion) {
+          addMovieActorsToStat(actorMap, champion, "championships");
         }
       });
 
@@ -1766,12 +1774,12 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
     }
 
     function renderActorLeaderboards(tournament) {
-      const currentTournamentStats = calculateActorStats([tournament]);
+      const currentStats = calculateActorStats([tournament]);
       const careerStats = calculateActorStats(state.tournaments);
 
       document.querySelector("#actorLeaderboards").innerHTML = `
         ${actorLeaderboardHtml(
-          currentTournamentStats,
+          currentStats,
           "Current Tournament Favorite Actors",
           "Based only on the active tournament's matchup results."
         )}
@@ -2067,7 +2075,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         state = savedState;
       } else {
         state = {
-          version: 5,
+          version: 6,
           catalog: [],
           stats: {},
           tournaments: []
@@ -2080,7 +2088,7 @@ Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
         startInitialTournament();
       }
 
-      state.version = 5;
+      state.version = 6;
 
       saveState();
       render();
