@@ -1624,20 +1624,31 @@
     }
 
     function getThemeCandidates() {
-      const genre = document.querySelector("#themeGenre").value;
-      const decade = document.querySelector("#themeDecade").value;
-      const excluded = usedRegularMovieIds();
+  const selectedGenre = document.querySelector("#themeGenre").value;
+  const selectedDecade = document.querySelector("#themeDecade").value;
+  const excludedMovieIds = usedRegularMovieIds();
 
-      return catalog.filter(movie => {
-        const matchesGenre =
-          genre === "All" || movie.genres.includes(genre);
+  return catalog.filter(movie => {
+    const movieGenres = Array.isArray(movie.genres)
+      ? movie.genres
+      : [];
 
-        const matchesDecade =
-          decade === "All" || movie.decade === decade;
+    const movieDecade = `${Math.floor(Number(movie.year) / 10) * 10}s`;
 
-        return matchesGenre && matchesDecade && !excluded.has(movie.id);
-      });
-    }
+    const matchesGenre =
+      selectedGenre === "All" ||
+      movieGenres.includes(selectedGenre);
+
+    const matchesDecade =
+      selectedDecade === "All" ||
+      movieDecade === selectedDecade;
+
+    const isExcluded =
+      excludedMovieIds.has(movie.id);
+
+    return matchesGenre && matchesDecade && !isExcluded;
+  });
+}
 
     function updateThemeStatus() {
       const status = document.querySelector("#themeStatus");
