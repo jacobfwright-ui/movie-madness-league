@@ -596,6 +596,48 @@
         text-align: center;
       }
     }
+    .theme-setup-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+  align-items: end;
+}
+
+.theme-setup-grid label {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #dbeafe;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.theme-setup-grid select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #3d5078;
+  border-radius: 8px;
+  outline: none;
+  background: #0d1527;
+  color: #f4f7ff;
+}
+
+.theme-setup-grid select:focus {
+  border-color: #7dd3fc;
+  box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.15);
+}
+
+.theme-status {
+  margin-top: 1rem;
+  color: #aab8d4;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 900px) {
+  .theme-setup-grid {
+    grid-template-columns: 1fr;
+  }
+}
   </style>
 </head>
 
@@ -651,6 +693,54 @@
 
     <section id="nextTournamentPanel" class="panel hidden"></section>
 
+    <section class="panel">
+  <div class="panel-heading">
+    <div>
+      <h2>Start a Theme Tournament</h2>
+      <p class="muted">
+        Build a separate personal bracket by genre, decade, or both.
+        Theme Tournaments do not create Ultimate Final qualifiers.
+      </p>
+    </div>
+  </div>
+
+  <div class="theme-setup-grid">
+    <div>
+      <label for="themeGenre">Genre</label>
+      <select id="themeGenre">
+        <option value="All">All Genres</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="themeDecade">Decade</label>
+      <select id="themeDecade">
+        <option value="All">All Decades</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="themeBracketSize">Bracket Size</label>
+      <select id="themeBracketSize">
+        <option value="auto">Automatic Best Size</option>
+        <option value="64">64 Movies</option>
+        <option value="32">32 Movies</option>
+        <option value="16">16 Movies</option>
+        <option value="8">8 Movies</option>
+      </select>
+    </div>
+
+    <div>
+      <button id="startThemeTournament" class="button-primary">
+        Start Theme Tournament
+      </button>
+    </div>
+  </div>
+
+  <div id="themeStatus" class="theme-status">
+    Loading Theme Tournament catalog...
+  </div>
+</section>
     <section class="panel">
       <div class="panel-heading">
         <h2>Favorite Actors</h2>
@@ -1252,7 +1342,1796 @@ The Last Samurai|2003|Historical action drama|Tom Cruise|Ken Watanabe
 Kill Bill: Vol. 1|2003|Action thriller|Uma Thurman|David Carradine
         `, "regular-8")
       }
+    const THEME_CATALOG_PACKS = [
+  {
+    name: "Classic Cinema",
+    movies: moviesFromRows(`
+The Kid|1921|Comedy|Charlie Chaplin|Jackie Coogan
+Nosferatu|1922|Horror|Max Schreck|Gustav von Wangenheim
+Safety Last!|1923|Comedy|Harold Lloyd|Mildred Davis
+The Gold Rush|1925|Comedy|Charlie Chaplin|Georgia Hale
+The General|1926|Comedy|Buster Keaton|Marion Mack
+The Passion of Joan of Arc|1928|Historical drama|Renée Jeanne Falconetti|Antonin Artaud
+All Quiet on the Western Front|1930|War drama|Lew Ayres|Louis Wolheim
+City Lights|1931|Comedy|Charlie Chaplin|Virginia Cherrill
+Frankenstein|1931|Horror|Boris Karloff|Colin Clive
+Dracula|1931|Horror|Bela Lugosi|Helen Chandler
+It Happened One Night|1934|Romance comedy|Clark Gable|Claudette Colbert
+Bride of Frankenstein|1935|Horror|Boris Karloff|Elsa Lanchester
+Top Hat|1935|Musical comedy|Fred Astaire|Ginger Rogers
+Bringing Up Baby|1938|Comedy|Cary Grant|Katharine Hepburn
+The Adventures of Robin Hood|1938|Adventure|Errol Flynn|Olivia de Havilland
+Stagecoach|1939|Western|John Wayne|Claire Trevor
+His Girl Friday|1940|Comedy|Cary Grant|Rosalind Russell
+The Philadelphia Story|1940|Romance comedy|Cary Grant|Katharine Hepburn
+The Maltese Falcon|1941|Crime mystery|Humphrey Bogart|Mary Astor
+Sullivan's Travels|1941|Comedy|Joel McCrea|Veronica Lake
+The Lady Eve|1941|Romance comedy|Barbara Stanwyck|Henry Fonda
+The Best Years of Our Lives|1946|Drama|Fredric March|Dana Andrews
+Notorious|1946|Romance thriller|Cary Grant|Ingrid Bergman
+Gilda|1946|Film noir drama|Rita Hayworth|Glenn Ford
+The Big Sleep|1946|Mystery thriller|Humphrey Bogart|Lauren Bacall
+The Red Shoes|1948|Drama|Moira Shearer|Anton Walbrook
+Bicycle Thieves|1948|Drama|Lamberto Maggiorani|Enzo Staiola
+The Treasure of the Sierra Madre|1948|Adventure drama|Humphrey Bogart|Walter Huston
+Kind Hearts and Coronets|1949|Comedy|Alec Guinness|Dennis Price
+White Heat|1949|Crime drama|James Cagney|Virginia Mayo
+In a Lonely Place|1950|Film noir drama|Humphrey Bogart|Gloria Grahame
+The Asphalt Jungle|1950|Crime drama|Sterling Hayden|Marilyn Monroe
+Ace in the Hole|1951|Drama|Kirk Douglas|Jan Sterling
+A Streetcar Named Desire|1951|Drama|Marlon Brando|Vivien Leigh
+The African Queen|1951|Adventure drama|Humphrey Bogart|Katharine Hepburn
+High Noon|1952|Western|Gary Cooper|Grace Kelly
+Shane|1953|Western|Alan Ladd|Jean Arthur
+From Here to Eternity|1953|War drama|Burt Lancaster|Deborah Kerr
+On the Waterfront|1954|Crime drama|Marlon Brando|Eva Marie Saint
+Godzilla|1954|Science fiction|Takashi Shimura|Akira Takarada
+Rebel Without a Cause|1955|Drama|James Dean|Natalie Wood
+The Man Who Knew Too Much|1956|Mystery thriller|James Stewart|Doris Day
+The Killing|1956|Crime thriller|Sterling Hayden|Coleen Gray
+Sweet Smell of Success|1957|Drama|Burt Lancaster|Tony Curtis
+Witness for the Prosecution|1957|Legal drama|Tyrone Power|Marlene Dietrich
+The Seventh Seal|1957|Fantasy drama|Max von Sydow|Gunnar Björnstrand
+Touch of Evil|1958|Crime thriller|Charlton Heston|Orson Welles
+The Defiant Ones|1958|Drama|Tony Curtis|Sidney Poitier
+Anatomy of a Murder|1959|Legal drama|James Stewart|Lee Remick
+The 400 Blows|1959|Coming-of-age drama|Jean-Pierre Léaud|Albert Rémy
+Peeping Tom|1960|Psychological horror|Carl Boehm|Anna Massey
+The Misfits|1961|Drama|Marilyn Monroe|Clark Gable
+Judgment at Nuremberg|1961|Legal drama|Spencer Tracy|Burt Lancaster
+The Manchurian Candidate|1962|Political thriller|Frank Sinatra|Laurence Harvey
+Lolita|1962|Drama|James Mason|Sue Lyon
+The Birds|1963|Horror thriller|Rod Taylor|Tippi Hedren
+The Pink Panther|1963|Comedy|Peter Sellers|David Niven
+A Fistful of Dollars|1964|Western|Clint Eastwood|Gian Maria Volonté
+The Night of the Iguana|1964|Drama|Richard Burton|Ava Gardner
+The Cincinnati Kid|1965|Drama|Steve McQueen|Edward G. Robinson
+Cool Hand Luke|1967|Drama|Paul Newman|George Kennedy
+Bonnie and Clyde|1967|Crime drama|Warren Beatty|Faye Dunaway
+The Producers|1967|Comedy|Zero Mostel|Gene Wilder
+Bullitt|1968|Crime thriller|Steve McQueen|Robert Vaughn
+    `, "theme-classic")
+  },
+
+    {
+    name: "1960s and 1970s Expansion",
+    movies: moviesFromRows(`
+The Guns of Navarone|1961|War adventure|Gregory Peck|David Niven
+Breakfast at Tiffany's|1961|Romance comedy|Audrey Hepburn|George Peppard
+The Hustler|1961|Drama|Paul Newman|Jackie Gleason
+Cape Fear|1962|Thriller|Gregory Peck|Robert Mitchum
+To Kill a Mockingbird|1962|Legal drama|Gregory Peck|Mary Badham
+Days of Wine and Roses|1962|Drama|Jack Lemmon|Lee Remick
+The Longest Day|1962|War drama|John Wayne|Robert Mitchum
+The Haunting|1963|Horror|Julie Harris|Claire Bloom
+Charade|1963|Romance mystery|Cary Grant|Audrey Hepburn
+8½|1963|Comedy-drama|Marcello Mastroianni|Claudia Cardinale
+The Leopard|1963|Historical drama|Burt Lancaster|Alain Delon
+Zorba the Greek|1964|Comedy-drama|Anthony Quinn|Alan Bates
+Goldfinger|1964|Spy action|Sean Connery|Gert Fröbe
+A Hard Day's Night|1964|Musical comedy|John Lennon|Paul McCartney
+My Fair Lady|1964|Musical romance|Audrey Hepburn|Rex Harrison
+For a Few Dollars More|1965|Western|Clint Eastwood|Lee Van Cleef
+Doctor Zhivago|1965|Romance drama|Omar Sharif|Julie Christie
+In Cold Blood|1967|Crime drama|Robert Blake|Scott Wilson
+Guess Who's Coming to Dinner|1967|Drama|Spencer Tracy|Sidney Poitier
+In the Heat of the Night|1967|Crime drama|Sidney Poitier|Rod Steiger
+Rosemary's Baby|1968|Psychological horror|Mia Farrow|John Cassavetes
+Oliver!|1968|Musical drama|Mark Lester|Ron Moody
+Midnight Cowboy|1969|Drama|Jon Voight|Dustin Hoffman
+Easy Rider|1969|Road drama|Peter Fonda|Dennis Hopper
+Patton|1970|War drama|George C. Scott|Karl Malden
+Love Story|1970|Romance drama|Ali MacGraw|Ryan O'Neal
+MASH|1970|War comedy|Donald Sutherland|Elliott Gould
+The Last Picture Show|1971|Coming-of-age drama|Jeff Bridges|Timothy Bottoms
+Diamonds Are Forever|1971|Spy action|Sean Connery|Jill St. John
+The Poseidon Adventure|1972|Disaster adventure|Gene Hackman|Ernest Borgnine
+Deliverance|1972|Thriller|Jon Voight|Burt Reynolds
+The Last House on the Left|1972|Horror thriller|Sandra Peabody|David Hess
+Enter the Dragon|1973|Martial arts action|Bruce Lee|John Saxon
+The Way We Were|1973|Romance drama|Barbra Streisand|Robert Redford
+Papillon|1973|Adventure drama|Steve McQueen|Dustin Hoffman
+Serpico|1973|Crime drama|Al Pacino|John Randolph
+The Conversation|1974|Mystery thriller|Gene Hackman|John Cazale
+Young Frankenstein|1974|Comedy|Gene Wilder|Peter Boyle
+Alice Doesn't Live Here Anymore|1974|Drama|Ellen Burstyn|Kris Kristofferson
+The Taking of Pelham One Two Three|1974|Crime thriller|Walter Matthau|Robert Shaw
+Dog Day Afternoon|1975|Crime drama|Al Pacino|John Cazale
+Nashville|1975|Musical drama|Keith Carradine|Lily Tomlin
+Taxi Driver|1976|Psychological drama|Robert De Niro|Jodie Foster
+All the President's Men|1976|Political thriller|Robert Redford|Dustin Hoffman
+King Kong|1976|Adventure fantasy|Jeff Bridges|Jessica Lange
+Suspiria|1977|Horror|Jessica Harper|Stefania Casini
+Annie Hall|1977|Romance comedy|Woody Allen|Diane Keaton
+Smokey and the Bandit|1977|Action comedy|Burt Reynolds|Sally Field
+Heaven Can Wait|1978|Fantasy comedy|Warren Beatty|Julie Christie
+The Wiz|1978|Fantasy musical|Diana Ross|Michael Jackson
+Days of Heaven|1978|Drama|Richard Gere|Brooke Adams
+Manhattan|1979|Romance comedy|Woody Allen|Diane Keaton
+The Wicker Man|1973|Folk horror|Edward Woodward|Britt Ekland
+The Omen|1976|Horror|Gregory Peck|Lee Remick
+The Man Who Would Be King|1975|Adventure drama|Sean Connery|Michael Caine
+Barry Lyndon|1975|Historical drama|Ryan O'Neal|Marisa Berenson
+The Missouri Breaks|1976|Western|Marlon Brando|Jack Nicholson
+Being There|1979|Comedy-drama|Peter Sellers|Shirley MacLaine
+Breaking Away|1979|Coming-of-age drama|Dennis Christopher|Dennis Quaid
+The China Syndrome|1979|Thriller|Jane Fonda|Jack Lemmon
+The Jerk|1979|Comedy|Steve Martin|Bernadette Peters
+The Amityville Horror|1979|Horror|James Brolin|Margot Kidder
+The Black Stallion|1979|Family adventure|Kelly Reno|Mickey Rooney
+Star Trek: The Motion Picture|1979|Science fiction adventure|William Shatner|Leonard Nimoy
+    `, "theme-1960s-1970s")
+  },
+
+  {
+    name: "Horror and Thriller",
+    movies: moviesFromRows(`
+The Cabinet of Dr. Caligari|1920|Horror|Werner Krauss|Conrad Veidt
+The Invisible Man|1933|Horror|Claude Rains|Gloria Stuart
+The Wolf Man|1941|Horror|Lon Chaney Jr.|Claude Rains
+Cat People|1942|Horror|Simone Simon|Kent Smith
+House of Wax|1953|Horror|Vincent Price|Phyllis Kirk
+Diabolique|1955|Psychological thriller|Simone Signoret|Véra Clouzot
+Invasion of the Body Snatchers|1956|Science fiction horror|Kevin McCarthy|Dana Wynter
+The Fly|1958|Science fiction horror|Vincent Price|Patricia Owens
+Night of the Living Dead|1968|Horror|Duane Jones|Judith O'Dea
+Black Christmas|1974|Horror|Olivia Hussey|Keir Dullea
+The Hills Have Eyes|1977|Horror|Susan Lanier|Michael Berryman
+The Brood|1979|Horror|Oliver Reed|Samantha Eggar
+The Fog|1980|Horror|Adrienne Barbeau|Jamie Lee Curtis
+An American Werewolf in London|1981|Horror comedy|David Naughton|Jenny Agutter
+The Evil Dead|1981|Horror|Bruce Campbell|Ellen Sandweiss
+The Howling|1981|Horror|Dee Wallace|Patrick Macnee
+The Thing|1982|Science fiction horror|Kurt Russell|Wilford Brimley
+A Nightmare on Elm Street|1984|Horror|Heather Langenkamp|Robert Englund
+The Fly|1986|Science fiction horror|Jeff Goldblum|Geena Davis
+The Hitcher|1986|Thriller|Rutger Hauer|C. Thomas Howell
+Hellraiser|1987|Horror|Andrew Robinson|Clare Higgins
+Child's Play|1988|Horror|Catherine Hicks|Chris Sarandon
+The Vanishing|1988|Psychological thriller|Gene Bervoets|Johanna ter Steege
+Misery|1990|Psychological thriller|James Caan|Kathy Bates
+Candyman|1992|Horror|Virginia Madsen|Tony Todd
+Bram Stoker's Dracula|1992|Horror romance|Gary Oldman|Winona Ryder
+Army of Darkness|1992|Fantasy horror|Bruce Campbell|Embeth Davidtz
+Scream|1996|Horror mystery|Neve Campbell|Courteney Cox
+From Dusk Till Dawn|1996|Horror action|George Clooney|Quentin Tarantino
+The Craft|1996|Fantasy horror|Robin Tunney|Fairuza Balk
+Event Horizon|1997|Science fiction horror|Laurence Fishburne|Sam Neill
+The Devil's Advocate|1997|Supernatural thriller|Keanu Reeves|Al Pacino
+Final Destination|2000|Horror thriller|Devon Sawa|Ali Larter
+American Psycho|2000|Psychological horror|Christian Bale|Willem Dafoe
+The Others|2001|Psychological horror|Nicole Kidman|Fionnula Flanagan
+The Descent|2005|Horror|Shauna Macdonald|Natalie Mendoza
+Hostel|2005|Horror thriller|Jay Hernandez|Derek Richardson
+1408|2007|Psychological horror|John Cusack|Samuel L. Jackson
+Paranormal Activity|2007|Horror|Katie Featherston|Micah Sloat
+Cloverfield|2008|Science fiction horror|Lizzy Caplan|Michael Stahl-David
+Orphan|2009|Psychological horror|Vera Farmiga|Isabelle Fuhrman
+Insidious|2010|Horror|Patrick Wilson|Rose Byrne
+The Cabin in the Woods|2012|Horror comedy|Kristen Connolly|Chris Hemsworth
+Sinister|2012|Horror|Ethan Hawke|James Ransone
+The Purge|2013|Horror thriller|Ethan Hawke|Lena Headey
+It Follows|2014|Horror|Maika Monroe|Keir Gilchrist
+The Babadook|2014|Psychological horror|Essie Davis|Noah Wiseman
+The Witch|2015|Horror|Anya Taylor-Joy|Ralph Ineson
+Don't Breathe|2016|Horror thriller|Jane Levy|Stephen Lang
+Hereditary|2018|Horror|Toni Collette|Alex Wolff
+Halloween|2018|Horror|Jamie Lee Curtis|Judy Greer
+Midsommar|2019|Horror|Florence Pugh|Jack Reynor
+The Invisible Man|2020|Psychological horror|Elisabeth Moss|Oliver Jackson-Cohen
+Smile|2022|Horror|Sosie Bacon|Kyle Gallner
+Talk to Me|2023|Horror|Sophie Wilde|Alexandra Jensen
+Longlegs|2024|Horror thriller|Maika Monroe|Nicolas Cage
+The Conjuring|2013|Horror|Vera Farmiga|Patrick Wilson
+The Grudge|2004|Horror|Sarah Michelle Gellar|Jason Behr
+The Strangers|2008|Horror thriller|Liv Tyler|Scott Speedman
+The Mist|2007|Horror|Thomas Jane|Marcia Gay Harden
+The Autopsy of Jane Doe|2016|Horror|Emile Hirsch|Brian Cox
+Us|2019|Horror|Lupita Nyong'o|Winston Duke
+The Menu|2022|Dark comedy thriller|Anya Taylor-Joy|Ralph Fiennes
+The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
+    `, "theme-horror-thriller")
+  },
+];
+    
+let state;
+
+function moviesFromRows(text, pool) {
+  return text
+    .trim()
+    .split("\n")
+    .map(line => line.trim())
+    .filter(Boolean)
+    .map(line => {
+      const [title, year, genre, actor1, actor2] = line.split("|");
+
+      return {
+        id: makeId(title, year),
+        title: title.trim(),
+        year: String(year || "").trim(),
+        genre: String(genre || "Genre not listed").trim(),
+        actors: [actor1 || "Unknown", actor2 || "Unknown"]
+          .map(actor => actor.trim()),
+        pool
+      };
+    });
+}
+
+function makeId(title, year) {
+  return (
+    String(title)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "") +
+    "-" +
+    String(year || "movie")
+  );
+}
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function shuffle(items) {
+  const copy = [...items];
+
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+
+  return copy;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function loadState() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    return stored ? JSON.parse(stored) : null;
+  } catch {
+    return null;
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    console.warn("Browser storage is unavailable. Progress will not be saved.");
+  }
+}
+
+function allMovieData() {
+  return [
+    ...INITIAL_MOVIES,
+    ...REGULAR_SETS.flatMap(set => set.movies),
+    ...THEME_CATALOG_PACKS.flatMap(pack => pack.movies)
+  ];
+}
+
+function ensureCatalogHasMovies() {
+  state.catalog = state.catalog || [];
+  state.stats = state.stats || {};
+  state.tournaments = state.tournaments || [];
+  state.ultimateQualifiers = state.ultimateQualifiers || [];
+
+  allMovieData().forEach(movie => {
+    const existing = state.catalog.find(item => item.id === movie.id);
+
+    if (existing) {
+      existing.title = movie.title;
+      existing.year = movie.year;
+      existing.genre = movie.genre;
+      existing.actors = movie.actors;
+      existing.pool = movie.pool;
+    } else {
+      state.catalog.push(clone(movie));
+    }
+  });
+}
+
+function getMovie(movieId) {
+  return state.catalog.find(movie => movie.id === movieId);
+}
+
+function getActors(movieId) {
+  const movie = getMovie(movieId);
+
+  if (!movie || !Array.isArray(movie.actors)) {
+    return ["Unknown", "Unknown"];
+  }
+
+  return movie.actors.filter(Boolean);
+}
+
+function getMovieStats(movieId) {
+  if (!state.stats[movieId]) {
+    state.stats[movieId] = {
+      appearances: 0,
+      totalWins: 0,
+      top16s: 0,
+      championships: 0,
+      lastFinish: "Not yet played"
+    };
+  }
+
+  return state.stats[movieId];
+}
+
+function getCurrentTournament() {
+  return state.tournaments[state.tournaments.length - 1];
+}
+
+function getSeed(tournament, movieId) {
+  const entry = tournament.entries.find(entry => entry.id === movieId);
+  return entry ? entry.seed : "";
+}
+
+function getRoundLabels(fieldSize) {
+  const labels = [];
+  let size = fieldSize;
+
+  while (size > 1) {
+    if (size === 2) {
+      labels.push("Championship");
+    } else if (size === 4) {
+      labels.push("Final 4");
+    } else if (size === 8) {
+      labels.push("Elite 8");
+    } else if (size === 16) {
+      labels.push("Sweet 16");
+    } else {
+      labels.push(`Round of ${size}`);
+    }
+
+    size /= 2;
+  }
+
+  return labels;
+}
+
+function seedOrder(size) {
+  let order = [1, 2];
+
+  while (order.length < size) {
+    const nextSize = order.length * 2 + 1;
+    order = order.flatMap(seed => [seed, nextSize - seed]);
+  }
+
+  return order;
+}
+
+function createRounds(fieldSize, tournamentId) {
+  const labels = getRoundLabels(fieldSize);
+  const rounds = [];
+  let moviesRemaining = fieldSize;
+
+  labels.forEach((label, roundIndex) => {
+    const matchCount = moviesRemaining / 2;
+
+    rounds.push({
+      label,
+      matches: Array.from({ length: matchCount }, (_, matchIndex) => ({
+        id: `${tournamentId}-r${roundIndex}-m${matchIndex}`,
+        movieAId: null,
+        movieBId: null,
+        winnerId: null
+      }))
+    });
+
+    moviesRemaining /= 2;
+  });
+
+  return rounds;
+}
+
+function startTournament(entries, options) {
+  const {
+    type,
+    fieldSize,
+    title,
+    regularNumber = null,
+    themeGenre = "All",
+    themeDecade = "All"
+  } = options;
+
+  if (entries.length !== fieldSize) {
+    throw new Error(`${title} needs exactly ${fieldSize} movies.`);
+  }
+
+  const tournamentId = `tournament-${state.tournaments.length + 1}`;
+  const bySeed = new Map(entries.map(entry => [entry.seed, entry]));
+  const placements = seedOrder(fieldSize).map(seed => bySeed.get(seed));
+  const rounds = createRounds(fieldSize, tournamentId);
+
+  for (let index = 0; index < placements.length; index += 2) {
+    const match = rounds[0].matches[index / 2];
+    match.movieAId = placements[index].id;
+    match.movieBId = placements[index + 1].id;
+  }
+
+  entries.forEach(entry => {
+    getMovieStats(entry.id).appearances += 1;
+  });
+
+  state.tournaments.push({
+    id: tournamentId,
+    type,
+    title,
+    status: "in_progress",
+    regularNumber,
+    fieldSize,
+    themeGenre,
+    themeDecade,
+    entries,
+    rounds,
+    history: [],
+    qualifiers: [],
+    championId: null
+  });
+}
+
+function startInitialTournament() {
+  const entries = shuffle(INITIAL_MOVIES).map((movie, index) => ({
+    id: movie.id,
+    seed: index + 1,
+    origin: "initial"
+  }));
+
+  startTournament(entries, {
+    type: "regular",
+    fieldSize: REGULAR_FIELD_SIZE,
+    title: "Regular Tournament 1: All Movies",
+    regularNumber: 1,
+    themeGenre: "All",
+    themeDecade: "All"
+  });
+}
+
+function findNextPlayableMatch(tournament) {
+  for (let roundIndex = 0; roundIndex < tournament.rounds.length; roundIndex++) {
+    const round = tournament.rounds[roundIndex];
+
+    for (let matchIndex = 0; matchIndex < round.matches.length; matchIndex++) {
+      const match = round.matches[matchIndex];
+
+      if (match.movieAId && match.movieBId && !match.winnerId) {
+        return { roundIndex, matchIndex, match };
+      }
+    }
+  }
+
+  return null;
+}
+
+function totalVotes(tournament) {
+  return tournament.rounds.reduce(
+    (sum, round) => sum + round.matches.filter(match => match.winnerId).length,
+    0
+  );
+}
+
+function totalMatches(tournament) {
+  return tournament.rounds.reduce(
+    (sum, round) => sum + round.matches.length,
+    0
+  );
+}
+
+function winsInTournament(tournament, movieId) {
+  return tournament.rounds.reduce(
+    (count, round) =>
+      count + round.matches.filter(match => match.winnerId === movieId).length,
+    0
+  );
+}
+
+function getMatchLoser(match) {
+  if (!match.winnerId) return null;
+
+  return match.movieAId === match.winnerId
+    ? match.movieBId
+    : match.movieAId;
+}
+
+function finishLabel(tournament, wins) {
+  if (tournament.type === "ultimate") {
+    const labels = [
+      "Ultimate Round of 32",
+      "Ultimate Sweet 16",
+      "Ultimate Elite 8",
+      "Ultimate Final 4",
+      "Ultimate Runner-Up",
+      "Ultimate Champion"
     ];
+
+    return labels[Math.max(0, Math.min(wins, labels.length - 1))];
+  }
+
+  const labels = [
+    `Round of ${tournament.fieldSize}`,
+    tournament.fieldSize >= 32 ? "Round of 32" : "Sweet 16",
+    tournament.fieldSize >= 32 ? "Sweet 16" : "Elite 8",
+    tournament.fieldSize >= 16 ? "Elite 8" : "Final 4",
+    "Final 4",
+    "Runner-Up",
+    "Champion"
+  ];
+
+  return labels[Math.max(0, Math.min(wins, labels.length - 1))];
+}
+
+function qualifierFinishLabel(qualifierRank) {
+  if (qualifierRank === 1) return "Champion";
+  if (qualifierRank === 2) return "Runner-Up";
+  return "Final 4";
+}
+
+function finalizeRegularTournament(tournament) {
+  const finalRoundIndex = tournament.rounds.length - 1;
+  const semifinalRoundIndex = tournament.rounds.length - 2;
+
+  const championshipMatch = tournament.rounds[finalRoundIndex].matches[0];
+  const semifinalMatches = tournament.rounds[semifinalRoundIndex].matches;
+
+  const championId = championshipMatch.winnerId;
+  const runnerUpId = getMatchLoser(championshipMatch);
+
+  const semifinalLosers = semifinalMatches
+    .map(match => getMatchLoser(match))
+    .filter(Boolean)
+    .sort((movieAId, movieBId) => {
+      return getSeed(tournament, movieAId) - getSeed(tournament, movieBId);
+    });
+
+  const finalFourIds = [
+    championId,
+    runnerUpId,
+    ...semifinalLosers
+  ];
+
+  tournament.qualifiers = finalFourIds.map((movieId, index) => ({
+    id: movieId,
+    wins: winsInTournament(tournament, movieId),
+    previousSeed: getSeed(tournament, movieId),
+    qualifierRank: index + 1,
+    qualifyingTournament: tournament.regularNumber
+  }));
+
+  tournament.qualifiers.forEach(qualifier => {
+    const alreadyQualified = state.ultimateQualifiers.some(
+      item => item.id === qualifier.id
+    );
+
+    if (!alreadyQualified) {
+      state.ultimateQualifiers.push({ ...qualifier });
+    }
+  });
+}
+
+function finalizeTournament(tournament) {
+  tournament.status = "complete";
+
+  const finalMatch = tournament.rounds[tournament.rounds.length - 1].matches[0];
+  tournament.championId = finalMatch.winnerId;
+
+  if (tournament.type === "regular") {
+    finalizeRegularTournament(tournament);
+  }
+
+  tournament.entries.forEach(entry => {
+    const stats = getMovieStats(entry.id);
+    const wins = winsInTournament(tournament, entry.id);
+
+    stats.lastFinish = finishLabel(tournament, wins);
+
+    const sweet16Index = tournament.rounds.findIndex(
+      round => round.label === "Sweet 16"
+    );
+
+    if (sweet16Index >= 0) {
+      const sweet16Ids = tournament.rounds[sweet16Index].matches
+        .map(match => match.winnerId)
+        .filter(Boolean);
+
+      if (sweet16Ids.includes(entry.id)) {
+        stats.top16s += 1;
+      }
+    }
+
+    if (entry.id === tournament.championId) {
+      stats.championships += 1;
+    }
+  });
+}
+
+function castVote(roundIndex, matchIndex, winnerId) {
+  const tournament = getCurrentTournament();
+
+  if (tournament.status !== "in_progress") return;
+
+  const next = findNextPlayableMatch(tournament);
+
+  if (
+    !next ||
+    next.roundIndex !== roundIndex ||
+    next.matchIndex !== matchIndex
+  ) {
+    alert("Please complete the currently displayed matchup first.");
+    return;
+  }
+
+  const match = tournament.rounds[roundIndex].matches[matchIndex];
+
+  if (![match.movieAId, match.movieBId].includes(winnerId)) {
+    return;
+  }
+
+  match.winnerId = winnerId;
+  tournament.history.push({ roundIndex, matchIndex, winnerId });
+  getMovieStats(winnerId).totalWins += 1;
+
+  if (roundIndex < tournament.rounds.length - 1) {
+    const nextRound = tournament.rounds[roundIndex + 1];
+    const nextMatch = nextRound.matches[Math.floor(matchIndex / 2)];
+
+    if (matchIndex % 2 === 0) {
+      nextMatch.movieAId = winnerId;
+    } else {
+      nextMatch.movieBId = winnerId;
+    }
+  } else {
+    finalizeTournament(tournament);
+  }
+
+  saveState();
+  render();
+}
+
+function undoLastVote() {
+  const tournament = getCurrentTournament();
+
+  if (tournament.status === "complete") {
+    alert("Completed tournaments are locked.");
+    return;
+  }
+
+  const previousVote = tournament.history.pop();
+
+  if (!previousVote) {
+    alert("There are no votes to undo.");
+    return;
+  }
+
+  const match = tournament.rounds[previousVote.roundIndex]
+    .matches[previousVote.matchIndex];
+
+  match.winnerId = null;
+
+  const winnerStats = getMovieStats(previousVote.winnerId);
+  winnerStats.totalWins = Math.max(0, winnerStats.totalWins - 1);
+
+  if (previousVote.roundIndex < tournament.rounds.length - 1) {
+    const nextRound = tournament.rounds[previousVote.roundIndex + 1];
+    const nextMatch = nextRound.matches[
+      Math.floor(previousVote.matchIndex / 2)
+    ];
+
+    if (previousVote.matchIndex % 2 === 0) {
+      nextMatch.movieAId = null;
+    } else {
+      nextMatch.movieBId = null;
+    }
+  }
+
+  saveState();
+  render();
+}
+
+function genreTheme(genre = "") {
+  const text = genre.toLowerCase();
+
+  if (text.includes("horror")) {
+    return { label: "HORROR", symbol: "☾", colorA: "#120b16", colorB: "#65152e", colorC: "#ef4444" };
+  }
+
+  if (text.includes("animation")) {
+    return { label: "ANIMATION", symbol: "✦", colorA: "#075985", colorB: "#7c3aed", colorC: "#f9a8d4" };
+  }
+
+  if (
+    text.includes("science fiction") ||
+    text.includes("sci-fi") ||
+    text.includes("dystopian") ||
+    text.includes("superhero")
+  ) {
+    return { label: "SCI-FI", symbol: "✦", colorA: "#102a52", colorB: "#4c1d95", colorC: "#67e8f9" };
+  }
+
+  if (
+    text.includes("action") ||
+    text.includes("spy") ||
+    text.includes("martial arts") ||
+    text.includes("adventure")
+  ) {
+    return { label: "ACTION", symbol: "⚡", colorA: "#5b1d0f", colorB: "#b91c1c", colorC: "#fbbf24" };
+  }
+
+  if (text.includes("fantasy")) {
+    return { label: "FANTASY", symbol: "✧", colorA: "#312e81", colorB: "#7e22ce", colorC: "#f0abfc" };
+  }
+
+  if (text.includes("romance")) {
+    return { label: "ROMANCE", symbol: "♥", colorA: "#7f1d3f", colorB: "#db2777", colorC: "#fecdd3" };
+  }
+
+  if (text.includes("comedy")) {
+    return { label: "COMEDY", symbol: "☀", colorA: "#854d0e", colorB: "#ea580c", colorC: "#fde047" };
+  }
+
+  if (
+    text.includes("crime") ||
+    text.includes("noir") ||
+    text.includes("mystery") ||
+    text.includes("thriller")
+  ) {
+    return { label: "CRIME / THRILLER", symbol: "◆", colorA: "#111827", colorB: "#1e3a8a", colorC: "#f5c75c" };
+  }
+
+  if (text.includes("war")) {
+    return { label: "WAR", symbol: "✹", colorA: "#26351f", colorB: "#556b2f", colorC: "#d6d3a7" };
+  }
+
+  if (text.includes("western")) {
+    return { label: "WESTERN", symbol: "★", colorA: "#4a2412", colorB: "#9a4d17", colorC: "#f3c37a" };
+  }
+
+  if (text.includes("musical") || text.includes("music")) {
+    return { label: "MUSICAL", symbol: "♫", colorA: "#4c1d95", colorB: "#be185d", colorC: "#f5c75c" };
+  }
+
+  if (text.includes("drama")) {
+    return { label: "DRAMA", symbol: "●", colorA: "#1e293b", colorB: "#475569", colorC: "#cbd5e1" };
+  }
+
+  return { label: "MOVIE", symbol: "◆", colorA: "#1e3a5f", colorB: "#43305f", colorC: "#7dd3fc" };
+}
+
+function genreCategory(genre = "") {
+  const text = genre.toLowerCase();
+
+  if (text.includes("horror")) return "Horror";
+  if (text.includes("animation")) return "Animation";
+  if (text.includes("musical") || text.includes("music")) return "Musical";
+  if (text.includes("western")) return "Western";
+  if (text.includes("war")) return "War";
+  if (text.includes("romance")) return "Romance";
+  if (text.includes("fantasy")) return "Fantasy";
+
+  if (
+    text.includes("science fiction") ||
+    text.includes("sci-fi") ||
+    text.includes("dystopian")
+  ) {
+    return "Science Fiction";
+  }
+
+  if (
+    text.includes("crime") ||
+    text.includes("noir") ||
+    text.includes("mystery") ||
+    text.includes("thriller")
+  ) {
+    return "Crime / Thriller";
+  }
+
+  if (text.includes("comedy")) return "Comedy";
+
+  if (
+    text.includes("action") ||
+    text.includes("spy") ||
+    text.includes("martial arts") ||
+    text.includes("adventure") ||
+    text.includes("superhero")
+  ) {
+    return "Action";
+  }
+
+  if (text.includes("drama")) return "Drama";
+
+  return "Other";
+}
+
+function watchSearchUrl(movie) {
+  const searchText = `where to watch ${movie.title} ${movie.year}`;
+  return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
+}
+
+function localPosterPath(movie) {
+  return `./posters/${movie.id}.jpg`;
+}
+
+function posterHtml(movie) {
+  const theme = genreTheme(movie.genre);
+  const posterPath = localPosterPath(movie);
+
+  return `
+    <div class="movie-poster">
+      <img
+        class="poster-image"
+        src="${escapeHtml(posterPath)}"
+        alt="Poster for ${escapeHtml(movie.title)}"
+        loading="lazy"
+        onerror="this.style.display='none'"
+      >
+
+      <div
+        class="poster-fallback"
+        style="
+          --poster-a: ${theme.colorA};
+          --poster-b: ${theme.colorB};
+          --poster-c: ${theme.colorC};
+        "
+      >
+        <div>
+          <div class="genre-symbol">${theme.symbol}</div>
+          <div class="genre-label">${escapeHtml(theme.label)}</div>
+        </div>
+
+        <div class="poster-bottom">
+          <div class="poster-year">${escapeHtml(movie.year || "Movie")}</div>
+          <div class="poster-title">${escapeHtml(movie.title)}</div>
+          <div class="poster-genre">${escapeHtml(movie.genre || "Genre not listed")}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function movieCard(movie, roundIndex, matchIndex) {
+  const actors = getActors(movie.id).join(" · ");
+  const watchUrl = watchSearchUrl(movie);
+
+  return `
+    <article class="movie-card">
+      ${posterHtml(movie)}
+
+      <div class="movie-body">
+        <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
+
+        <div class="movie-meta">
+          ${escapeHtml(movie.year || "Year unknown")} ·
+          ${escapeHtml(movie.genre || "Genre not listed")}
+        </div>
+
+        <div class="actor-list">
+          Starring: ${escapeHtml(actors)}
+        </div>
+
+        <p class="synopsis">
+          Choose this movie to advance it in the bracket.
+        </p>
+
+        <a
+          class="watch-link"
+          href="${escapeHtml(watchUrl)}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Find Where to Watch
+        </a>
+
+        <button
+          class="button-vote"
+          data-vote="true"
+          data-round="${roundIndex}"
+          data-match="${matchIndex}"
+          data-movie="${escapeHtml(movie.id)}"
+        >
+          Vote for ${escapeHtml(movie.title)}
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+function bracketTeam(tournament, movieId, winnerId) {
+  if (!movieId) {
+    return `<div class="bracket-team tbd">TBD</div>`;
+  }
+
+  const movie = getMovie(movieId);
+  const seed = getSeed(tournament, movieId);
+  const winnerClass = movieId === winnerId ? "winner" : "";
+
+  return `
+    <div class="bracket-team ${winnerClass}">
+      <span class="seed">${escapeHtml(seed)}</span>
+      <span class="team-name">${escapeHtml(movie.title)}</span>
+    </div>
+  `;
+}
+
+function getActorRecord(map, actorName) {
+  if (!map[actorName]) {
+    map[actorName] = {
+      actor: actorName,
+      appearances: 0,
+      wins: 0,
+      top16s: 0,
+      championships: 0
+    };
+  }
+
+  return map[actorName];
+}
+
+function addMovieActorsToStat(map, movieId, statName) {
+  getActors(movieId).forEach(actor => {
+    if (actor === "Unknown") return;
+    getActorRecord(map, actor)[statName] += 1;
+  });
+}
+
+function calculateActorStats(tournaments) {
+  const actorMap = {};
+
+  tournaments.forEach(tournament => {
+    tournament.rounds.forEach(round => {
+      round.matches.forEach(match => {
+        if (!match.movieAId || !match.movieBId || !match.winnerId) return;
+
+        addMovieActorsToStat(actorMap, match.movieAId, "appearances");
+        addMovieActorsToStat(actorMap, match.movieBId, "appearances");
+        addMovieActorsToStat(actorMap, match.winnerId, "wins");
+      });
+    });
+
+    const sweet16Index = tournament.rounds.findIndex(
+      round => round.label === "Sweet 16"
+    );
+
+    if (sweet16Index >= 0) {
+      tournament.rounds[sweet16Index].matches.forEach(match => {
+        if (match.winnerId) {
+          addMovieActorsToStat(actorMap, match.winnerId, "top16s");
+        }
+      });
+    }
+
+    const champion = tournament.rounds[tournament.rounds.length - 1]
+      .matches[0].winnerId;
+
+    if (champion) {
+      addMovieActorsToStat(actorMap, champion, "championships");
+    }
+  });
+
+  return Object.values(actorMap)
+    .map(record => ({
+      ...record,
+      winPercentage: record.appearances
+        ? (record.wins / record.appearances) * 100
+        : 0
+    }))
+    .sort((a, b) => (
+      b.winPercentage - a.winPercentage ||
+      b.wins - a.wins ||
+      b.appearances - a.appearances ||
+      a.actor.localeCompare(b.actor)
+    ));
+}
+
+function getGenreRecord(map, genreName) {
+  if (!map[genreName]) {
+    map[genreName] = {
+      genre: genreName,
+      appearances: 0,
+      wins: 0,
+      top16s: 0,
+      championships: 0
+    };
+  }
+
+  return map[genreName];
+}
+
+function addMovieGenreToStat(map, movieId, statName) {
+  const movie = getMovie(movieId);
+  if (!movie) return;
+
+  getGenreRecord(map, genreCategory(movie.genre))[statName] += 1;
+}
+
+function calculateGenreStats(tournaments) {
+  const genreMap = {};
+
+  tournaments.forEach(tournament => {
+    tournament.rounds.forEach(round => {
+      round.matches.forEach(match => {
+        if (!match.movieAId || !match.movieBId || !match.winnerId) return;
+
+        addMovieGenreToStat(genreMap, match.movieAId, "appearances");
+        addMovieGenreToStat(genreMap, match.movieBId, "appearances");
+        addMovieGenreToStat(genreMap, match.winnerId, "wins");
+      });
+    });
+
+    const sweet16Index = tournament.rounds.findIndex(
+      round => round.label === "Sweet 16"
+    );
+
+    if (sweet16Index >= 0) {
+      tournament.rounds[sweet16Index].matches.forEach(match => {
+        if (match.winnerId) {
+          addMovieGenreToStat(genreMap, match.winnerId, "top16s");
+        }
+      });
+    }
+
+    const champion = tournament.rounds[tournament.rounds.length - 1]
+      .matches[0].winnerId;
+
+    if (champion) {
+      addMovieGenreToStat(genreMap, champion, "championships");
+    }
+  });
+
+  return Object.values(genreMap)
+    .map(record => ({
+      ...record,
+      winPercentage: record.appearances
+        ? (record.wins / record.appearances) * 100
+        : 0
+    }))
+    .sort((a, b) => (
+      b.winPercentage - a.winPercentage ||
+      b.wins - a.wins ||
+      b.appearances - a.appearances ||
+      a.genre.localeCompare(b.genre)
+    ));
+}
+
+function actorLeaderboardHtml(records, title, subtitle) {
+  const qualified = records
+    .filter(record => record.appearances >= MIN_ACTOR_APPEARANCES)
+    .slice(0, 15);
+
+  return `
+    <div class="leaderboard-card">
+      <h3>${escapeHtml(title)}</h3>
+      <p class="muted">${escapeHtml(subtitle)}</p>
+
+      ${
+        qualified.length
+          ? `
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Actor</th>
+                    <th>Win %</th>
+                    <th>Wins</th>
+                    <th>Appear.</th>
+                    <th>Top 16</th>
+                    <th>Titles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${qualified.map(record => `
+                    <tr>
+                      <td><strong>${escapeHtml(record.actor)}</strong></td>
+                      <td>${record.winPercentage.toFixed(0)}%</td>
+                      <td>${record.wins}</td>
+                      <td>${record.appearances}</td>
+                      <td>${record.top16s}</td>
+                      <td>${record.championships}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          `
+          : `<p class="muted">No actor has reached the minimum yet.</p>`
+      }
+    </div>
+  `;
+}
+
+function genreLeaderboardHtml(records, title, subtitle) {
+  const qualified = records
+    .filter(record => record.appearances >= MIN_ACTOR_APPEARANCES)
+    .slice(0, 15);
+
+  return `
+    <div class="leaderboard-card">
+      <h3>${escapeHtml(title)}</h3>
+      <p class="muted">${escapeHtml(subtitle)}</p>
+
+      ${
+        qualified.length
+          ? `
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Genre</th>
+                    <th>Win %</th>
+                    <th>Wins</th>
+                    <th>Appear.</th>
+                    <th>Top 16</th>
+                    <th>Titles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${qualified.map(record => `
+                    <tr>
+                      <td><strong>${escapeHtml(record.genre)}</strong></td>
+                      <td>${record.winPercentage.toFixed(0)}%</td>
+                      <td>${record.wins}</td>
+                      <td>${record.appearances}</td>
+                      <td>${record.top16s}</td>
+                      <td>${record.championships}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            </div>
+          `
+          : `<p class="muted">No genre has reached the minimum yet.</p>`
+      }
+    </div>
+  `;
+}
+
+function renderActorLeaderboards(tournament) {
+  document.querySelector("#actorLeaderboards").innerHTML = `
+    ${actorLeaderboardHtml(
+      calculateActorStats([tournament]),
+      "Current Tournament Favorite Actors",
+      "Based only on the active tournament."
+    )}
+
+    ${actorLeaderboardHtml(
+      calculateActorStats(state.tournaments),
+      "Career Favorite Actors",
+      "Based on all played tournaments."
+    )}
+  `;
+}
+
+function renderGenreLeaderboards(tournament) {
+  document.querySelector("#genreLeaderboards").innerHTML = `
+    ${genreLeaderboardHtml(
+      calculateGenreStats([tournament]),
+      "Current Tournament Favorite Genres",
+      "Based only on the active tournament."
+    )}
+
+    ${genreLeaderboardHtml(
+      calculateGenreStats(state.tournaments),
+      "Career Favorite Genres",
+      "Based on all played tournaments."
+    )}
+  `;
+}
+
+function allGenres() {
+  return [...new Set(
+    state.catalog.map(movie => genreCategory(movie.genre))
+  )].sort();
+}
+
+function allDecades() {
+  return [...new Set(
+    state.catalog
+      .map(movie => Number(movie.year))
+      .filter(Boolean)
+      .map(year => `${Math.floor(year / 10) * 10}s`)
+  )].sort((a, b) => Number(a) - Number(b));
+}
+
+function regularMovieIdsAlreadyUsed() {
+  return new Set(
+    state.tournaments
+      .filter(tournament => tournament.type === "regular")
+      .flatMap(tournament => tournament.entries.map(entry => entry.id))
+  );
+}
+
+function getThemeCandidates() {
+  const genre = document.querySelector("#themeGenre").value;
+  const decade = document.querySelector("#themeDecade").value;
+  const usedMovieIds = regularMovieIdsAlreadyUsed();
+
+  return state.catalog.filter(movie => {
+    const matchesGenre =
+      genre === "All" || genreCategory(movie.genre) === genre;
+
+    const movieDecade = `${Math.floor(Number(movie.year) / 10) * 10}s`;
+
+    const matchesDecade =
+      decade === "All" || movieDecade === decade;
+
+    return matchesGenre && matchesDecade && !usedMovieIds.has(movie.id);
+  });
+}
+
+function getBracketSize(candidateCount, requestedSize) {
+  const allowedSizes = [64, 32, 16, 8];
+
+  if (requestedSize !== "auto") {
+    const selectedSize = Number(requestedSize);
+    return candidateCount >= selectedSize ? selectedSize : 0;
+  }
+
+  return allowedSizes.find(size => candidateCount >= size) || 0;
+}
+
+function updateThemeStatus() {
+  const status = document.querySelector("#themeStatus");
+
+  if (!state || !state.catalog || !state.catalog.length) {
+    status.textContent = "Loading Theme Tournament catalog...";
+    return;
+  }
+
+  const candidates = getThemeCandidates();
+  const requestedSize = document.querySelector("#themeBracketSize").value;
+  const bracketSize = getBracketSize(candidates.length, requestedSize);
+
+  if (!bracketSize) {
+    status.textContent =
+      `${candidates.length} unused matching movies found. Broaden the filters or choose a smaller bracket.`;
+    return;
+  }
+
+  status.textContent =
+    `${candidates.length} unused matching movies found. ` +
+    `A ${bracketSize}-movie theme bracket can be created.`;
+}
+
+function populateThemeControls() {
+  const genreSelect = document.querySelector("#themeGenre");
+  const decadeSelect = document.querySelector("#themeDecade");
+
+  genreSelect.innerHTML = `
+    <option value="All">All Genres</option>
+    ${allGenres().map(genre => `
+      <option value="${escapeHtml(genre)}">${escapeHtml(genre)}</option>
+    `).join("")}
+  `;
+
+  decadeSelect.innerHTML = `
+    <option value="All">All Decades</option>
+    ${allDecades().map(decade => `
+      <option value="${escapeHtml(decade)}">${escapeHtml(decade)}</option>
+    `).join("")}
+  `;
+
+  genreSelect.addEventListener("change", updateThemeStatus);
+  decadeSelect.addEventListener("change", updateThemeStatus);
+  document
+    .querySelector("#themeBracketSize")
+    .addEventListener("change", updateThemeStatus);
+
+  updateThemeStatus();
+}
+
+function startThemeTournament() {
+  const currentTournament = getCurrentTournament();
+
+  if (currentTournament.status === "in_progress") {
+    alert("Finish the current tournament before starting another one.");
+    return;
+  }
+
+  const completedRegularTournaments = state.tournaments
+    .filter(tournament => tournament.type === "regular")
+    .length;
+
+  if (completedRegularTournaments >= REGULAR_TOURNAMENT_COUNT) {
+    alert(
+      "All eight qualifying tournaments are complete. Start the Ultimate Final instead."
+    );
+    return;
+  }
+
+  const candidates = getThemeCandidates();
+  const requestedSize = document.querySelector("#themeBracketSize").value;
+  const bracketSize = getBracketSize(candidates.length, requestedSize);
+
+  if (!bracketSize) {
+    alert(
+      "Not enough unused movies match those filters. Broaden your genre or decade selection."
+    );
+    return;
+  }
+
+  const genre = document.querySelector("#themeGenre").value;
+  const decade = document.querySelector("#themeDecade").value;
+  const regularNumber = completedRegularTournaments + 1;
+
+  const selectedMovies = shuffle(candidates)
+    .slice(0, bracketSize)
+    .map((movie, index) => ({
+      id: movie.id,
+      seed: index + 1,
+      origin: "theme"
+    }));
+
+  const titleParts = [
+    genre === "All" ? "" : genre,
+    decade === "All" ? "" : decade
+  ].filter(Boolean);
+
+  const titleSuffix = titleParts.length
+    ? titleParts.join(" · ")
+    : "All Movies";
+
+  startTournament(selectedMovies, {
+    type: "regular",
+    fieldSize: bracketSize,
+    title: `Regular Tournament ${regularNumber}: ${titleSuffix}`,
+    regularNumber,
+    themeGenre: genre,
+    themeDecade: decade
+  });
+
+  saveState();
+  render();
+}
+
+function startUltimateFinal() {
+  const currentTournament = getCurrentTournament();
+
+  if (
+    currentTournament.type !== "regular" ||
+    currentTournament.status !== "complete"
+  ) {
+    return;
+  }
+
+  const completedRegularTournaments = state.tournaments
+    .filter(tournament => tournament.type === "regular")
+    .length;
+
+  if (completedRegularTournaments !== REGULAR_TOURNAMENT_COUNT) {
+    alert("Complete all eight regular tournaments first.");
+    return;
+  }
+
+  if (state.ultimateQualifiers.length !== ULTIMATE_FIELD_SIZE) {
+    alert(
+      `The Ultimate Final needs ${ULTIMATE_FIELD_SIZE} qualifiers. Current total: ${state.ultimateQualifiers.length}.`
+    );
+    return;
+  }
+
+  const entries = [...state.ultimateQualifiers]
+    .sort((a, b) => {
+      if (a.qualifierRank !== b.qualifierRank) {
+        return a.qualifierRank - b.qualifierRank;
+      }
+
+      if (b.wins !== a.wins) {
+        return b.wins - a.wins;
+      }
+
+      return a.qualifyingTournament - b.qualifyingTournament;
+    })
+    .map((qualifier, index) => ({
+      id: qualifier.id,
+      seed: index + 1,
+      origin: "ultimate_qualifier"
+    }));
+
+  startTournament(entries, {
+    type: "ultimate",
+    fieldSize: ULTIMATE_FIELD_SIZE,
+    title: "Movie Madness Ultimate Final"
+  });
+
+  saveState();
+  render();
+}
+
+function renderSummary(tournament) {
+  const votes = totalVotes(tournament);
+  const matches = totalMatches(tournament);
+
+  const eventName = tournament.type === "ultimate"
+    ? "Ultimate Final"
+    : `Regular Tournament ${tournament.regularNumber}`;
+
+  document.querySelector("#summary").innerHTML = `
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-label">Active Event</div>
+        <div class="stat-value">${escapeHtml(eventName)}</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Bracket Progress</div>
+        <div class="stat-value">${votes} / ${matches} Votes</div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Ultimate Final Qualifiers</div>
+        <div class="stat-value">
+          ${state.ultimateQualifiers.length} / ${ULTIMATE_FIELD_SIZE}
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-label">Movies in Database</div>
+        <div class="stat-value">${state.catalog.length}</div>
+      </div>
+    </div>
+  `;
+}
+
+function renderCurrentMatchup(tournament) {
+  const panel = document.querySelector("#currentMatchupPanel");
+
+  if (tournament.status === "complete") {
+    const champion = getMovie(tournament.championId);
+    const actors = getActors(champion.id).join(" · ");
+
+    panel.innerHTML = `
+      <div class="champion">
+        <div>${posterHtml(champion)}</div>
+
+        <div>
+          <div class="champion-badge">
+            ${
+              tournament.type === "ultimate"
+                ? "Ultimate Final Champion"
+                : `Regular Tournament ${tournament.regularNumber} Champion`
+            }
+          </div>
+
+          <h2 class="champion-title">${escapeHtml(champion.title)}</h2>
+
+          <div class="movie-meta">
+            ${escapeHtml(champion.year)} · ${escapeHtml(champion.genre)}
+          </div>
+
+          <div class="actor-list">
+            Starring: ${escapeHtml(actors)}
+          </div>
+
+          <p class="synopsis">
+            ${
+              tournament.type === "ultimate"
+                ? "The Ultimate Final is complete. This movie is the overall Movie Madness champion."
+                : "The champion, runner-up, and two Final Four losers have qualified for the Ultimate Final."
+            }
+          </p>
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
+  const next = findNextPlayableMatch(tournament);
+
+  if (!next) {
+    panel.innerHTML = `<p class="muted">No active matchup is available.</p>`;
+    return;
+  }
+
+  const movieA = getMovie(next.match.movieAId);
+  const movieB = getMovie(next.match.movieBId);
+
+  panel.innerHTML = `
+    <div class="panel-heading">
+      <div>
+        <h2 style="margin-bottom:0.25rem;">Current Matchup</h2>
+        <div class="muted">
+          ${escapeHtml(tournament.rounds[next.roundIndex].label)} · Match ${next.matchIndex + 1}
+        </div>
+      </div>
+
+      <strong>${totalVotes(tournament)} of ${totalMatches(tournament)} votes complete</strong>
+    </div>
+
+    <div class="matchup">
+      ${movieCard(movieA, next.roundIndex, next.matchIndex)}
+      <div class="versus">VS</div>
+      ${movieCard(movieB, next.roundIndex, next.matchIndex)}
+    </div>
+  `;
+}
+
+function renderBracket(tournament) {
+  const bracket = document.querySelector("#bracket");
+
+  bracket.style.gridTemplateColumns =
+    `repeat(${tournament.rounds.length}, minmax(225px, 1fr))`;
+
+  bracket.innerHTML = tournament.rounds.map(round => `
+    <section>
+      <div class="round-title">${escapeHtml(round.label)}</div>
+
+      ${round.matches.map(match => `
+        <div class="bracket-match">
+          ${bracketTeam(tournament, match.movieAId, match.winnerId)}
+          ${bracketTeam(tournament, match.movieBId, match.winnerId)}
+        </div>
+      `).join("")}
+    </section>
+  `).join("");
+}
+
+function renderReturners() {
+  document.querySelector("#returnerStatus").textContent =
+    "Theme Tournament mode has no automatic returning movies.";
+
+  document.querySelector("#returners").innerHTML = `
+    <p class="muted">
+      Each new qualifying tournament begins with a fresh genre and/or decade selection.
+      The Top 4 qualify for the Ultimate Final instead of returning.
+    </p>
+  `;
+}
+
+function renderUltimateQualifiers() {
+  const qualifiers = [...state.ultimateQualifiers]
+    .sort((a, b) => (
+      a.qualifyingTournament - b.qualifyingTournament ||
+      a.qualifierRank - b.qualifierRank
+    ));
+
+  document.querySelector("#qualifierStatus").textContent =
+    `${qualifiers.length} of ${ULTIMATE_FIELD_SIZE} Ultimate Final spots filled.`;
+
+  if (!qualifiers.length) {
+    document.querySelector("#ultimateQualifiers").innerHTML = `
+      <p class="muted">
+        The Top 4 from each regular tournament qualify here.
+      </p>
+    `;
+    return;
+  }
+
+  document.querySelector("#ultimateQualifiers").innerHTML = `
+    <div class="qualifier-grid">
+      ${qualifiers.map((qualifier, index) => {
+        const movie = getMovie(qualifier.id);
+
+        return `
+          <div class="qualifier">
+            <div class="qualifier-number">${index + 1}</div>
+
+            <div>
+              <div class="qualifier-name">${escapeHtml(movie.title)}</div>
+              <div class="qualifier-note">
+                Tournament ${qualifier.qualifyingTournament} ·
+                ${escapeHtml(qualifierFinishLabel(qualifier.qualifierRank))}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderNextTournamentPanel(tournament) {
+  const panel = document.querySelector("#nextTournamentPanel");
+
+  if (tournament.status !== "complete") {
+    panel.classList.add("hidden");
+    panel.innerHTML = "";
+    return;
+  }
+
+  panel.classList.remove("hidden");
+
+  if (tournament.type === "ultimate") {
+    panel.innerHTML = `
+      <div class="panel-heading">
+        <h2>Movie Madness Season Complete</h2>
+      </div>
+
+      <p class="muted">
+        The Ultimate Final is complete. Use Reset All Data to begin a new season.
+      </p>
+    `;
+
+    return;
+  }
+
+  const completedRegularTournaments = state.tournaments
+    .filter(item => item.type === "regular")
+    .length;
+
+  if (completedRegularTournaments < REGULAR_TOURNAMENT_COUNT) {
+    panel.innerHTML = `
+      <div class="panel-heading">
+        <div>
+          <h2>Choose Your Next Theme Tournament</h2>
+          <p class="muted">
+            Use the genre, decade, and bracket-size controls above to start Regular Tournament ${completedRegularTournaments + 1}.
+          </p>
+        </div>
+      </div>
+    `;
+
+    return;
+  }
+
+  panel.innerHTML = `
+    <div class="panel-heading">
+      <div>
+        <h2>Start the Ultimate Final</h2>
+        <p class="muted">
+          All eight qualifying tournaments are complete. Their Top 4 finishers create a 32-movie Ultimate Final.
+        </p>
+      </div>
+
+      <strong>${state.ultimateQualifiers.length} / 32 Qualifiers</strong>
+    </div>
+
+    <button id="startUltimateFinal" class="button-primary">
+      Start Movie Madness Ultimate Final
+    </button>
+  `;
+}
+
+function renderHallOfFame() {
+  const rows = state.catalog
+    .map(movie => ({
+      movie,
+      stats: getMovieStats(movie.id)
+    }))
+    .filter(item => item.stats.appearances > 0)
+    .sort((a, b) => (
+      b.stats.championships - a.stats.championships ||
+      b.stats.top16s - a.stats.top16s ||
+      b.stats.totalWins - a.stats.totalWins ||
+      a.movie.title.localeCompare(b.movie.title)
+    ));
+
+  document.querySelector("#hallOfFame").innerHTML = rows.map(({ movie, stats }) => `
+    <tr>
+      <td>
+        <strong>${escapeHtml(movie.title)}</strong><br>
+        <span class="muted">
+          ${escapeHtml(movie.year)} · ${escapeHtml(movie.genre)}
+        </span>
+      </td>
+      <td>${stats.appearances}</td>
+      <td>${stats.totalWins}</td>
+      <td>${stats.top16s}</td>
+      <td>${stats.championships}</td>
+      <td>${escapeHtml(stats.lastFinish)}</td>
+    </tr>
+  `).join("");
+}
+
+function render() {
+  const tournament = getCurrentTournament();
+
+  renderSummary(tournament);
+  renderCurrentMatchup(tournament);
+  renderBracket(tournament);
+  renderReturners();
+  renderUltimateQualifiers();
+  renderNextTournamentPanel(tournament);
+  renderActorLeaderboards(tournament);
+  renderGenreLeaderboards(tournament);
+  renderHallOfFame();
+  updateThemeStatus();
+
+  document.querySelector("#undoButton").disabled =
+    tournament.status === "complete" ||
+    tournament.history.length === 0;
+}
+
+function resetAllData() {
+  const confirmed = window.confirm(
+    "Reset the full Theme Tournament season, Ultimate Final pool, votes, actor records, genre records, and saved movie results?"
+  );
+
+  if (!confirmed) return;
+
+  localStorage.removeItem(STORAGE_KEY);
+  initialize();
+}
+
+function initialize() {
+  const savedState = loadState();
+
+  if (savedState && typeof savedState === "object") {
+    state = savedState;
+  } else {
+    state = {
+      version: 10,
+      catalog: [],
+      stats: {},
+      tournaments: [],
+      ultimateQualifiers: []
+    };
+  }
+
+  ensureCatalogHasMovies();
+
+  if (!state.tournaments.length) {
+    startInitialTournament();
+  }
+
+  state.version = 10;
+
+  populateThemeControls();
+  saveState();
+  render();
+}
+
+document.addEventListener("click", event => {
+  const voteButton = event.target.closest("[data-vote='true']");
+
+  if (voteButton) {
+    castVote(
+      Number(voteButton.dataset.round),
+      Number(voteButton.dataset.match),
+      voteButton.dataset.movie
+    );
+  }
+
+  if (event.target.closest("#undoButton")) {
+    undoLastVote();
+  }
+
+  if (event.target.closest("#resetButton")) {
+    resetAllData();
+  }
+
+  if (event.target.closest("#startThemeTournament")) {
+    startThemeTournament();
+  }
+
+  if (event.target.closest("#startUltimateFinal")) {
+    startUltimateFinal();
+  }
+});
+
+initialize();
+</script>
+</body>
+</html>*/
 
         let state;
 
