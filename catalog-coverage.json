@@ -1,0 +1,510 @@
+{
+  "generatedAt": "2026-10-26T19:28:56.663Z",
+  "targetPerGenreDecade": 64,
+  "buckets": [
+    {
+      "decade": "1970s",
+      "category": "Action",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Adventure",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Animation",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Comedy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Crime / Thriller",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Drama",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Fantasy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Horror",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Musical",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Romance",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "Science Fiction",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1970s",
+      "category": "War / Western",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Action",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Adventure",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Animation",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Comedy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Crime / Thriller",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Drama",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Fantasy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Horror",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Musical",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Romance",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "Science Fiction",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1980s",
+      "category": "War / Western",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Action",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Adventure",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Animation",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Comedy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Crime / Thriller",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Drama",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Fantasy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Horror",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Musical",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Romance",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "Science Fiction",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "1990s",
+      "category": "War / Western",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Action",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Adventure",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Animation",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Comedy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Crime / Thriller",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Drama",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Fantasy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Horror",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Musical",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Romance",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "Science Fiction",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2000s",
+      "category": "War / Western",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Action",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Adventure",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Animation",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Comedy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Crime / Thriller",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Drama",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Fantasy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Horror",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Musical",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Romance",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "Science Fiction",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2010s",
+      "category": "War / Western",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Action",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Adventure",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Animation",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Comedy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Crime / Thriller",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Drama",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Fantasy",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Horror",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Musical",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Romance",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "Science Fiction",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    },
+    {
+      "decade": "2020s",
+      "category": "War / Western",
+      "found": 64,
+      "target": 64,
+      "ready": true
+    }
+  ]
+}
