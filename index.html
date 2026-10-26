@@ -15,11 +15,10 @@
       --gold: #f5c75c;
       --blue: #7dd3fc;
       --green: #71dfa0;
+      --red: #fb7185;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -71,21 +70,14 @@
       margin-bottom: 1.25rem;
     }
 
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
 
     h1 {
       margin-bottom: 0.35rem;
       font-size: clamp(1.8rem, 4vw, 2.7rem);
     }
 
-    .muted {
-      color: var(--muted);
-    }
+    .muted { color: var(--muted); }
 
     .actions {
       display: flex;
@@ -129,11 +121,9 @@
       font-weight: 800;
       text-align: center;
       text-decoration: none;
-      transition: transform 0.15s ease, background 0.15s ease;
     }
 
     .watch-link:hover {
-      transform: translateY(-1px);
       background: #345081;
     }
 
@@ -213,9 +203,24 @@
       box-shadow: 0 0 0 3px rgba(125, 211, 252, 0.15);
     }
 
+    .reuse-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.85rem;
+      color: #dbeafe;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .reuse-option input {
+      width: 1.1rem;
+      height: 1.1rem;
+    }
+
     .theme-status {
       margin-top: 1rem;
-      color: #aab8d4;
+      color: var(--muted);
       font-size: 0.9rem;
       line-height: 1.45;
     }
@@ -603,6 +608,15 @@
       text-transform: uppercase;
     }
 
+    .message {
+      padding: 1rem;
+      border: 1px solid #4b628f;
+      border-radius: 10px;
+      background: #10182b;
+      color: #dbeafe;
+      line-height: 1.5;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -649,14 +663,13 @@
     </header>
 
     <section id="summary"></section>
-
     <section id="currentMatchupPanel" class="panel"></section>
 
     <section class="panel">
       <div class="panel-heading">
         <h2>Current Bracket</h2>
         <span class="muted">
-          Every qualifying tournament uses a new selected movie pool. No movies return automatically.
+          No movies automatically return. Each new tournament uses a new selected theme.
         </span>
       </div>
 
@@ -681,7 +694,7 @@
         <div>
           <h2>Start a Theme Tournament</h2>
           <p class="muted">
-            Choose a genre, decade, and bracket size. Theme selections create the next qualifying tournament.
+            Choose a genre, decade, and bracket size. Every genre-and-decade filter supports a 64-movie field.
           </p>
         </div>
       </div>
@@ -704,7 +717,6 @@
         <div>
           <label for="themeBracketSize">Bracket Size</label>
           <select id="themeBracketSize">
-            <option value="auto">Automatic Best Size</option>
             <option value="64">64 Movies</option>
             <option value="32">32 Movies</option>
             <option value="16">16 Movies</option>
@@ -718,6 +730,11 @@
           </button>
         </div>
       </div>
+
+      <label class="reuse-option">
+        <input id="allowReuse" type="checkbox" checked>
+        Allow movies used in earlier qualifying tournaments to appear in a new theme bracket.
+      </label>
 
       <div id="themeStatus" class="theme-status">
         Loading movie catalog...
@@ -835,559 +852,52 @@
         </table>
       </div>
     </section>
+
+    <footer class="muted" style="text-align:center; padding:1rem 0;">
+      This product uses the TMDB API but is not endorsed or certified by TMDB.
+    </footer>
   </main>
 
   <script>
     "use strict";
 
-    const STORAGE_KEY = "movieMadnessThemeFinalV1";
-    const INITIAL_FIELD_SIZE = 64;
-    const ULTIMATE_FIELD_SIZE = 32;
+    const STORAGE_KEY = "movieMadnessCatalogV1";
     const QUALIFYING_TOURNAMENT_COUNT = 8;
+    const ULTIMATE_FIELD_SIZE = 32;
     const QUALIFIERS_PER_TOURNAMENT = 4;
     const MIN_ACTOR_APPEARANCES = 3;
 
-    const MOVIE_PACKS = [
-      {
-        name: "Core Movie Madness Catalog",
-        movies: moviesFromRows(`
-The Godfather|1972|Crime drama|Marlon Brando|Al Pacino
-Citizen Kane|1941|Drama|Orson Welles|Joseph Cotten
-Casablanca|1942|Romance drama|Humphrey Bogart|Ingrid Bergman
-2001: A Space Odyssey|1968|Science fiction|Keir Dullea|Gary Lockwood
-The Godfather Part II|1974|Crime drama|Al Pacino|Robert De Niro
-Seven Samurai|1954|Adventure drama|Toshiro Mifune|Takashi Shimura
-Star Wars|1977|Science fiction adventure|Mark Hamill|Harrison Ford
-The Shawshank Redemption|1994|Drama|Tim Robbins|Morgan Freeman
-Pulp Fiction|1994|Crime drama|John Travolta|Samuel L. Jackson
-The Dark Knight|2008|Action crime|Christian Bale|Heath Ledger
-Parasite|2019|Thriller drama|Song Kang-ho|Choi Woo-shik
-Spirited Away|2001|Animation fantasy|Rumi Hiiragi|Miyu Irino
-The Lord of the Rings: The Return of the King|2003|Fantasy adventure|Elijah Wood|Viggo Mortensen
-The Matrix|1999|Science fiction action|Keanu Reeves|Laurence Fishburne
-Jaws|1975|Thriller|Roy Scheider|Richard Dreyfuss
-Alien|1979|Science fiction horror|Sigourney Weaver|Tom Skerritt
-Blade Runner|1982|Science fiction|Harrison Ford|Rutger Hauer
-Back to the Future|1985|Science fiction comedy|Michael J. Fox|Christopher Lloyd
-Do the Right Thing|1989|Drama|Spike Lee|Danny Aiello
-Goodfellas|1990|Crime drama|Robert De Niro|Ray Liotta
-The Silence of the Lambs|1991|Psychological thriller|Jodie Foster|Anthony Hopkins
-Jurassic Park|1993|Adventure science fiction|Sam Neill|Laura Dern
-Schindler's List|1993|Historical drama|Liam Neeson|Ben Kingsley
-Toy Story|1995|Animation comedy|Tom Hanks|Tim Allen
-Fargo|1996|Crime comedy|Frances McDormand|William H. Macy
-Princess Mononoke|1997|Animation fantasy|Yoji Matsuda|Yuriko Ishida
-Saving Private Ryan|1998|War drama|Tom Hanks|Matt Damon
-Fight Club|1999|Drama|Brad Pitt|Edward Norton
-Crouching Tiger, Hidden Dragon|2000|Martial arts drama|Chow Yun-fat|Michelle Yeoh
-Mulholland Drive|2001|Mystery thriller|Naomi Watts|Laura Harring
-City of God|2002|Crime drama|Alexandre Rodrigues|Leandro Firmino
-Eternal Sunshine of the Spotless Mind|2004|Romance science fiction|Jim Carrey|Kate Winslet
-Pan's Labyrinth|2006|Dark fantasy|Ivana Baquero|Sergi López
-No Country for Old Men|2007|Neo-Western thriller|Josh Brolin|Javier Bardem
-There Will Be Blood|2007|Period drama|Daniel Day-Lewis|Paul Dano
-WALL-E|2008|Animation science fiction|Ben Burtt|Elissa Knight
-Inglourious Basterds|2009|War film|Brad Pitt|Christoph Waltz
-The Social Network|2010|Drama|Jesse Eisenberg|Andrew Garfield
-Inception|2010|Science fiction thriller|Leonardo DiCaprio|Joseph Gordon-Levitt
-Mad Max: Fury Road|2015|Action adventure|Tom Hardy|Charlize Theron
-Moonlight|2016|Coming-of-age drama|Trevante Rhodes|Mahershala Ali
-Get Out|2017|Horror satire|Daniel Kaluuya|Allison Williams
-Lady Bird|2017|Coming-of-age drama|Saoirse Ronan|Laurie Metcalf
-Spider-Man: Into the Spider-Verse|2018|Animation superhero|Shameik Moore|Jake Johnson
-Portrait of a Lady on Fire|2019|Romance drama|Noémie Merlant|Adèle Haenel
-Everything Everywhere All at Once|2022|Science fiction comedy-drama|Michelle Yeoh|Ke Huy Quan
-Top Gun: Maverick|2022|Action drama|Tom Cruise|Miles Teller
-Tár|2022|Psychological drama|Cate Blanchett|Nina Hoss
-Oppenheimer|2023|Historical drama|Cillian Murphy|Robert Downey Jr.
-Past Lives|2023|Romance drama|Greta Lee|Teo Yoo
-The Zone of Interest|2023|Historical drama|Christian Friedel|Sandra Hüller
-Dune: Part Two|2024|Science fiction adventure|Timothée Chalamet|Zendaya
-Anora|2024|Comedy-drama|Mikey Madison|Mark Eydelshteyn
-The Wild Robot|2024|Animation science fiction|Lupita Nyong'o|Pedro Pascal
-12 Angry Men|1957|Legal drama|Henry Fonda|Lee J. Cobb
-Psycho|1960|Horror thriller|Anthony Perkins|Janet Leigh
-Lawrence of Arabia|1962|Epic historical drama|Peter O'Toole|Omar Sharif
-The Good, the Bad and the Ugly|1966|Western|Clint Eastwood|Lee Van Cleef
-Apocalypse Now|1979|War drama|Martin Sheen|Marlon Brando
-The Shining|1980|Psychological horror|Jack Nicholson|Shelley Duvall
-Raiders of the Lost Ark|1981|Action adventure|Harrison Ford|Karen Allen
-Terminator 2: Judgment Day|1991|Science fiction action|Arnold Schwarzenegger|Linda Hamilton
-Rear Window|1954|Mystery thriller|James Stewart|Grace Kelly
-Singin' in the Rain|1952|Musical comedy|Gene Kelly|Debbie Reynolds
-        `, "core")
-      },
-
-      /* PART 2 CONTINUES HERE */
-
-            {
-        name: "Popular Classics and 1970s",
-        movies: moviesFromRows(`
-King Kong|1933|Adventure fantasy|Fay Wray|Robert Armstrong
-Snow White and the Seven Dwarfs|1937|Animation fantasy|Adriana Caselotti|Harry Stockwell
-Gone with the Wind|1939|Historical romance|Vivien Leigh|Clark Gable
-Fantasia|1940|Animation musical|Leopold Stokowski|Deems Taylor
-Bambi|1942|Animation drama|Hardie Albright|Stan Alexander
-It's a Wonderful Life|1946|Fantasy drama|James Stewart|Donna Reed
-Miracle on 34th Street|1947|Fantasy comedy-drama|Maureen O'Hara|Edmund Gwenn
-Cinderella|1950|Animation fantasy|Ilene Woods|Eleanor Audley
-Peter Pan|1953|Animation fantasy|Bobby Driscoll|Kathryn Beaumont
-Lady and the Tramp|1955|Animation romance|Barbara Luddy|Larry Roberts
-The Ten Commandments|1956|Epic historical drama|Charlton Heston|Yul Brynner
-Ben-Hur|1959|Epic historical drama|Charlton Heston|Stephen Boyd
-Sleeping Beauty|1959|Animation fantasy|Mary Costa|Eleanor Audley
-West Side Story|1961|Romance musical|Natalie Wood|Richard Beymer
-The Parent Trap|1961|Family comedy|Hayley Mills|Maureen O'Hara
-The Sound of Music|1965|Musical drama|Julie Andrews|Christopher Plummer
-Mary Poppins|1964|Fantasy musical|Julie Andrews|Dick Van Dyke
-The Jungle Book|1967|Animation adventure|Phil Harris|Sebastian Cabot
-The Dirty Dozen|1967|War action|Lee Marvin|Ernest Borgnine
-Planet of the Apes|1968|Science fiction adventure|Charlton Heston|Roddy McDowall
-Romeo and Juliet|1968|Romance drama|Leonard Whiting|Olivia Hussey
-Butch Cassidy and the Sundance Kid|1969|Western|Paul Newman|Robert Redford
-True Grit|1969|Western|John Wayne|Glen Campbell
-Willy Wonka & the Chocolate Factory|1971|Fantasy musical|Gene Wilder|Jack Albertson
-Fiddler on the Roof|1971|Musical drama|Topol|Norma Crane
-Cabaret|1972|Musical drama|Liza Minnelli|Michael York
-The Sting|1973|Crime comedy|Paul Newman|Robert Redford
-American Graffiti|1973|Coming-of-age comedy|Richard Dreyfuss|Ron Howard
-The Exorcist|1973|Horror|Ellen Burstyn|Linda Blair
-Blazing Saddles|1974|Western comedy|Cleavon Little|Gene Wilder
-The Texas Chain Saw Massacre|1974|Horror|Marilyn Burns|Gunnar Hansen
-One Flew Over the Cuckoo's Nest|1975|Drama|Jack Nicholson|Louise Fletcher
-Rocky|1976|Sports drama|Sylvester Stallone|Talia Shire
-Carrie|1976|Horror|Sissy Spacek|Piper Laurie
-Close Encounters of the Third Kind|1977|Science fiction adventure|Richard Dreyfuss|François Truffaut
-Saturday Night Fever|1977|Music drama|John Travolta|Karen Lynn Gorney
-Grease|1978|Musical romance|John Travolta|Olivia Newton-John
-Superman|1978|Superhero adventure|Christopher Reeve|Gene Hackman
-Halloween|1978|Horror|Jamie Lee Curtis|Donald Pleasence
-National Lampoon's Animal House|1978|Comedy|John Belushi|Tim Matheson
-The Deer Hunter|1978|War drama|Robert De Niro|Christopher Walken
-Dawn of the Dead|1978|Horror|David Emge|Ken Foree
-Invasion of the Body Snatchers|1978|Science fiction horror|Donald Sutherland|Brooke Adams
-Rocky II|1979|Sports drama|Sylvester Stallone|Talia Shire
-Mad Max|1979|Action science fiction|Mel Gibson|Joanne Samuel
-Moonraker|1979|Spy action|Roger Moore|Lois Chiles
-The Muppet Movie|1979|Family musical comedy|Jim Henson|Frank Oz
-Kramer vs. Kramer|1979|Family drama|Dustin Hoffman|Meryl Streep
-The Wizard of Oz|1939|Fantasy musical|Judy Garland|Ray Bolger
-The Magnificent Seven|1960|Western|Yul Brynner|Steve McQueen
-The Graduate|1967|Comedy-drama|Dustin Hoffman|Anne Bancroft
-Monty Python and the Holy Grail|1975|Fantasy comedy|Graham Chapman|John Cleese
-        `, "popular-classics")
-      },
-
-      {
-        name: "Popular 1980s Movies",
-        movies: moviesFromRows(`
-The Empire Strikes Back|1980|Science fiction adventure|Mark Hamill|Harrison Ford
-The Blues Brothers|1980|Musical comedy|John Belushi|Dan Aykroyd
-Caddyshack|1980|Sports comedy|Chevy Chase|Rodney Dangerfield
-Friday the 13th|1980|Horror|Adrienne King|Betsy Palmer
-9 to 5|1980|Workplace comedy|Jane Fonda|Lily Tomlin
-Clash of the Titans|1981|Fantasy adventure|Harry Hamlin|Judi Bowker
-Arthur|1981|Romance comedy|Dudley Moore|Liza Minnelli
-E.T. the Extra-Terrestrial|1982|Science fiction family|Henry Thomas|Drew Barrymore
-Rocky III|1982|Sports drama|Sylvester Stallone|Mr. T
-First Blood|1982|Action thriller|Sylvester Stallone|Brian Dennehy
-Poltergeist|1982|Horror|JoBeth Williams|Craig T. Nelson
-Fast Times at Ridgemont High|1982|Teen comedy|Sean Penn|Jennifer Jason Leigh
-Return of the Jedi|1983|Science fiction adventure|Mark Hamill|Harrison Ford
-Scarface|1983|Crime drama|Al Pacino|Michelle Pfeiffer
-A Christmas Story|1983|Family comedy|Peter Billingsley|Melinda Dillon
-Flashdance|1983|Romance music drama|Jennifer Beals|Michael Nouri
-WarGames|1983|Science fiction thriller|Matthew Broderick|Ally Sheedy
-Terms of Endearment|1983|Comedy-drama|Shirley MacLaine|Debra Winger
-Footloose|1984|Music drama|Kevin Bacon|Lori Singer
-The Karate Kid|1984|Sports drama|Ralph Macchio|Pat Morita
-Ghostbusters|1984|Supernatural comedy|Bill Murray|Dan Aykroyd
-Gremlins|1984|Fantasy comedy horror|Zach Galligan|Phoebe Cates
-The Terminator|1984|Science fiction action|Arnold Schwarzenegger|Linda Hamilton
-Beverly Hills Cop|1984|Action comedy|Eddie Murphy|Judge Reinhold
-The NeverEnding Story|1984|Fantasy adventure|Barret Oliver|Noah Hathaway
-The Goonies|1985|Family adventure|Sean Astin|Josh Brolin
-The Breakfast Club|1985|Teen comedy-drama|Emilio Estevez|Molly Ringwald
-The Color Purple|1985|Drama|Whoopi Goldberg|Oprah Winfrey
-Rocky IV|1985|Sports drama|Sylvester Stallone|Dolph Lundgren
-Top Gun|1986|Action drama|Tom Cruise|Kelly McGillis
-Aliens|1986|Science fiction action|Sigourney Weaver|Michael Biehn
-Stand by Me|1986|Coming-of-age drama|Wil Wheaton|River Phoenix
-Crocodile Dundee|1986|Adventure comedy|Paul Hogan|Linda Kozlowski
-Labyrinth|1986|Fantasy adventure|David Bowie|Jennifer Connelly
-Platoon|1986|War drama|Charlie Sheen|Willem Dafoe
-Predator|1987|Science fiction action|Arnold Schwarzenegger|Carl Weathers
-Lethal Weapon|1987|Action thriller|Mel Gibson|Danny Glover
-Dirty Dancing|1987|Romance drama|Patrick Swayze|Jennifer Grey
-The Lost Boys|1987|Horror comedy|Jason Patric|Kiefer Sutherland
-The Princess Bride|1987|Fantasy adventure|Cary Elwes|Robin Wright
-Beetlejuice|1988|Fantasy comedy|Michael Keaton|Geena Davis
-Who Framed Roger Rabbit|1988|Mystery comedy|Bob Hoskins|Christopher Lloyd
-Coming to America|1988|Romance comedy|Eddie Murphy|Arsenio Hall
-Big|1988|Fantasy comedy|Tom Hanks|Elizabeth Perkins
-Rain Man|1988|Drama|Dustin Hoffman|Tom Cruise
-Batman|1989|Superhero action|Michael Keaton|Jack Nicholson
-The Little Mermaid|1989|Animation musical|Jodi Benson|Pat Carroll
-Indiana Jones and the Last Crusade|1989|Action adventure|Harrison Ford|Sean Connery
-Die Hard|1988|Action thriller|Bruce Willis|Alan Rickman
-Ferris Bueller's Day Off|1986|Teen comedy|Matthew Broderick|Alan Ruck
-The Untouchables|1987|Crime drama|Kevin Costner|Sean Connery
-Back to the Future Part II|1989|Science fiction comedy|Michael J. Fox|Christopher Lloyd
-        `, "popular-1980s")
-      },
-
-      {
-        name: "Popular 1990s Movies",
-        movies: moviesFromRows(`
-Home Alone|1990|Family comedy|Macaulay Culkin|Joe Pesci
-Pretty Woman|1990|Romance comedy|Julia Roberts|Richard Gere
-Dances with Wolves|1990|Western drama|Kevin Costner|Mary McDonnell
-Total Recall|1990|Science fiction action|Arnold Schwarzenegger|Sharon Stone
-The Addams Family|1991|Fantasy comedy|Anjelica Huston|Raúl Juliá
-Hook|1991|Fantasy adventure|Robin Williams|Dustin Hoffman
-Beauty and the Beast|1991|Animation musical|Paige O'Hara|Robby Benson
-Aladdin|1992|Animation fantasy|Scott Weinger|Robin Williams
-A Few Good Men|1992|Legal drama|Tom Cruise|Jack Nicholson
-The Bodyguard|1992|Romance thriller|Kevin Costner|Whitney Houston
-Wayne's World|1992|Comedy|Mike Myers|Dana Carvey
-Basic Instinct|1992|Erotic thriller|Michael Douglas|Sharon Stone
-The Last of the Mohicans|1992|Historical adventure|Daniel Day-Lewis|Madeleine Stowe
-Scent of a Woman|1992|Drama|Al Pacino|Chris O'Donnell
-The Sandlot|1993|Coming-of-age comedy|Tom Guiry|Mike Vitar
-Mrs. Doubtfire|1993|Family comedy|Robin Williams|Sally Field
-The Firm|1993|Legal thriller|Tom Cruise|Gene Hackman
-Sleepless in Seattle|1993|Romance comedy|Tom Hanks|Meg Ryan
-The Nightmare Before Christmas|1993|Animation fantasy|Chris Sarandon|Catherine O'Hara
-The Lion King|1994|Animation drama|Matthew Broderick|James Earl Jones
-Forrest Gump|1994|Comedy-drama|Tom Hanks|Robin Wright
-Speed|1994|Action thriller|Keanu Reeves|Sandra Bullock
-Dumb and Dumber|1994|Comedy|Jim Carrey|Jeff Daniels
-The Mask|1994|Fantasy comedy|Jim Carrey|Cameron Diaz
-Clueless|1995|Teen comedy|Alicia Silverstone|Stacey Dash
-Braveheart|1995|Historical drama|Mel Gibson|Sophie Marceau
-Apollo 13|1995|Historical drama|Tom Hanks|Kevin Bacon
-Jumanji|1995|Fantasy adventure|Robin Williams|Kirsten Dunst
-Babe|1995|Family comedy-drama|James Cromwell|Magda Szubanski
-Space Jam|1996|Sports comedy|Michael Jordan|Bill Murray
-Independence Day|1996|Science fiction action|Will Smith|Jeff Goldblum
-Mission: Impossible|1996|Spy action|Tom Cruise|Jon Voight
-Twister|1996|Disaster action|Helen Hunt|Bill Paxton
-Romeo + Juliet|1996|Romance drama|Leonardo DiCaprio|Claire Danes
-Jerry Maguire|1996|Romance comedy-drama|Tom Cruise|Renée Zellweger
-Titanic|1997|Romance disaster drama|Leonardo DiCaprio|Kate Winslet
-Men in Black|1997|Science fiction comedy|Will Smith|Tommy Lee Jones
-Good Will Hunting|1997|Drama|Matt Damon|Robin Williams
-Air Force One|1997|Action thriller|Harrison Ford|Gary Oldman
-Austin Powers: International Man of Mystery|1997|Spy comedy|Mike Myers|Elizabeth Hurley
-Mulan|1998|Animation adventure|Ming-Na Wen|Eddie Murphy
-Armageddon|1998|Science fiction disaster|Bruce Willis|Ben Affleck
-There's Something About Mary|1998|Romance comedy|Cameron Diaz|Matt Dillon
-Rush Hour|1998|Action comedy|Jackie Chan|Chris Tucker
-The Mummy|1999|Adventure fantasy|Brendan Fraser|Rachel Weisz
-The Blair Witch Project|1999|Horror|Heather Donahue|Michael C. Williams
-American Beauty|1999|Drama|Kevin Spacey|Annette Bening
-Tarzan|1999|Animation adventure|Tony Goldwyn|Minnie Driver
-The Sixth Sense|1999|Psychological thriller|Bruce Willis|Haley Joel Osment
-The Truman Show|1998|Satirical drama|Jim Carrey|Ed Harris
-Se7en|1995|Crime thriller|Brad Pitt|Morgan Freeman
-The Fifth Element|1997|Science fiction action|Bruce Willis|Milla Jovovich
-        `, "popular-1990s")
-      },
-
-      {
-        name: "Popular 2000s Movies",
-        movies: moviesFromRows(`
-Gladiator|2000|Historical action drama|Russell Crowe|Joaquin Phoenix
-Cast Away|2000|Survival drama|Tom Hanks|Helen Hunt
-X-Men|2000|Superhero action|Patrick Stewart|Hugh Jackman
-Meet the Parents|2000|Comedy|Ben Stiller|Robert De Niro
-The Fast and the Furious|2001|Action crime|Vin Diesel|Paul Walker
-Harry Potter and the Sorcerer's Stone|2001|Fantasy adventure|Daniel Radcliffe|Emma Watson
-Shrek|2001|Animation comedy|Mike Myers|Eddie Murphy
-Ocean's Eleven|2001|Crime comedy|George Clooney|Brad Pitt
-A Beautiful Mind|2001|Biographical drama|Russell Crowe|Jennifer Connelly
-Monsters, Inc.|2001|Animation comedy|John Goodman|Billy Crystal
-The Lord of the Rings: The Fellowship of the Ring|2001|Fantasy adventure|Elijah Wood|Viggo Mortensen
-Spider-Man|2002|Superhero action|Tobey Maguire|Kirsten Dunst
-Ice Age|2002|Animation comedy|Ray Romano|John Leguizamo
-My Big Fat Greek Wedding|2002|Romance comedy|Nia Vardalos|John Corbett
-Lilo & Stitch|2002|Animation family|Daveigh Chase|Chris Sanders
-The Bourne Identity|2002|Spy thriller|Matt Damon|Franka Potente
-Chicago|2002|Musical crime comedy|Renée Zellweger|Catherine Zeta-Jones
-The Lord of the Rings: The Two Towers|2002|Fantasy adventure|Elijah Wood|Viggo Mortensen
-Pirates of the Caribbean: The Curse of the Black Pearl|2003|Fantasy adventure|Johnny Depp|Orlando Bloom
-Finding Nemo|2003|Animation adventure|Albert Brooks|Ellen DeGeneres
-Bruce Almighty|2003|Fantasy comedy|Jim Carrey|Jennifer Aniston
-Elf|2003|Christmas comedy|Will Ferrell|James Caan
-Love Actually|2003|Romance comedy|Hugh Grant|Liam Neeson
-Mean Girls|2004|Teen comedy|Lindsay Lohan|Rachel McAdams
-The Incredibles|2004|Animation superhero|Craig T. Nelson|Holly Hunter
-Shrek 2|2004|Animation comedy|Mike Myers|Eddie Murphy
-The Day After Tomorrow|2004|Disaster science fiction|Dennis Quaid|Jake Gyllenhaal
-The Notebook|2004|Romance drama|Ryan Gosling|Rachel McAdams
-National Treasure|2004|Adventure mystery|Nicolas Cage|Diane Kruger
-Batman Begins|2005|Superhero action|Christian Bale|Michael Caine
-Star Wars: Episode III - Revenge of the Sith|2005|Science fiction adventure|Hayden Christensen|Ewan McGregor
-King Kong|2005|Adventure fantasy|Naomi Watts|Jack Black
-Walk the Line|2005|Music drama|Joaquin Phoenix|Reese Witherspoon
-The 40-Year-Old Virgin|2005|Romance comedy|Steve Carell|Catherine Keener
-Casino Royale|2006|Spy action|Daniel Craig|Eva Green
-The Devil Wears Prada|2006|Comedy-drama|Meryl Streep|Anne Hathaway
-Borat|2006|Mockumentary comedy|Sacha Baron Cohen|Isla Fisher
-The Pursuit of Happyness|2006|Biographical drama|Will Smith|Jaden Smith
-Transformers|2007|Science fiction action|Shia LaBeouf|Megan Fox
-Ratatouille|2007|Animation comedy|Patton Oswalt|Ian Holm
-Superbad|2007|Teen comedy|Jonah Hill|Michael Cera
-Harry Potter and the Order of the Phoenix|2007|Fantasy adventure|Daniel Radcliffe|Emma Watson
-I Am Legend|2007|Post-apocalyptic thriller|Will Smith|Alice Braga
-Iron Man|2008|Superhero action|Robert Downey Jr.|Gwyneth Paltrow
-Twilight|2008|Fantasy romance|Kristen Stewart|Robert Pattinson
-Kung Fu Panda|2008|Animation action comedy|Jack Black|Dustin Hoffman
-The Hangover|2009|Comedy|Bradley Cooper|Ed Helms
-Avatar|2009|Science fiction adventure|Sam Worthington|Zoe Saldaña
-Memento|2000|Psychological thriller|Guy Pearce|Carrie-Anne Moss
-The Departed|2006|Crime thriller|Leonardo DiCaprio|Matt Damon
-The Prestige|2006|Mystery drama|Hugh Jackman|Christian Bale
-Slumdog Millionaire|2008|Romance drama|Dev Patel|Freida Pinto
-        `, "popular-2000s")
-      },
-
-      {
-        name: "Popular 2010s through 2024",
-        movies: moviesFromRows(`
-Toy Story 3|2010|Animation comedy-drama|Tom Hanks|Tim Allen
-Despicable Me|2010|Animation comedy|Steve Carell|Jason Segel
-Tangled|2010|Animation fantasy|Mandy Moore|Zachary Levi
-Harry Potter and the Deathly Hallows: Part 1|2010|Fantasy adventure|Daniel Radcliffe|Emma Watson
-Black Swan|2010|Psychological drama|Natalie Portman|Mila Kunis
-Harry Potter and the Deathly Hallows: Part 2|2011|Fantasy adventure|Daniel Radcliffe|Emma Watson
-Bridesmaids|2011|Comedy|Kristen Wiig|Maya Rudolph
-The Avengers|2012|Superhero action|Robert Downey Jr.|Chris Evans
-The Hunger Games|2012|Dystopian action|Jennifer Lawrence|Josh Hutcherson
-Skyfall|2012|Spy action|Daniel Craig|Judi Dench
-The Dark Knight Rises|2012|Superhero action|Christian Bale|Tom Hardy
-Frozen|2013|Animation musical|Kristen Bell|Idina Menzel
-Iron Man 3|2013|Superhero action|Robert Downey Jr.|Gwyneth Paltrow
-Gravity|2013|Science fiction thriller|Sandra Bullock|George Clooney
-The Wolf of Wall Street|2013|Biographical crime comedy|Leonardo DiCaprio|Jonah Hill
-Guardians of the Galaxy|2014|Superhero science fiction|Chris Pratt|Zoe Saldaña
-The LEGO Movie|2014|Animation comedy|Chris Pratt|Will Arnett
-Interstellar|2014|Science fiction drama|Matthew McConaughey|Anne Hathaway
-John Wick|2014|Action thriller|Keanu Reeves|Michael Nyqvist
-Jurassic World|2015|Science fiction adventure|Chris Pratt|Bryce Dallas Howard
-Inside Out|2015|Animation comedy-drama|Amy Poehler|Phyllis Smith
-The Martian|2015|Science fiction adventure|Matt Damon|Jessica Chastain
-Star Wars: The Force Awakens|2015|Science fiction adventure|Daisy Ridley|John Boyega
-Deadpool|2016|Superhero action comedy|Ryan Reynolds|Morena Baccarin
-Zootopia|2016|Animation comedy|Ginnifer Goodwin|Jason Bateman
-Finding Dory|2016|Animation adventure|Ellen DeGeneres|Albert Brooks
-Rogue One: A Star Wars Story|2016|Science fiction adventure|Felicity Jones|Diego Luna
-La La Land|2016|Musical romance|Emma Stone|Ryan Gosling
-Moana|2016|Animation adventure|Auliʻi Cravalho|Dwayne Johnson
-Logan|2017|Superhero drama|Hugh Jackman|Patrick Stewart
-Wonder Woman|2017|Superhero action|Gal Gadot|Chris Pine
-Coco|2017|Animation fantasy|Anthony Gonzalez|Gael García Bernal
-It|2017|Horror|Jaeden Martell|Bill Skarsgård
-Black Panther|2018|Superhero action|Chadwick Boseman|Michael B. Jordan
-A Quiet Place|2018|Horror thriller|Emily Blunt|John Krasinski
-Avengers: Infinity War|2018|Superhero action|Robert Downey Jr.|Josh Brolin
-Avengers: Endgame|2019|Superhero action|Robert Downey Jr.|Chris Evans
-Joker|2019|Psychological crime drama|Joaquin Phoenix|Robert De Niro
-Knives Out|2019|Mystery comedy|Daniel Craig|Ana de Armas
-Hamilton|2020|Musical historical drama|Lin-Manuel Miranda|Leslie Odom Jr.
-Tenet|2020|Science fiction action|John David Washington|Robert Pattinson
-No Time to Die|2021|Spy action|Daniel Craig|Rami Malek
-Spider-Man: No Way Home|2021|Superhero action|Tom Holland|Zendaya
-The Batman|2022|Superhero crime thriller|Robert Pattinson|Zoë Kravitz
-The Super Mario Bros. Movie|2023|Animation adventure|Chris Pratt|Anya Taylor-Joy
-Barbie|2023|Fantasy comedy|Margot Robbie|Ryan Gosling
-Inside Out 2|2024|Animation comedy-drama|Amy Poehler|Maya Hawke
-Deadpool & Wolverine|2024|Superhero action comedy|Ryan Reynolds|Hugh Jackman
-Whiplash|2014|Music drama|Miles Teller|J.K. Simmons
-Arrival|2016|Science fiction drama|Amy Adams|Jeremy Renner
-The Grand Budapest Hotel|2014|Comedy-drama|Ralph Fiennes|Tony Revolori
-Gone Girl|2014|Mystery thriller|Ben Affleck|Rosamund Pike
-        `, "popular-modern")
-      },
-
-      /* PART 3 CONTINUES HERE */
-
-            {
-        name: "Classic Cinema Expansion",
-        movies: moviesFromRows(`
-The Kid|1921|Comedy|Charlie Chaplin|Jackie Coogan
-Nosferatu|1922|Horror|Max Schreck|Gustav von Wangenheim
-Safety Last!|1923|Comedy|Harold Lloyd|Mildred Davis
-The Gold Rush|1925|Comedy|Charlie Chaplin|Georgia Hale
-The General|1926|Comedy|Buster Keaton|Marion Mack
-The Passion of Joan of Arc|1928|Historical drama|Renée Jeanne Falconetti|Antonin Artaud
-All Quiet on the Western Front|1930|War drama|Lew Ayres|Louis Wolheim
-City Lights|1931|Comedy|Charlie Chaplin|Virginia Cherrill
-Frankenstein|1931|Horror|Boris Karloff|Colin Clive
-Dracula|1931|Horror|Bela Lugosi|Helen Chandler
-It Happened One Night|1934|Romance comedy|Clark Gable|Claudette Colbert
-Bride of Frankenstein|1935|Horror|Boris Karloff|Elsa Lanchester
-Top Hat|1935|Musical comedy|Fred Astaire|Ginger Rogers
-Bringing Up Baby|1938|Comedy|Cary Grant|Katharine Hepburn
-The Adventures of Robin Hood|1938|Adventure|Errol Flynn|Olivia de Havilland
-Stagecoach|1939|Western|John Wayne|Claire Trevor
-His Girl Friday|1940|Comedy|Cary Grant|Rosalind Russell
-The Philadelphia Story|1940|Romance comedy|Cary Grant|Katharine Hepburn
-The Maltese Falcon|1941|Crime mystery|Humphrey Bogart|Mary Astor
-Sullivan's Travels|1941|Comedy|Joel McCrea|Veronica Lake
-The Lady Eve|1941|Romance comedy|Barbara Stanwyck|Henry Fonda
-The Best Years of Our Lives|1946|Drama|Fredric March|Dana Andrews
-Notorious|1946|Romance thriller|Cary Grant|Ingrid Bergman
-Gilda|1946|Film noir drama|Rita Hayworth|Glenn Ford
-The Big Sleep|1946|Mystery thriller|Humphrey Bogart|Lauren Bacall
-The Red Shoes|1948|Drama|Moira Shearer|Anton Walbrook
-Bicycle Thieves|1948|Drama|Lamberto Maggiorani|Enzo Staiola
-The Treasure of the Sierra Madre|1948|Adventure drama|Humphrey Bogart|Walter Huston
-Kind Hearts and Coronets|1949|Comedy|Alec Guinness|Dennis Price
-White Heat|1949|Crime drama|James Cagney|Virginia Mayo
-In a Lonely Place|1950|Film noir drama|Humphrey Bogart|Gloria Grahame
-The Asphalt Jungle|1950|Crime drama|Sterling Hayden|Marilyn Monroe
-Ace in the Hole|1951|Drama|Kirk Douglas|Jan Sterling
-A Streetcar Named Desire|1951|Drama|Marlon Brando|Vivien Leigh
-The African Queen|1951|Adventure drama|Humphrey Bogart|Katharine Hepburn
-High Noon|1952|Western|Gary Cooper|Grace Kelly
-Shane|1953|Western|Alan Ladd|Jean Arthur
-From Here to Eternity|1953|War drama|Burt Lancaster|Deborah Kerr
-On the Waterfront|1954|Crime drama|Marlon Brando|Eva Marie Saint
-Godzilla|1954|Science fiction|Takashi Shimura|Akira Takarada
-Rebel Without a Cause|1955|Drama|James Dean|Natalie Wood
-The Man Who Knew Too Much|1956|Mystery thriller|James Stewart|Doris Day
-The Killing|1956|Crime thriller|Sterling Hayden|Coleen Gray
-Sweet Smell of Success|1957|Drama|Burt Lancaster|Tony Curtis
-Witness for the Prosecution|1957|Legal drama|Tyrone Power|Marlene Dietrich
-The Seventh Seal|1957|Fantasy drama|Max von Sydow|Gunnar Björnstrand
-Touch of Evil|1958|Crime thriller|Charlton Heston|Orson Welles
-The Defiant Ones|1958|Drama|Tony Curtis|Sidney Poitier
-Anatomy of a Murder|1959|Legal drama|James Stewart|Lee Remick
-The 400 Blows|1959|Coming-of-age drama|Jean-Pierre Léaud|Albert Rémy
-Peeping Tom|1960|Psychological horror|Carl Boehm|Anna Massey
-The Misfits|1961|Drama|Marilyn Monroe|Clark Gable
-Judgment at Nuremberg|1961|Legal drama|Spencer Tracy|Burt Lancaster
-The Manchurian Candidate|1962|Political thriller|Frank Sinatra|Laurence Harvey
-Lolita|1962|Drama|James Mason|Sue Lyon
-The Birds|1963|Horror thriller|Rod Taylor|Tippi Hedren
-The Pink Panther|1963|Comedy|Peter Sellers|David Niven
-A Fistful of Dollars|1964|Western|Clint Eastwood|Gian Maria Volonté
-The Night of the Iguana|1964|Drama|Richard Burton|Ava Gardner
-The Cincinnati Kid|1965|Drama|Steve McQueen|Edward G. Robinson
-Cool Hand Luke|1967|Drama|Paul Newman|George Kennedy
-Bonnie and Clyde|1967|Crime drama|Warren Beatty|Faye Dunaway
-The Producers|1967|Comedy|Zero Mostel|Gene Wilder
-Bullitt|1968|Crime thriller|Steve McQueen|Robert Vaughn
-        `, "classic-expansion")
-      },
-
-      {
-        name: "Horror and Thriller Expansion",
-        movies: moviesFromRows(`
-The Cabinet of Dr. Caligari|1920|Horror|Werner Krauss|Conrad Veidt
-The Invisible Man|1933|Horror|Claude Rains|Gloria Stuart
-The Wolf Man|1941|Horror|Lon Chaney Jr.|Claude Rains
-Cat People|1942|Horror|Simone Simon|Kent Smith
-House of Wax|1953|Horror|Vincent Price|Phyllis Kirk
-Diabolique|1955|Psychological thriller|Simone Signoret|Véra Clouzot
-Invasion of the Body Snatchers|1956|Science fiction horror|Kevin McCarthy|Dana Wynter
-The Fly|1958|Science fiction horror|Vincent Price|Patricia Owens
-Night of the Living Dead|1968|Horror|Duane Jones|Judith O'Dea
-Black Christmas|1974|Horror|Olivia Hussey|Keir Dullea
-The Hills Have Eyes|1977|Horror|Susan Lanier|Michael Berryman
-The Brood|1979|Horror|Oliver Reed|Samantha Eggar
-The Fog|1980|Horror|Adrienne Barbeau|Jamie Lee Curtis
-An American Werewolf in London|1981|Horror comedy|David Naughton|Jenny Agutter
-The Evil Dead|1981|Horror|Bruce Campbell|Ellen Sandweiss
-The Howling|1981|Horror|Dee Wallace|Patrick Macnee
-The Thing|1982|Science fiction horror|Kurt Russell|Wilford Brimley
-A Nightmare on Elm Street|1984|Horror|Heather Langenkamp|Robert Englund
-The Fly|1986|Science fiction horror|Jeff Goldblum|Geena Davis
-The Hitcher|1986|Thriller|Rutger Hauer|C. Thomas Howell
-Hellraiser|1987|Horror|Andrew Robinson|Clare Higgins
-Child's Play|1988|Horror|Catherine Hicks|Chris Sarandon
-The Vanishing|1988|Psychological thriller|Gene Bervoets|Johanna ter Steege
-Misery|1990|Psychological thriller|James Caan|Kathy Bates
-Candyman|1992|Horror|Virginia Madsen|Tony Todd
-Bram Stoker's Dracula|1992|Horror romance|Gary Oldman|Winona Ryder
-Army of Darkness|1992|Fantasy horror|Bruce Campbell|Embeth Davidtz
-Scream|1996|Horror mystery|Neve Campbell|Courteney Cox
-From Dusk Till Dawn|1996|Horror action|George Clooney|Quentin Tarantino
-The Craft|1996|Fantasy horror|Robin Tunney|Fairuza Balk
-Event Horizon|1997|Science fiction horror|Laurence Fishburne|Sam Neill
-The Devil's Advocate|1997|Supernatural thriller|Keanu Reeves|Al Pacino
-Final Destination|2000|Horror thriller|Devon Sawa|Ali Larter
-American Psycho|2000|Psychological horror|Christian Bale|Willem Dafoe
-The Others|2001|Psychological horror|Nicole Kidman|Fionnula Flanagan
-The Descent|2005|Horror|Shauna Macdonald|Natalie Mendoza
-Hostel|2005|Horror thriller|Jay Hernandez|Derek Richardson
-1408|2007|Psychological horror|John Cusack|Samuel L. Jackson
-Paranormal Activity|2007|Horror|Katie Featherston|Micah Sloat
-Cloverfield|2008|Science fiction horror|Lizzy Caplan|Michael Stahl-David
-Orphan|2009|Psychological horror|Vera Farmiga|Isabelle Fuhrman
-Insidious|2010|Horror|Patrick Wilson|Rose Byrne
-The Cabin in the Woods|2012|Horror comedy|Kristen Connolly|Chris Hemsworth
-Sinister|2012|Horror|Ethan Hawke|James Ransone
-The Purge|2013|Horror thriller|Ethan Hawke|Lena Headey
-It Follows|2014|Horror|Maika Monroe|Keir Gilchrist
-The Babadook|2014|Psychological horror|Essie Davis|Noah Wiseman
-The Witch|2015|Horror|Anya Taylor-Joy|Ralph Ineson
-Don't Breathe|2016|Horror thriller|Jane Levy|Stephen Lang
-Hereditary|2018|Horror|Toni Collette|Alex Wolff
-Halloween|2018|Horror|Jamie Lee Curtis|Judy Greer
-Midsommar|2019|Horror|Florence Pugh|Jack Reynor
-The Invisible Man|2020|Psychological horror|Elisabeth Moss|Oliver Jackson-Cohen
-Smile|2022|Horror|Sosie Bacon|Kyle Gallner
-Talk to Me|2023|Horror|Sophie Wilde|Alexandra Jensen
-Longlegs|2024|Horror thriller|Maika Monroe|Nicolas Cage
-The Conjuring|2013|Horror|Vera Farmiga|Patrick Wilson
-The Grudge|2004|Horror|Sarah Michelle Gellar|Jason Behr
-The Strangers|2008|Horror thriller|Liv Tyler|Scott Speedman
-The Mist|2007|Horror|Thomas Jane|Marcia Gay Harden
-The Autopsy of Jane Doe|2016|Horror|Emile Hirsch|Brian Cox
-Us|2019|Horror|Lupita Nyong'o|Winston Duke
-The Menu|2022|Dark comedy thriller|Anya Taylor-Joy|Ralph Fiennes
-The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
-        `, "horror-expansion")
-      }
+    const GENRES = [
+      "Action",
+      "Adventure",
+      "Animation",
+      "Comedy",
+      "Crime / Thriller",
+      "Drama",
+      "Fantasy",
+      "Horror",
+      "Musical",
+      "Romance",
+      "Science Fiction",
+      "War / Western"
     ];
 
-    let state;
+    const DECADES = [
+      "1970s",
+      "1980s",
+      "1990s",
+      "2000s",
+      "2010s",
+      "2020s"
+    ];
 
-    function moviesFromRows(text, pool) {
-      return text
-        .trim()
-        .split("\n")
-        .map(line => line.trim())
-        .filter(Boolean)
-        .map(line => {
-          const [title, year, genre, actor1, actor2] = line.split("|");
-
-          return {
-            id: makeId(title, year),
-            title: title.trim(),
-            year: String(year || "").trim(),
-            genre: String(genre || "Genre not listed").trim(),
-            actors: [actor1 || "Unknown", actor2 || "Unknown"]
-              .map(actor => actor.trim()),
-            pool
-          };
-        });
-    }
-
-    function makeId(title, year) {
-      return (
-        String(title)
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-|-$/g, "") +
-        "-" +
-        String(year || "movie")
-      );
-    }
+    let catalog = [];
+    let coverage = [];
+    let state = {
+      tournaments: [],
+      ultimateQualifiers: [],
+      stats: {}
+    };
 
     function clone(value) {
       return JSON.parse(JSON.stringify(value));
@@ -1415,8 +925,8 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
 
     function loadState() {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        return stored ? JSON.parse(stored) : null;
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : null;
       } catch {
         return null;
       }
@@ -1430,33 +940,45 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       }
     }
 
-    function allMovieData() {
-      return MOVIE_PACKS.flatMap(pack => pack.movies);
+    async function loadCatalog() {
+      const response = await fetch("./movie-catalog.json", {
+        cache: "no-store"
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Could not load movie-catalog.json (${response.status}).`
+        );
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data.movies)) {
+        throw new Error("movie-catalog.json does not contain a movies array.");
+      }
+
+      catalog = data.movies;
     }
 
-    function ensureCatalogHasMovies() {
-      state.catalog = state.catalog || [];
-      state.stats = state.stats || {};
-      state.tournaments = state.tournaments || [];
-      state.ultimateQualifiers = state.ultimateQualifiers || [];
+    async function loadCoverage() {
+      try {
+        const response = await fetch("./catalog-coverage.json", {
+          cache: "no-store"
+        });
 
-      allMovieData().forEach(movie => {
-        const existing = state.catalog.find(item => item.id === movie.id);
-
-        if (existing) {
-          existing.title = movie.title;
-          existing.year = movie.year;
-          existing.genre = movie.genre;
-          existing.actors = movie.actors;
-          existing.pool = movie.pool;
-        } else {
-          state.catalog.push(clone(movie));
+        if (!response.ok) {
+          return;
         }
-      });
+
+        const data = await response.json();
+        coverage = Array.isArray(data.buckets) ? data.buckets : [];
+      } catch {
+        coverage = [];
+      }
     }
 
     function getMovie(movieId) {
-      return state.catalog.find(movie => movie.id === movieId);
+      return catalog.find(movie => movie.id === movieId);
     }
 
     function getActors(movieId) {
@@ -1550,8 +1072,8 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
         fieldSize,
         title,
         qualifyingNumber = null,
-        themeGenre = "All",
-        themeDecade = "All"
+        selectedGenre = "All",
+        selectedDecade = "All"
       } = options;
 
       const tournamentId = `tournament-${state.tournaments.length + 1}`;
@@ -1576,8 +1098,8 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
         status: "in_progress",
         qualifyingNumber,
         fieldSize,
-        themeGenre,
-        themeDecade,
+        selectedGenre,
+        selectedDecade,
         entries,
         rounds,
         history: [],
@@ -1684,7 +1206,6 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       tournament.qualifiers = finalFourIds.map((movieId, index) => ({
         id: movieId,
         wins: winsInTournament(tournament, movieId),
-        previousSeed: getSeed(tournament, movieId),
         qualifierRank: index + 1,
         qualifyingTournament: tournament.qualifyingNumber
       }));
@@ -1814,88 +1335,26 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       render();
     }
 
-    function genreTheme(genre = "") {
-      const text = genre.toLowerCase();
+    function genreTheme(genres = []) {
+      const text = genres.join(" ").toLowerCase();
 
       if (text.includes("horror")) return { label: "HORROR", symbol: "☾", colorA: "#120b16", colorB: "#65152e", colorC: "#ef4444" };
       if (text.includes("animation")) return { label: "ANIMATION", symbol: "✦", colorA: "#075985", colorB: "#7c3aed", colorC: "#f9a8d4" };
-
-      if (
-        text.includes("science fiction") ||
-        text.includes("sci-fi") ||
-        text.includes("dystopian") ||
-        text.includes("superhero")
-      ) {
-        return { label: "SCI-FI", symbol: "✦", colorA: "#102a52", colorB: "#4c1d95", colorC: "#67e8f9" };
-      }
-
-      if (
-        text.includes("action") ||
-        text.includes("spy") ||
-        text.includes("martial arts") ||
-        text.includes("adventure")
-      ) {
-        return { label: "ACTION", symbol: "⚡", colorA: "#5b1d0f", colorB: "#b91c1c", colorC: "#fbbf24" };
-      }
-
+      if (text.includes("science fiction")) return { label: "SCI-FI", symbol: "✦", colorA: "#102a52", colorB: "#4c1d95", colorC: "#67e8f9" };
+      if (text.includes("action")) return { label: "ACTION", symbol: "⚡", colorA: "#5b1d0f", colorB: "#b91c1c", colorC: "#fbbf24" };
       if (text.includes("fantasy")) return { label: "FANTASY", symbol: "✧", colorA: "#312e81", colorB: "#7e22ce", colorC: "#f0abfc" };
       if (text.includes("romance")) return { label: "ROMANCE", symbol: "♥", colorA: "#7f1d3f", colorB: "#db2777", colorC: "#fecdd3" };
       if (text.includes("comedy")) return { label: "COMEDY", symbol: "☀", colorA: "#854d0e", colorB: "#ea580c", colorC: "#fde047" };
-
-      if (
-        text.includes("crime") ||
-        text.includes("noir") ||
-        text.includes("mystery") ||
-        text.includes("thriller")
-      ) {
-        return { label: "CRIME / THRILLER", symbol: "◆", colorA: "#111827", colorB: "#1e3a8a", colorC: "#f5c75c" };
-      }
-
-      if (text.includes("war")) return { label: "WAR", symbol: "✹", colorA: "#26351f", colorB: "#556b2f", colorC: "#d6d3a7" };
-      if (text.includes("western")) return { label: "WESTERN", symbol: "★", colorA: "#4a2412", colorB: "#9a4d17", colorC: "#f3c37a" };
-      if (text.includes("musical") || text.includes("music")) return { label: "MUSICAL", symbol: "♫", colorA: "#4c1d95", colorB: "#be185d", colorC: "#f5c75c" };
+      if (text.includes("crime") || text.includes("thriller")) return { label: "CRIME / THRILLER", symbol: "◆", colorA: "#111827", colorB: "#1e3a8a", colorC: "#f5c75c" };
+      if (text.includes("war") || text.includes("western")) return { label: "WAR / WESTERN", symbol: "✹", colorA: "#26351f", colorB: "#556b2f", colorC: "#d6d3a7" };
+      if (text.includes("musical")) return { label: "MUSICAL", symbol: "♫", colorA: "#4c1d95", colorB: "#be185d", colorC: "#f5c75c" };
       if (text.includes("drama")) return { label: "DRAMA", symbol: "●", colorA: "#1e293b", colorB: "#475569", colorC: "#cbd5e1" };
 
       return { label: "MOVIE", symbol: "◆", colorA: "#1e3a5f", colorB: "#43305f", colorC: "#7dd3fc" };
     }
 
-    function genreCategory(genre = "") {
-      const text = genre.toLowerCase();
-
-      if (text.includes("horror")) return "Horror";
-      if (text.includes("animation")) return "Animation";
-      if (text.includes("musical") || text.includes("music")) return "Musical";
-      if (text.includes("western")) return "Western";
-      if (text.includes("war")) return "War";
-      if (text.includes("romance")) return "Romance";
-      if (text.includes("fantasy")) return "Fantasy";
-
-      if (
-        text.includes("science fiction") ||
-        text.includes("sci-fi") ||
-        text.includes("dystopian")
-      ) return "Science Fiction";
-
-      if (
-        text.includes("crime") ||
-        text.includes("noir") ||
-        text.includes("mystery") ||
-        text.includes("thriller")
-      ) return "Crime / Thriller";
-
-      if (text.includes("comedy")) return "Comedy";
-
-      if (
-        text.includes("action") ||
-        text.includes("spy") ||
-        text.includes("martial arts") ||
-        text.includes("adventure") ||
-        text.includes("superhero")
-      ) return "Action";
-
-      if (text.includes("drama")) return "Drama";
-
-      return "Other";
+    function localPosterPath(movie) {
+      return `./posters/${movie.posterFile}`;
     }
 
     function watchSearchUrl(movie) {
@@ -1904,12 +1363,8 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       )}`;
     }
 
-    function localPosterPath(movie) {
-      return `./posters/${movie.id}.jpg`;
-    }
-
     function posterHtml(movie) {
-      const theme = genreTheme(movie.genre);
+      const theme = genreTheme(movie.genres);
 
       return `
         <div class="movie-poster">
@@ -1937,7 +1392,7 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
             <div class="poster-bottom">
               <div class="poster-year">${escapeHtml(movie.year)}</div>
               <div class="poster-title">${escapeHtml(movie.title)}</div>
-              <div class="poster-genre">${escapeHtml(movie.genre)}</div>
+              <div class="poster-genre">${escapeHtml(movie.genres.join(" · "))}</div>
             </div>
           </div>
         </div>
@@ -1945,8 +1400,6 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
     }
 
     function movieCard(movie, roundIndex, matchIndex) {
-      const actors = getActors(movie.id).join(" · ");
-
       return `
         <article class="movie-card">
           ${posterHtml(movie)}
@@ -1955,11 +1408,11 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
             <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
 
             <div class="movie-meta">
-              ${escapeHtml(movie.year)} · ${escapeHtml(movie.genre)}
+              ${escapeHtml(movie.year)} · ${escapeHtml(movie.genres.join(" · "))}
             </div>
 
             <div class="actor-list">
-              Starring: ${escapeHtml(actors)}
+              Starring: ${escapeHtml(getActors(movie.id).join(" · "))}
             </div>
 
             <p class="synopsis">
@@ -1995,69 +1448,62 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       }
 
       const movie = getMovie(movieId);
-      const winnerClass = movieId === winnerId ? "winner" : "";
 
       return `
-        <div class="bracket-team ${winnerClass}">
+        <div class="bracket-team ${movieId === winnerId ? "winner" : ""}">
           <span class="seed">${escapeHtml(getSeed(tournament, movieId))}</span>
           <span class="team-name">${escapeHtml(movie.title)}</span>
         </div>
       `;
     }
 
-    function getActorRecord(map, actor) {
-      if (!map[actor]) {
-        map[actor] = {
-          actor,
-          appearances: 0,
-          wins: 0,
-          top16s: 0,
-          championships: 0
-        };
+    function calculateStats(tournaments, type) {
+      const statMap = {};
+
+      function getRecord(name) {
+        if (!statMap[name]) {
+          statMap[name] = {
+            name,
+            appearances: 0,
+            wins: 0,
+            championships: 0
+          };
+        }
+
+        return statMap[name];
       }
 
-      return map[actor];
-    }
+      function add(movieId, field) {
+        const movie = getMovie(movieId);
+        if (!movie) return;
 
-    function addMovieActorsToStat(map, movieId, statName) {
-      getActors(movieId).forEach(actor => {
-        if (actor === "Unknown") return;
-        getActorRecord(map, actor)[statName] += 1;
-      });
-    }
+        const labels = type === "actor"
+          ? movie.actors
+          : movie.genres;
 
-    function calculateActorStats(tournaments) {
-      const actorMap = {};
+        labels.forEach(label => {
+          if (!label || label === "Unknown") return;
+          getRecord(label)[field] += 1;
+        });
+      }
 
       tournaments.forEach(tournament => {
         tournament.rounds.forEach(round => {
           round.matches.forEach(match => {
             if (!match.movieAId || !match.movieBId || !match.winnerId) return;
 
-            addMovieActorsToStat(actorMap, match.movieAId, "appearances");
-            addMovieActorsToStat(actorMap, match.movieBId, "appearances");
-            addMovieActorsToStat(actorMap, match.winnerId, "wins");
+            add(match.movieAId, "appearances");
+            add(match.movieBId, "appearances");
+            add(match.winnerId, "wins");
           });
         });
 
-        const sweet16Index = tournament.rounds.findIndex(
-          round => round.label === "Sweet 16"
-        );
-
-        if (sweet16Index >= 0) {
-          tournament.rounds[sweet16Index].matches.forEach(match => {
-            if (match.winnerId) {
-              addMovieActorsToStat(actorMap, match.winnerId, "top16s");
-            }
-          });
-        }
-
         if (tournament.championId) {
-          addMovieActorsToStat(actorMap, tournament.championId, "championships");
+          add(tournament.championId, "championships");
         }
       });
 
-      return Object.values(actorMap)
+      return Object.values(statMap)
         .map(record => ({
           ...record,
           winPercentage: record.appearances
@@ -2068,62 +1514,7 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
           b.winPercentage - a.winPercentage ||
           b.wins - a.wins ||
           b.appearances - a.appearances ||
-          a.actor.localeCompare(b.actor)
-        ));
-    }
-
-    function getGenreRecord(map, genre) {
-      if (!map[genre]) {
-        map[genre] = {
-          genre,
-          appearances: 0,
-          wins: 0,
-          top16s: 0,
-          championships: 0
-        };
-      }
-
-      return map[genre];
-    }
-
-    function addMovieGenreToStat(map, movieId, statName) {
-      const movie = getMovie(movieId);
-      if (!movie) return;
-
-      getGenreRecord(map, genreCategory(movie.genre))[statName] += 1;
-    }
-
-    function calculateGenreStats(tournaments) {
-      const genreMap = {};
-
-      tournaments.forEach(tournament => {
-        tournament.rounds.forEach(round => {
-          round.matches.forEach(match => {
-            if (!match.movieAId || !match.movieBId || !match.winnerId) return;
-
-            addMovieGenreToStat(genreMap, match.movieAId, "appearances");
-            addMovieGenreToStat(genreMap, match.movieBId, "appearances");
-            addMovieGenreToStat(genreMap, match.winnerId, "wins");
-          });
-        });
-
-        if (tournament.championId) {
-          addMovieGenreToStat(genreMap, tournament.championId, "championships");
-        }
-      });
-
-      return Object.values(genreMap)
-        .map(record => ({
-          ...record,
-          winPercentage: record.appearances
-            ? (record.wins / record.appearances) * 100
-            : 0
-        }))
-        .sort((a, b) => (
-          b.winPercentage - a.winPercentage ||
-          b.wins - a.wins ||
-          b.appearances - a.appearances ||
-          a.genre.localeCompare(b.genre)
+          a.name.localeCompare(b.name)
         ));
     }
 
@@ -2154,7 +1545,7 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
                     <tbody>
                       ${qualified.map(record => `
                         <tr>
-                          <td><strong>${escapeHtml(record.actor || record.genre)}</strong></td>
+                          <td><strong>${escapeHtml(record.name)}</strong></td>
                           <td>${record.winPercentage.toFixed(0)}%</td>
                           <td>${record.wins}</td>
                           <td>${record.appearances}</td>
@@ -2174,14 +1565,14 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
     function renderLeaderboards(tournament) {
       document.querySelector("#actorLeaderboards").innerHTML = `
         ${leaderboardHtml(
-          calculateActorStats([tournament]),
+          calculateStats([tournament], "actor"),
           "Current Tournament Favorite Actors",
           "Based only on the active tournament.",
           "Actor"
         )}
 
         ${leaderboardHtml(
-          calculateActorStats(state.tournaments),
+          calculateStats(state.tournaments, "actor"),
           "Career Favorite Actors",
           "Based on all played tournaments.",
           "Actor"
@@ -2190,14 +1581,14 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
 
       document.querySelector("#genreLeaderboards").innerHTML = `
         ${leaderboardHtml(
-          calculateGenreStats([tournament]),
+          calculateStats([tournament], "genre"),
           "Current Tournament Favorite Genres",
           "Based only on the active tournament.",
           "Genre"
         )}
 
         ${leaderboardHtml(
-          calculateGenreStats(state.tournaments),
+          calculateStats(state.tournaments, "genre"),
           "Career Favorite Genres",
           "Based on all played tournaments.",
           "Genre"
@@ -2205,19 +1596,26 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       `;
     }
 
-    function allGenres() {
-      return [...new Set(
-        state.catalog.map(movie => genreCategory(movie.genre))
-      )].sort();
-    }
+    function coverageForSelectedFilter() {
+      const genre = document.querySelector("#themeGenre").value;
+      const decade = document.querySelector("#themeDecade").value;
 
-    function allDecades() {
-      return [...new Set(
-        state.catalog.map(movie => `${Math.floor(Number(movie.year) / 10) * 10}s`)
-      )].sort((a, b) => Number(a) - Number(b));
+      if (genre === "All" || decade === "All") {
+        return null;
+      }
+
+      return coverage.find(
+        bucket => bucket.category === genre && bucket.decade === decade
+      );
     }
 
     function usedRegularMovieIds() {
+      if (document.querySelector("#allowReuse").checked) {
+        return new Set(
+          state.ultimateQualifiers.map(qualifier => qualifier.id)
+        );
+      }
+
       return new Set(
         state.tournaments
           .filter(tournament => tournament.type === "regular")
@@ -2228,38 +1626,24 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
     function getThemeCandidates() {
       const genre = document.querySelector("#themeGenre").value;
       const decade = document.querySelector("#themeDecade").value;
-      const usedIds = usedRegularMovieIds();
+      const excluded = usedRegularMovieIds();
 
-      return state.catalog.filter(movie => {
-        const movieDecade = `${Math.floor(Number(movie.year) / 10) * 10}s`;
+      return catalog.filter(movie => {
+        const matchesGenre =
+          genre === "All" || movie.genres.includes(genre);
 
-        return (
-          (genre === "All" || genreCategory(movie.genre) === genre) &&
-          (decade === "All" || movieDecade === decade) &&
-          !usedIds.has(movie.id)
-        );
+        const matchesDecade =
+          decade === "All" || movie.decade === decade;
+
+        return matchesGenre && matchesDecade && !excluded.has(movie.id);
       });
-    }
-
-    function getBracketSize(candidateCount, requestedSize) {
-      const sizes = [64, 32, 16, 8];
-
-      if (requestedSize !== "auto") {
-        const selected = Number(requestedSize);
-        return candidateCount >= selected ? selected : 0;
-      }
-
-      return sizes.find(size => candidateCount >= size) || 0;
     }
 
     function updateThemeStatus() {
       const status = document.querySelector("#themeStatus");
       const currentTournament = getCurrentTournament();
 
-      if (
-        currentTournament &&
-        currentTournament.status === "in_progress"
-      ) {
+      if (currentTournament && currentTournament.status === "in_progress") {
         status.textContent =
           "Finish the active tournament before starting another one.";
         return;
@@ -2276,17 +1660,25 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       }
 
       const candidates = getThemeCandidates();
-      const requested = document.querySelector("#themeBracketSize").value;
-      const bracketSize = getBracketSize(candidates.length, requested);
+      const bracketSize = Number(
+        document.querySelector("#themeBracketSize").value
+      );
+      const coverageInfo = coverageForSelectedFilter();
 
-      if (!bracketSize) {
+      if (candidates.length < bracketSize) {
         status.textContent =
-          `${candidates.length} unused matching movies found. Broaden the filters or choose a smaller bracket.`;
+          `${candidates.length} eligible movies remain. This filter needs ${bracketSize} movies. Enable reuse or choose a different filter.`;
+        return;
+      }
+
+      if (coverageInfo && !coverageInfo.ready) {
+        status.textContent =
+          `${coverageInfo.found} movies found for this genre-and-decade combination. The 64-movie target is not ready yet.`;
         return;
       }
 
       status.textContent =
-        `${candidates.length} unused matching movies found. A ${bracketSize}-movie bracket can be created.`;
+        `${candidates.length} eligible movies found. A ${bracketSize}-movie bracket is ready.`;
     }
 
     function populateThemeControls() {
@@ -2295,22 +1687,23 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
 
       genreSelect.innerHTML = `
         <option value="All">All Genres</option>
-        ${allGenres().map(genre => `
+        ${GENRES.map(genre => `
           <option value="${escapeHtml(genre)}">${escapeHtml(genre)}</option>
         `).join("")}
       `;
 
       decadeSelect.innerHTML = `
         <option value="All">All Decades</option>
-        ${allDecades().map(decade => `
+        ${DECADES.map(decade => `
           <option value="${escapeHtml(decade)}">${escapeHtml(decade)}</option>
         `).join("")}
       `;
 
       genreSelect.addEventListener("change", updateThemeStatus);
       decadeSelect.addEventListener("change", updateThemeStatus);
-      document
-        .querySelector("#themeBracketSize")
+      document.querySelector("#themeBracketSize")
+        .addEventListener("change", updateThemeStatus);
+      document.querySelector("#allowReuse")
         .addEventListener("change", updateThemeStatus);
     }
 
@@ -2332,40 +1725,40 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       }
 
       const candidates = getThemeCandidates();
-      const requestedSize = document.querySelector("#themeBracketSize").value;
-      const fieldSize = getBracketSize(candidates.length, requestedSize);
+      const fieldSize = Number(
+        document.querySelector("#themeBracketSize").value
+      );
 
-      if (!fieldSize) {
-        alert("Not enough unused movies match those filters.");
+      if (candidates.length < fieldSize) {
+        alert(
+          `This selection has only ${candidates.length} eligible movies. Enable reuse or select a different genre/decade.`
+        );
         return;
       }
 
       const selectedGenre = document.querySelector("#themeGenre").value;
       const selectedDecade = document.querySelector("#themeDecade").value;
-      const tournamentNumber = completedQualifying + 1;
+      const qualifyingNumber = completedQualifying + 1;
 
       const entries = shuffle(candidates)
         .slice(0, fieldSize)
         .map((movie, index) => ({
           id: movie.id,
-          seed: index + 1,
-          origin: "theme"
+          seed: index + 1
         }));
 
-      const titleParts = [
+      const label = [
         selectedGenre === "All" ? "" : selectedGenre,
         selectedDecade === "All" ? "" : selectedDecade
-      ].filter(Boolean);
+      ].filter(Boolean).join(" · ") || "All Movies";
 
       startTournament(entries, {
         type: "regular",
         fieldSize,
-        qualifyingNumber: tournamentNumber,
-        title: `Qualifying Tournament ${tournamentNumber}: ${
-          titleParts.length ? titleParts.join(" · ") : "All Movies"
-        }`,
-        themeGenre: selectedGenre,
-        themeDecade: selectedDecade
+        qualifyingNumber,
+        selectedGenre,
+        selectedDecade,
+        title: `Qualifying Tournament ${qualifyingNumber}: ${label}`
       });
 
       saveState();
@@ -2375,16 +1768,14 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
     function startUltimateFinal() {
       const currentTournament = getCurrentTournament();
 
-      if (
-        !currentTournament ||
-        currentTournament.type !== "regular" ||
-        currentTournament.status !== "complete"
-      ) {
+      if (!currentTournament || currentTournament.status !== "complete") {
         return;
       }
 
       if (state.ultimateQualifiers.length !== ULTIMATE_FIELD_SIZE) {
-        alert(`Need ${ULTIMATE_FIELD_SIZE} Ultimate Final qualifiers.`);
+        alert(
+          `The Ultimate Final needs ${ULTIMATE_FIELD_SIZE} unique qualifiers. Current total: ${state.ultimateQualifiers.length}.`
+        );
         return;
       }
 
@@ -2396,8 +1787,7 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
         ))
         .map((qualifier, index) => ({
           id: qualifier.id,
-          seed: index + 1,
-          origin: "ultimate"
+          seed: index + 1
         }));
 
       startTournament(entries, {
@@ -2411,24 +1801,25 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
     }
 
     function renderSummary(tournament) {
+      const qualifyingCount = state.tournaments
+        .filter(item => item.type === "regular")
+        .length;
+
       if (!tournament) {
         document.querySelector("#summary").innerHTML = `
           <div class="stats">
             <div class="stat">
               <div class="stat-label">Qualifying Tournaments</div>
-              <div class="stat-value">0 / ${QUALIFYING_TOURNAMENT_COUNT}</div>
+              <div class="stat-value">${qualifyingCount} / ${QUALIFYING_TOURNAMENT_COUNT}</div>
             </div>
-
             <div class="stat">
               <div class="stat-label">Ultimate Qualifiers</div>
-              <div class="stat-value">0 / ${ULTIMATE_FIELD_SIZE}</div>
+              <div class="stat-value">${state.ultimateQualifiers.length} / ${ULTIMATE_FIELD_SIZE}</div>
             </div>
-
             <div class="stat">
-              <div class="stat-label">Movies in Database</div>
-              <div class="stat-value">${state.catalog.length}</div>
+              <div class="stat-label">Movies in Catalog</div>
+              <div class="stat-value">${catalog.length}</div>
             </div>
-
             <div class="stat">
               <div class="stat-label">Status</div>
               <div class="stat-value">Choose a Theme</div>
@@ -2450,24 +1841,19 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
               )}
             </div>
           </div>
-
           <div class="stat">
             <div class="stat-label">Bracket Progress</div>
             <div class="stat-value">
               ${totalVotes(tournament)} / ${totalMatches(tournament)} Votes
             </div>
           </div>
-
           <div class="stat">
             <div class="stat-label">Ultimate Qualifiers</div>
-            <div class="stat-value">
-              ${state.ultimateQualifiers.length} / ${ULTIMATE_FIELD_SIZE}
-            </div>
+            <div class="stat-value">${state.ultimateQualifiers.length} / ${ULTIMATE_FIELD_SIZE}</div>
           </div>
-
           <div class="stat">
-            <div class="stat-label">Movies in Database</div>
-            <div class="stat-value">${state.catalog.length}</div>
+            <div class="stat-label">Movies in Catalog</div>
+            <div class="stat-value">${catalog.length}</div>
           </div>
         </div>
       `;
@@ -2478,13 +1864,9 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
 
       if (!tournament) {
         panel.innerHTML = `
-          <div class="panel-heading">
-            <h2>Start Movie Madness</h2>
-          </div>
-
-          <p class="muted">
+          <div class="message">
             Choose a genre, decade, and bracket size below to begin Qualifying Tournament 1.
-          </p>
+          </div>
         `;
         return;
       }
@@ -2495,7 +1877,6 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
         panel.innerHTML = `
           <div class="champion">
             <div>${posterHtml(champion)}</div>
-
             <div>
               <div class="champion-badge">
                 ${
@@ -2504,17 +1885,13 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
                     : `Qualifying Tournament ${tournament.qualifyingNumber} Champion`
                 }
               </div>
-
               <h2 class="champion-title">${escapeHtml(champion.title)}</h2>
-
               <div class="movie-meta">
-                ${escapeHtml(champion.year)} · ${escapeHtml(champion.genre)}
+                ${escapeHtml(champion.year)} · ${escapeHtml(champion.genres.join(" · "))}
               </div>
-
               <div class="actor-list">
                 Starring: ${escapeHtml(getActors(champion.id).join(" · "))}
               </div>
-
               <p class="synopsis">
                 ${
                   tournament.type === "ultimate"
@@ -2540,7 +1917,6 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
               ${escapeHtml(tournament.rounds[next.roundIndex].label)} · Match ${next.matchIndex + 1}
             </div>
           </div>
-
           <strong>${totalVotes(tournament)} of ${totalMatches(tournament)} votes complete</strong>
         </div>
 
@@ -2566,7 +1942,6 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       bracket.innerHTML = tournament.rounds.map(round => `
         <section>
           <div class="round-title">${escapeHtml(round.label)}</div>
-
           ${round.matches.map(match => `
             <div class="bracket-match">
               ${bracketTeam(tournament, match.movieAId, match.winnerId)}
@@ -2578,28 +1953,23 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
     }
 
     function renderUltimateQualifiers() {
-      const container = document.querySelector("#ultimateQualifiers");
-      const status = document.querySelector("#qualifierStatus");
-
       const qualifiers = [...state.ultimateQualifiers]
         .sort((a, b) => (
           a.qualifyingTournament - b.qualifyingTournament ||
           a.qualifierRank - b.qualifierRank
         ));
 
-      status.textContent =
+      document.querySelector("#qualifierStatus").textContent =
         `${qualifiers.length} of ${ULTIMATE_FIELD_SIZE} Ultimate Final spots filled.`;
 
       if (!qualifiers.length) {
-        container.innerHTML = `
-          <p class="muted">
-            The Top 4 from each qualifying tournament appear here.
-          </p>
+        document.querySelector("#ultimateQualifiers").innerHTML = `
+          <p class="muted">The Top 4 from each qualifying tournament appear here.</p>
         `;
         return;
       }
 
-      container.innerHTML = `
+      document.querySelector("#ultimateQualifiers").innerHTML = `
         <div class="qualifier-grid">
           ${qualifiers.map((qualifier, index) => {
             const movie = getMovie(qualifier.id);
@@ -2634,31 +2004,22 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
 
       if (tournament.type === "ultimate") {
         panel.innerHTML = `
-          <div class="panel-heading">
-            <h2>Movie Madness Season Complete</h2>
+          <div class="message">
+            Movie Madness is complete. Use Reset All Data to begin a new season.
           </div>
-
-          <p class="muted">
-            The Ultimate Final is complete. Use Reset All Data to begin a new season.
-          </p>
         `;
         return;
       }
 
-      const completed = state.tournaments
+      const qualifyingCount = state.tournaments
         .filter(item => item.type === "regular")
         .length;
 
-      if (completed < QUALIFYING_TOURNAMENT_COUNT) {
+      if (qualifyingCount < QUALIFYING_TOURNAMENT_COUNT) {
         panel.innerHTML = `
-          <div class="panel-heading">
-            <h2>Choose Your Next Theme Tournament</h2>
+          <div class="message">
+            Use the Theme Tournament controls below to start Qualifying Tournament ${qualifyingCount + 1}.
           </div>
-
-          <p class="muted">
-            Use the Theme Tournament controls to start Qualifying Tournament ${completed + 1}.
-            No movies automatically return from the prior bracket.
-          </p>
         `;
         return;
       }
@@ -2668,10 +2029,9 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
           <div>
             <h2>Start the Ultimate Final</h2>
             <p class="muted">
-              All eight qualifying tournaments are complete. Their Top 4 finishers create a 32-movie Ultimate Final.
+              Eight qualifying tournaments are complete. Their Top 4 finishers create a 32-movie Ultimate Final.
             </p>
           </div>
-
           <strong>${state.ultimateQualifiers.length} / ${ULTIMATE_FIELD_SIZE} Qualifiers</strong>
         </div>
 
@@ -2682,7 +2042,7 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
     }
 
     function renderHallOfFame() {
-      const rows = state.catalog
+      const rows = catalog
         .map(movie => ({
           movie,
           stats: getMovieStats(movie.id)
@@ -2699,9 +2059,7 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
         <tr>
           <td>
             <strong>${escapeHtml(movie.title)}</strong><br>
-            <span class="muted">
-              ${escapeHtml(movie.year)} · ${escapeHtml(movie.genre)}
-            </span>
+            <span class="muted">${escapeHtml(movie.year)} · ${escapeHtml(movie.genres.join(" · "))}</span>
           </td>
           <td>${stats.appearances}</td>
           <td>${stats.totalWins}</td>
@@ -2723,41 +2081,10 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
       renderHallOfFame();
 
       if (tournament) {
+        renderLeaderboards(tournament);
         document.querySelector("#undoButton").disabled =
           tournament.status === "complete" ||
           tournament.history.length === 0;
-
-        document.querySelector("#actorLeaderboards").innerHTML = `
-          ${leaderboardHtml(
-            calculateActorStats([tournament]),
-            "Current Tournament Favorite Actors",
-            "Based only on the active tournament.",
-            "Actor"
-          )}
-
-          ${leaderboardHtml(
-            calculateActorStats(state.tournaments),
-            "Career Favorite Actors",
-            "Based on all played tournaments.",
-            "Actor"
-          )}
-        `;
-
-        document.querySelector("#genreLeaderboards").innerHTML = `
-          ${leaderboardHtml(
-            calculateGenreStats([tournament]),
-            "Current Tournament Favorite Genres",
-            "Based only on the active tournament.",
-            "Genre"
-          )}
-
-          ${leaderboardHtml(
-            calculateGenreStats(state.tournaments),
-            "Career Favorite Genres",
-            "Based on all played tournaments.",
-            "Genre"
-          )}
-        `;
       } else {
         document.querySelector("#undoButton").disabled = true;
         document.querySelector("#actorLeaderboards").innerHTML = "";
@@ -2769,34 +2096,49 @@ The Black Phone|2022|Horror|Mason Thames|Ethan Hawke
 
     function resetAllData() {
       const confirmed = window.confirm(
-        "Reset the full Theme Tournament season, Ultimate Final pool, votes, actor records, genre records, and saved movie results?"
+        "Reset all brackets, Ultimate Final qualifiers, actor results, genre results, and saved movie data?"
       );
 
       if (!confirmed) return;
 
       localStorage.removeItem(STORAGE_KEY);
-      initialize();
-    }
+      state = {
+        tournaments: [],
+        ultimateQualifiers: [],
+        stats: {}
+      };
 
-    function initialize() {
-      const savedState = loadState();
-
-      if (savedState && typeof savedState === "object") {
-        state = savedState;
-      } else {
-        state = {
-          version: 1,
-          catalog: [],
-          stats: {},
-          tournaments: [],
-          ultimateQualifiers: []
-        };
-      }
-
-      ensureCatalogHasMovies();
-      populateThemeControls();
       saveState();
       render();
+    }
+
+    async function initialize() {
+      try {
+        await Promise.all([
+          loadCatalog(),
+          loadCoverage()
+        ]);
+
+        const saved = loadState();
+
+        if (saved && typeof saved === "object") {
+          state = {
+            tournaments: saved.tournaments || [],
+            ultimateQualifiers: saved.ultimateQualifiers || [],
+            stats: saved.stats || {}
+          };
+        }
+
+        populateThemeControls();
+        render();
+      } catch (error) {
+        document.querySelector("#currentMatchupPanel").innerHTML = `
+          <div class="message">
+            <strong>Catalog loading error:</strong><br>
+            ${escapeHtml(error.message)}
+          </div>
+        `;
+      }
     }
 
     document.addEventListener("click", event => {
