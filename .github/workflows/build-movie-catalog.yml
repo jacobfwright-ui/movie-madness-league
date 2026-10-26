@@ -1,0 +1,38 @@
+name: Build Movie Catalog
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-catalog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build catalog from TMDb
+        env:
+          TMDB_BEARER_TOKEN: ${{ secrets.TMDB_BEARER_TOKEN }}
+        run: node scripts/build-movie-catalog.mjs
+
+      - name: Commit generated catalog
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+            git add movie-catalog.json catalog-coverage.json
+            git commit -m "Update TMDb movie catalog"
+            git push
+          else
+            echo "No catalog changes to commit."
+          fi
