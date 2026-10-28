@@ -656,10 +656,20 @@
         </div>
       </div>
 
-      <div class="actions">
-        <button id="undoButton" class="button-secondary">Undo Last Vote</button>
-        <button id="resetButton" class="button-danger">Reset All Data</button>
-      </div>
+     <div class="actions">
+  <button id="undoButton" class="button-secondary">Undo Last Vote</button>
+
+  <button id="resetButton" class="button-danger">
+    Reset All Data
+  </button>
+
+  <button
+    class="button-danger"
+    onclick="localStorage.removeItem('movieMadnessCatalogV1'); window.location.reload();"
+  >
+    Emergency Reset
+  </button>
+</div>
     </header>
 
     <section id="summary"></section>
