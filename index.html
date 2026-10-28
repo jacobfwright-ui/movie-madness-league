@@ -1007,7 +1007,6 @@
     const GENRES = [
       "Action",
       "Adventure",
-      "Animation",
       "Comedy",
       "Crime / Thriller",
       "Drama",
@@ -1094,7 +1093,9 @@
         throw new Error("movie-catalog.json does not contain a movies array.");
       }
 
-      catalog = data.movies;
+      catalog = data.movies.filter(movie => { 
+        return !movie.genres.includes("Animation"); 
+      });
     }
 
     async function loadCoverage() {
