@@ -4,6 +4,7 @@ const TOKEN = process.env.TMDB_BEARER_TOKEN;
 const TARGET_PER_BUCKET = 64;
 const MAX_PAGES_PER_SOURCE_GENRE = 4;
 const PAUSE_MS = 90;
+const TODAY = new Date().toISOString().slice(0, 10);
 
 const DECADES = [
   { label: "1970s", start: "1970-01-01", end: "1979-12-31" },
@@ -11,7 +12,7 @@ const DECADES = [
   { label: "1990s", start: "1990-01-01", end: "1999-12-31" },
   { label: "2000s", start: "2000-01-01", end: "2009-12-31" },
   { label: "2010s", start: "2010-01-01", end: "2019-12-31" },
-  { label: "2020s", start: "2020-01-01", end: new Date().toISOString().slice(0, 10) }
+ { label: "2020s", start: "2020-01-01", end: TODAY }
 ];
 
 const CATEGORY_SOURCES = {
@@ -149,12 +150,23 @@ async function main() {
             sort_by: "popularity.desc",
             vote_count_gte: "10",
             with_genres: sourceGenreId,
-            primary_release_date_gte: decade.start,
-            primary_release_date_lte: decade.end,
+            "primary_release_date.gte": decade.start,
+            "primary_release_date.lte": decade.end,
             page
           });
 
           for (const movie of result.results || []) {
+            const cutoffDate = decade.end < TODAY
+  ? decade.end
+  : TODAY;
+
+if (
+  !movie.release_date ||
+  movie.release_date < decade.start ||
+  movie.release_date > cutoffDate
+) {
+  continue;
+}
             if (
               !movie.id ||
               !movie.title ||
