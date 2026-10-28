@@ -1,7 +1,10 @@
 name: Build Movie Catalog
 
 on:
-  workflow_dispatch:
+    workflow_dispatch:
+    
+  schedule:
+    - cron: "17 17 * * 1"
 
 permissions:
   contents: write
