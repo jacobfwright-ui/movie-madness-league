@@ -1,27 +1,27 @@
 {
-  "generatedAt": "2026-10-28T17:09:35.875Z",
+  "generatedAt": "2026-10-28T20:12:24.229Z",
   "targetPerGenreDecade": 64,
   "buckets": [
     {
       "decade": "1970s",
       "category": "Action",
-      "found": 64,
+      "found": 61,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1970s",
       "category": "Adventure",
-      "found": 64,
+      "found": 44,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1970s",
       "category": "Animation",
-      "found": 64,
+      "found": 10,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1970s",
@@ -47,44 +47,44 @@
     {
       "decade": "1970s",
       "category": "Fantasy",
-      "found": 64,
+      "found": 16,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1970s",
       "category": "Horror",
-      "found": 64,
+      "found": 40,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1970s",
       "category": "Musical",
-      "found": 64,
+      "found": 10,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1970s",
       "category": "Romance",
-      "found": 64,
+      "found": 43,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1970s",
       "category": "Science Fiction",
-      "found": 64,
+      "found": 30,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1970s",
       "category": "War / Western",
-      "found": 64,
+      "found": 43,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1980s",
@@ -103,9 +103,9 @@
     {
       "decade": "1980s",
       "category": "Animation",
-      "found": 64,
+      "found": 24,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1980s",
@@ -131,9 +131,9 @@
     {
       "decade": "1980s",
       "category": "Fantasy",
-      "found": 64,
+      "found": 53,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1980s",
@@ -145,9 +145,9 @@
     {
       "decade": "1980s",
       "category": "Musical",
-      "found": 64,
+      "found": 19,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1980s",
@@ -159,16 +159,16 @@
     {
       "decade": "1980s",
       "category": "Science Fiction",
-      "found": 64,
+      "found": 63,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1980s",
       "category": "War / Western",
-      "found": 64,
+      "found": 37,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1990s",
@@ -187,9 +187,9 @@
     {
       "decade": "1990s",
       "category": "Animation",
-      "found": 64,
+      "found": 49,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1990s",
@@ -222,16 +222,16 @@
     {
       "decade": "1990s",
       "category": "Horror",
-      "found": 64,
+      "found": 46,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1990s",
       "category": "Musical",
-      "found": 64,
+      "found": 28,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1990s",
@@ -243,16 +243,16 @@
     {
       "decade": "1990s",
       "category": "Science Fiction",
-      "found": 64,
+      "found": 52,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "1990s",
       "category": "War / Western",
-      "found": 64,
+      "found": 36,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "2000s",
@@ -313,9 +313,9 @@
     {
       "decade": "2000s",
       "category": "Musical",
-      "found": 64,
+      "found": 51,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "2000s",
@@ -481,9 +481,9 @@
     {
       "decade": "2020s",
       "category": "Musical",
-      "found": 64,
+      "found": 42,
       "target": 64,
-      "ready": true
+      "ready": false
     },
     {
       "decade": "2020s",
@@ -502,9 +502,9 @@
     {
       "decade": "2020s",
       "category": "War / Western",
-      "found": 64,
+      "found": 49,
       "target": 64,
-      "ready": true
+      "ready": false
     }
   ]
 }
