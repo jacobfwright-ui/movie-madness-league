@@ -2112,47 +2112,41 @@ function posterHtml(movie) {
       `).join("");
     }
 
-    function render() {
-      const tournament = getCurrentTournament();
+   function render() {
+  const tournament = getCurrentTournament();
 
-      renderSummary(tournament);
-      renderCurrentMatchup(tournament);
-      renderBracket(tournament);
-      renderUltimateQualifiers();
-      renderNextTournamentPanel(tournament);
-      renderHallOfFame();
+  try {
+    renderSummary(tournament);
+    renderCurrentMatchup(tournament);
+    renderBracket(tournament);
+    renderUltimateQualifiers();
+    renderNextTournamentPanel(tournament);
+    renderHallOfFame();
 
-      if (tournament) {
-        renderLeaderboards(tournament);
-        document.querySelector("#undoButton").disabled =
-          tournament.status === "complete" ||
-          tournament.history.length === 0;
-      } else {
-        document.querySelector("#undoButton").disabled = true;
-        document.querySelector("#actorLeaderboards").innerHTML = "";
-        document.querySelector("#genreLeaderboards").innerHTML = "";
-      }
+    if (tournament) {
+      renderLeaderboards(tournament);
 
-      updateThemeStatus();
+      document.querySelector("#undoButton").disabled =
+        tournament.status === "complete" ||
+        tournament.history.length === 0;
+    } else {
+      document.querySelector("#undoButton").disabled = true;
+      document.querySelector("#actorLeaderboards").innerHTML = "";
+      document.querySelector("#genreLeaderboards").innerHTML = "";
     }
 
-    function resetAllData() {
-      const confirmed = window.confirm(
-        "Reset all brackets, Ultimate Final qualifiers, actor results, genre results, and saved movie data?"
-      );
+    updateThemeStatus();
+  } catch (error) {
+    console.error("Movie Madness render error:", error);
 
-      if (!confirmed) return;
-
-      localStorage.removeItem(STORAGE_KEY);
-      state = {
-        tournaments: [],
-        ultimateQualifiers: [],
-        stats: {}
-      };
-
-      saveState();
-      render();
-    }
+    document.querySelector("#currentMatchupPanel").innerHTML = `
+      <div class="message">
+        <strong>Bracket rendering error:</strong><br>
+        ${escapeHtml(error.message)}
+      </div>
+    `;
+  }
+}
 
     async function initialize() {
       try {
