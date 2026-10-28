@@ -1353,51 +1353,68 @@
       return { label: "MOVIE", symbol: "◆", colorA: "#1e3a5f", colorB: "#43305f", colorC: "#7dd3fc" };
     }
 
-    function localPosterPath(movie) {
-      return `./posters/${movie.posterFile}`;
-    }
+   function localPosterPath(movie) {
+  return `./posters/${movie.posterFile}`;
+}
 
-    function watchSearchUrl(movie) {
-      return `https://www.google.com/search?q=${encodeURIComponent(
-        `where to watch ${movie.title} ${movie.year}`
-      )}`;
-    }
+function tmdbPosterUrl(movie) {
+  if (!movie.posterPath) {
+    return "";
+  }
 
-    function posterHtml(movie) {
-      const theme = genreTheme(movie.genres);
+  return `https://image.tmdb.org/t/p/w500${movie.posterPath}`;
+}
 
-      return `
-        <div class="movie-poster">
-          <img
-            class="poster-image"
-            src="${escapeHtml(localPosterPath(movie))}"
-            alt="Poster for ${escapeHtml(movie.title)}"
-            loading="lazy"
-            onerror="this.style.display='none'"
-          >
+function posterHtml(movie) {
+  const theme = genreTheme(movie.genres);
+  const localPath = localPosterPath(movie);
+  const tmdbPath = tmdbPosterUrl(movie);
 
-          <div
-            class="poster-fallback"
-            style="
-              --poster-a: ${theme.colorA};
-              --poster-b: ${theme.colorB};
-              --poster-c: ${theme.colorC};
-            "
-          >
-            <div>
-              <div class="genre-symbol">${theme.symbol}</div>
-              <div class="genre-label">${escapeHtml(theme.label)}</div>
-            </div>
+  return `
+    <div class="movie-poster">
+      <img
+        class="poster-image"
+        src="${escapeHtml(localPath)}"
+        data-tmdb-poster="${escapeHtml(tmdbPath)}"
+        alt="Poster for ${escapeHtml(movie.title)}"
+        loading="lazy"
+        onerror="
+          if (
+            this.dataset.tmdbPoster &&
+            !this.dataset.tmdbLoaded
+          ) {
+            this.dataset.tmdbLoaded = 'true';
+            this.src = this.dataset.tmdbPoster;
+          } else {
+            this.style.display = 'none';
+          }
+        "
+      >
 
-            <div class="poster-bottom">
-              <div class="poster-year">${escapeHtml(movie.year)}</div>
-              <div class="poster-title">${escapeHtml(movie.title)}</div>
-              <div class="poster-genre">${escapeHtml(movie.genres.join(" · "))}</div>
-            </div>
+      <div
+        class="poster-fallback"
+        style="
+          --poster-a: ${theme.colorA};
+          --poster-b: ${theme.colorB};
+          --poster-c: ${theme.colorC};
+        "
+      >
+        <div>
+          <div class="genre-symbol">${theme.symbol}</div>
+          <div class="genre-label">${escapeHtml(theme.label)}</div>
+        </div>
+
+        <div class="poster-bottom">
+          <div class="poster-year">${escapeHtml(movie.year)}</div>
+          <div class="poster-title">${escapeHtml(movie.title)}</div>
+          <div class="poster-genre">
+            ${escapeHtml(movie.genres.join(" · "))}
           </div>
         </div>
-      `;
-    }
+      </div>
+    </div>
+  `;
+}
 
     function movieCard(movie, roundIndex, matchIndex) {
       return `
