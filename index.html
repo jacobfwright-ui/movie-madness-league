@@ -1425,7 +1425,13 @@ function posterHtml(movie) {
     </div>
   `;
 }
+    
+    function watchSearchUrl(movie) {
+  const searchText = `where to watch ${movie.title} ${movie.year}`;
 
+  return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
+}
+    
     function movieCard(movie, roundIndex, matchIndex) {
       return `
         <article class="movie-card">
