@@ -1626,19 +1626,25 @@ function posterHtml(movie) {
       );
     }
 
-    function usedRegularMovieIds() {
-      if (document.querySelector("#allowReuse").checked) {
-        return new Set(
-          state.ultimateQualifiers.map(qualifier => qualifier.id)
-        );
-      }
+   function usedRegularMovieIds() {
+  const reuseCheckbox = document.querySelector("#allowReuse");
 
-      return new Set(
-        state.tournaments
-          .filter(tournament => tournament.type === "regular")
-          .flatMap(tournament => tournament.entries.map(entry => entry.id))
-      );
-    }
+  const allowReuse = reuseCheckbox
+    ? reuseCheckbox.checked
+    : true;
+
+  if (allowReuse) {
+    return new Set(
+      state.ultimateQualifiers.map(qualifier => qualifier.id)
+    );
+  }
+
+  return new Set(
+    state.tournaments
+      .filter(tournament => tournament.type === "regular")
+      .flatMap(tournament => tournament.entries.map(entry => entry.id))
+  );
+}
 
     function getThemeCandidates() {
   const selectedGenre = document.querySelector("#themeGenre").value;
@@ -1709,31 +1715,39 @@ function posterHtml(movie) {
         `${candidates.length} eligible movies found. A ${bracketSize}-movie bracket is ready.`;
     }
 
-    function populateThemeControls() {
-      const genreSelect = document.querySelector("#themeGenre");
-      const decadeSelect = document.querySelector("#themeDecade");
+   function populateThemeControls() {
+  const genreSelect = document.querySelector("#themeGenre");
+  const decadeSelect = document.querySelector("#themeDecade");
+  const bracketSizeSelect = document.querySelector("#themeBracketSize");
+  const reuseCheckbox = document.querySelector("#allowReuse");
 
-      genreSelect.innerHTML = `
-        <option value="All">All Genres</option>
-        ${GENRES.map(genre => `
-          <option value="${escapeHtml(genre)}">${escapeHtml(genre)}</option>
-        `).join("")}
-      `;
+  if (!genreSelect || !decadeSelect || !bracketSizeSelect) {
+    console.error("Theme Tournament controls are missing from the page.");
+    return;
+  }
 
-      decadeSelect.innerHTML = `
-        <option value="All">All Decades</option>
-        ${DECADES.map(decade => `
-          <option value="${escapeHtml(decade)}">${escapeHtml(decade)}</option>
-        `).join("")}
-      `;
+  genreSelect.innerHTML = `
+    <option value="All">All Genres</option>
+    ${GENRES.map(genre => `
+      <option value="${escapeHtml(genre)}">${escapeHtml(genre)}</option>
+    `).join("")}
+  `;
 
-      genreSelect.addEventListener("change", updateThemeStatus);
-      decadeSelect.addEventListener("change", updateThemeStatus);
-      document.querySelector("#themeBracketSize")
-        .addEventListener("change", updateThemeStatus);
-      document.querySelector("#allowReuse")
-        .addEventListener("change", updateThemeStatus);
-    }
+  decadeSelect.innerHTML = `
+    <option value="All">All Decades</option>
+    ${DECADES.map(decade => `
+      <option value="${escapeHtml(decade)}">${escapeHtml(decade)}</option>
+    `).join("")}
+  `;
+
+  genreSelect.addEventListener("change", updateThemeStatus);
+  decadeSelect.addEventListener("change", updateThemeStatus);
+  bracketSizeSelect.addEventListener("change", updateThemeStatus);
+
+  if (reuseCheckbox) {
+    reuseCheckbox.addEventListener("change", updateThemeStatus);
+  }
+}
 
     function startThemeTournament() {
       const currentTournament = getCurrentTournament();
