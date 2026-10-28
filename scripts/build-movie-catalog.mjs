@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 
 const TOKEN = process.env.TMDB_BEARER_TOKEN;
 const TARGET_PER_BUCKET = 64;
-const MAX_PAGES_PER_SOURCE_GENRE = 4;
+const MAX_PAGES_PER_SOURCE_GENRE = 8;
 const PAUSE_MS = 90;
 const TODAY = new Date().toISOString().slice(0, 10);
 
@@ -143,20 +143,28 @@ async function main() {
           bucketMovieIds.size < TARGET_PER_BUCKET;
           page += 1
         ) {
-          const result = await tmdbRequest("/discover/movie", {
-            language: "en-US",
-            include_adult: "false",
-            include_video: "false",
-           sort_by: "vote_average.desc",
-            "vote_average.gte": "7.0",
-            "vote_count.gte": "200",
-            region: "US",
-            with_release_type: "3|2",",
-            with_genres: sourceGenreId,
-            "primary_release_date.gte": decade.start,
-            "primary_release_date.lte": decade.end,
-            page
-          });
+        const cutoffDate = decade.end < TODAY
+  ? decade.end
+  : TODAY;
+
+const result = await tmdbRequest("/discover/movie", {
+  language: "en-US",
+  include_adult: "false",
+  include_video: "false",
+
+  region: "US",
+  with_release_type: "3|2",
+
+  "release_date.gte": decade.start,
+  "release_date.lte": cutoffDate,
+
+  sort_by: "vote_average.desc",
+  "vote_average.gte": "6.5",
+  "vote_count.gte": "200",
+
+  with_genres: sourceGenreId,
+  page
+});
 
           for (const movie of result.results || []) {
             const cutoffDate = decade.end < TODAY
