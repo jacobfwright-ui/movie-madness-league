@@ -18,7 +18,6 @@ const DECADES = [
 const CATEGORY_SOURCES = {
   "Action": ["Action"],
   "Adventure": ["Adventure"],
-  "Animation": ["Animation"],
   "Comedy": ["Comedy"],
   "Crime / Thriller": ["Crime", "Mystery", "Thriller"],
   "Drama": ["Drama"],
@@ -120,6 +119,8 @@ async function main() {
     genreData.genres.map(genre => [genre.name, genre.id])
   );
 
+  const animationGenreId = tmdbGenreIdsByName.get("Animation");  
+
   const discoveredMovies = new Map();
   const coverage = {};
 
@@ -162,7 +163,9 @@ const result = await tmdbRequest("/discover/movie", {
   "vote_average.gte": "6.5",
   "vote_count.gte": "200",
 
-  with_genres: sourceGenreId,
+   with_genres: sourceGenreId,
+   without_genres: animationGenreId,
+  
   page
 });
 
