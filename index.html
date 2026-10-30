@@ -1086,6 +1086,7 @@
     "use strict";
 
     const STORAGE_KEY = "movieMadnessCatalogV1";
+    const WATCHLIST_KEY = "movieMadnessWatchlistV1";
     const QUALIFYING_TOURNAMENT_COUNT = 8;
     const ULTIMATE_FIELD_SIZE = 32;
     const QUALIFIERS_PER_TOURNAMENT = 4;
@@ -1115,6 +1116,7 @@
     ];
 
     let catalog = [];
+    let watchlist = [];
     let coverage = [];
     let state = {
       tournaments: [],
@@ -1145,7 +1147,127 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
+function loadWatchlist() {
+  try {
+    const saved = localStorage.getItem(WATCHLIST_KEY);
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
 
+function saveWatchlist() {
+  try {
+    localStorage.setItem(
+      WATCHLIST_KEY,
+      JSON.stringify(watchlist)
+    );
+  } catch {
+    console.warn("Watchlist could not be saved.");
+  }
+}
+
+function isInWatchlist(movieId) {
+  return watchlist.includes(movieId);
+}
+
+function toggleWatchlist(movieId) {
+  if (isInWatchlist(movieId)) {
+    watchlist = watchlist.filter(id => id !== movieId);
+  } else {
+    watchlist.push(movieId);
+  }
+
+  saveWatchlist();
+  render();
+}
+
+function clearWatchlist() {
+  const confirmed = window.confirm(
+    "Clear every movie from your Watchlist?"
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  watchlist = [];
+  saveWatchlist();
+  render();
+}
+
+function renderWatchlist() {
+  const container = document.querySelector("#watchlist");
+  const count = document.querySelector("#watchlistCount");
+
+  const validMovieIds = watchlist.filter(movieId => {
+    return Boolean(getMovie(movieId));
+  });
+
+  if (validMovieIds.length !== watchlist.length) {
+    watchlist = validMovieIds;
+    saveWatchlist();
+  }
+
+  count.textContent = `(${watchlist.length})`;
+
+  if (!watchlist.length) {
+    container.innerHTML = `
+      <p class="muted">
+        Your Watchlist is empty. Use “Add to Watchlist” on a movie matchup card.
+      </p>
+    `;
+    return;
+  }
+
+  const movies = watchlist
+    .map(movieId => getMovie(movieId))
+    .filter(Boolean)
+    .sort((movieA, movieB) => {
+      return movieA.title.localeCompare(movieB.title);
+    });
+
+  container.innerHTML = `
+    <div class="watchlist-grid">
+      ${movies.map(movie => `
+        <article class="watchlist-item">
+          <div class="watchlist-title">
+            ${escapeHtml(movie.title)}
+          </div>
+
+          <div class="watchlist-meta">
+            ${escapeHtml(movie.year)} ·
+            ${escapeHtml(movie.genres.join(" · "))}
+          </div>
+
+          <div class="watchlist-actors">
+            Starring: ${escapeHtml(getActors(movie.id).join(" · "))}
+          </div>
+
+          <div class="watchlist-actions">
+            <a
+              class="watch-link"
+              href="${escapeHtml(watchSearchUrl(movie))}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Where to Watch
+            </a>
+
+            <button
+              class="watchlist-remove"
+              data-watchlist-remove="true"
+              data-movie="${escapeHtml(movie.id)}"
+            >
+              Remove
+            </button>
+          </div>
+        </article>
+      `).join("")}
+    </div>
+  `;
+}
+    
     function loadState() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -1647,48 +1769,63 @@ function posterHtml(movie) {
   return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
 }
     
-    function movieCard(movie, roundIndex, matchIndex) {
-      return `
-        <article class="movie-card">
-          ${posterHtml(movie)}
+   function movieCard(movie, roundIndex, matchIndex) {
+  const isSaved = isInWatchlist(movie.id);
 
-          <div class="movie-body">
-            <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
+  return `
+    <article class="movie-card">
+      ${posterHtml(movie)}
 
-            <div class="movie-meta">
-              ${escapeHtml(movie.year)} · ${escapeHtml(movie.genres.join(" · "))}
-            </div>
+      <div class="movie-body">
+        <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
 
-            <div class="actor-list">
-              Starring: ${escapeHtml(getActors(movie.id).join(" · "))}
-            </div>
+        <div class="movie-meta">
+          ${escapeHtml(movie.year)} ·
+          ${escapeHtml(movie.genres.join(" · "))}
+        </div>
 
-            <p class="synopsis">
-              Choose this movie to advance it in the bracket.
-            </p>
+        <div class="actor-list">
+          Starring: ${escapeHtml(getActors(movie.id).join(" · "))}
+        </div>
 
-            <a
-              class="watch-link"
-              href="${escapeHtml(watchSearchUrl(movie))}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Find Where to Watch
-            </a>
+        <p class="synopsis">
+          Choose this movie to advance it in the bracket.
+        </p>
 
-            <button
-              class="button-vote"
-              data-vote="true"
-              data-round="${roundIndex}"
-              data-match="${matchIndex}"
-              data-movie="${escapeHtml(movie.id)}"
-            >
-              Vote for ${escapeHtml(movie.title)}
-            </button>
-          </div>
-        </article>
-      `;
-    }
+        <a
+          class="watch-link"
+          href="${escapeHtml(watchSearchUrl(movie))}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Find Where to Watch
+        </a>
+
+        <button
+          class="button-watchlist"
+          data-watchlist-toggle="true"
+          data-movie="${escapeHtml(movie.id)}"
+        >
+          ${
+            isSaved
+              ? "✓ Added to Watchlist"
+              : "+ Add to Watchlist"
+          }
+        </button>
+
+        <button
+          class="button-vote"
+          data-vote="true"
+          data-round="${roundIndex}"
+          data-match="${matchIndex}"
+          data-movie="${escapeHtml(movie.id)}"
+        >
+          Vote for ${escapeHtml(movie.title)}
+        </button>
+      </div>
+    </article>
+  `;
+}
 
     function bracketTeam(tournament, movieId, winnerId) {
       if (!movieId) {
@@ -2353,6 +2490,7 @@ function posterHtml(movie) {
     renderUltimateQualifiers();
     renderNextTournamentPanel(tournament);
     renderHallOfFame();
+    renderWatchlist();
 
     if (tournament) {
       renderLeaderboards(tournament);
@@ -2386,6 +2524,8 @@ function posterHtml(movie) {
           loadCoverage()
         ]);
 
+        watchlist = loadWatchlist();
+
         const saved = loadState();
 
         if (saved && typeof saved === "object") {
@@ -2409,6 +2549,28 @@ function posterHtml(movie) {
     }
 
     document.addEventListener("click", event => {
+        const watchlistToggle = event.target.closest(
+    "[data-watchlist-toggle='true']"
+  );
+
+  if (watchlistToggle) {
+    toggleWatchlist(watchlistToggle.dataset.movie);
+    return;
+  }
+
+  const watchlistRemove = event.target.closest(
+    "[data-watchlist-remove='true']"
+  );
+
+  if (watchlistRemove) {
+    toggleWatchlist(watchlistRemove.dataset.movie);
+    return;
+  }
+
+  if (event.target.closest("#clearWatchlist")) {
+    clearWatchlist();
+    return;
+  }
       const voteButton = event.target.closest("[data-vote='true']");
 
       if (voteButton) {
