@@ -839,6 +839,60 @@
   background: #5e2034;
   color: #ffe8ee;
 }
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+  gap: 0.75rem;
+}
+
+.recommendation-item {
+  padding: 0.9rem;
+  border: 1px solid #344668;
+  border-radius: 10px;
+  background: #10182b;
+}
+
+.recommendation-rank {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.45rem;
+  border-radius: 5px;
+  background: #3b2b62;
+  color: #f0e9ff;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.recommendation-title {
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.recommendation-meta {
+  margin-bottom: 0.45rem;
+  color: #7dd3fc;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.recommendation-reason {
+  min-height: 3.2rem;
+  margin-bottom: 0.75rem;
+  color: #d8e2f7;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.recommendation-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
     
   </style>
 </head>
@@ -963,6 +1017,19 @@
   </div>
 
   <div id="watchlist"></div>
+</section>
+
+    <section class="panel">
+  <div class="panel-heading">
+    <div>
+      <h2>Suggested for You</h2>
+      <p class="muted">
+        Recommendations are based on your tournament winners, favorite genres, actors, and decades.
+      </p>
+    </div>
+  </div>
+
+  <div id="recommendations"></div>
 </section>
 
     <section class="panel">
@@ -2480,6 +2547,266 @@ function posterHtml(movie) {
       `).join("");
     }
 
+function completedVoteCount() {
+  return state.tournaments.reduce((count, tournament) => {
+    return count + tournament.rounds.reduce((roundCount, round) => {
+      return roundCount + round.matches.filter(match => match.winnerId).length;
+    }, 0);
+  }, 0);
+}
+
+function addMovieToPreferenceProfile(profile, movie, weight) {
+  if (!movie) {
+    return;
+  }
+
+  movie.genres.forEach(genre => {
+    profile.genres[genre] = (profile.genres[genre] || 0) + (weight * 3);
+  });
+
+  movie.actors.forEach(actor => {
+    if (actor && actor !== "Unknown") {
+      profile.actors[actor] = (profile.actors[actor] || 0) + (weight * 4);
+    }
+  });
+
+  profile.decades[movie.decade] =
+    (profile.decades[movie.decade] || 0) + weight;
+}
+
+function recommendationMatchLoser(match) {
+  if (!match || !match.winnerId) {
+    return null;
+  }
+
+  return match.movieAId === match.winnerId
+    ? match.movieBId
+    : match.movieAId;
+}
+
+function buildRecommendationProfile() {
+  const profile = {
+    genres: {},
+    actors: {},
+    decades: {}
+  };
+
+  state.tournaments.forEach(tournament => {
+    tournament.rounds.forEach(round => {
+      round.matches.forEach(match => {
+        if (match.winnerId) {
+          addMovieToPreferenceProfile(
+            profile,
+            getMovie(match.winnerId),
+            1
+          );
+        }
+      });
+    });
+
+    if (tournament.status === "complete") {
+      const finalRoundIndex = tournament.rounds.length - 1;
+      const semifinalRoundIndex = tournament.rounds.length - 2;
+
+      const championshipMatch =
+        tournament.rounds[finalRoundIndex].matches[0];
+
+      const championId = championshipMatch.winnerId;
+      const runnerUpId = recommendationMatchLoser(championshipMatch);
+
+      addMovieToPreferenceProfile(profile, getMovie(championId), 5);
+      addMovieToPreferenceProfile(profile, getMovie(runnerUpId), 4);
+
+      if (semifinalRoundIndex >= 0) {
+        tournament.rounds[semifinalRoundIndex].matches.forEach(match => {
+          const semifinalLoser = recommendationMatchLoser(match);
+
+          addMovieToPreferenceProfile(
+            profile,
+            getMovie(semifinalLoser),
+            3
+          );
+        });
+      }
+    }
+  });
+
+  return profile;
+}
+
+function getRecommendationReason(movie, profile) {
+  const sharedGenres = movie.genres
+    .filter(genre => profile.genres[genre])
+    .sort((a, b) => profile.genres[b] - profile.genres[a]);
+
+  const sharedActors = movie.actors
+    .filter(actor => profile.actors[actor])
+    .sort((a, b) => profile.actors[b] - profile.actors[a]);
+
+  const reasons = [];
+
+  if (sharedGenres.length) {
+    reasons.push(
+      `You frequently selected ${sharedGenres.slice(0, 2).join(" and ")} movies.`
+    );
+  }
+
+  if (sharedActors.length) {
+    reasons.push(
+      `You favored movies featuring ${sharedActors[0]}.`
+    );
+  }
+
+  if (profile.decades[movie.decade]) {
+    reasons.push(
+      `You often selected movies from the ${movie.decade}.`
+    );
+  }
+
+  return reasons.length
+    ? reasons.slice(0, 2).join(" ")
+    : "Recommended from your Movie Madness catalog.";
+}
+
+function getRecommendations(limit = 3) {
+  const profile = buildRecommendationProfile();
+
+  const playedMovieIds = new Set(
+    state.tournaments.flatMap(tournament =>
+      tournament.entries.map(entry => entry.id)
+    )
+  );
+
+  const savedWatchlistIds = typeof watchlist !== "undefined"
+    ? new Set(watchlist)
+    : new Set();
+
+  const qualifiedMovieIds = new Set(
+    state.ultimateQualifiers.map(qualifier => qualifier.id)
+  );
+
+  return catalog
+    .filter(movie => {
+      return (
+        !playedMovieIds.has(movie.id) &&
+        !savedWatchlistIds.has(movie.id) &&
+        !qualifiedMovieIds.has(movie.id)
+      );
+    })
+    .map(movie => {
+      let score = 0;
+
+      movie.genres.forEach(genre => {
+        score += profile.genres[genre] || 0;
+      });
+
+      movie.actors.forEach(actor => {
+        score += profile.actors[actor] || 0;
+      });
+
+      score += profile.decades[movie.decade] || 0;
+
+      return {
+        movie,
+        score,
+        reason: getRecommendationReason(movie, profile)
+      };
+    })
+    .filter(result => result.score > 0)
+    .sort((a, b) => {
+      return (
+        b.score - a.score ||
+        b.movie.year - a.movie.year ||
+        a.movie.title.localeCompare(b.movie.title)
+      );
+    })
+    .slice(0, limit);
+}
+
+function renderRecommendations() {
+  const container = document.querySelector("#recommendations");
+
+  if (!container) {
+    return;
+  }
+
+  const votes = completedVoteCount();
+
+  if (votes < 8) {
+    container.innerHTML = `
+      <p class="muted">
+        Complete at least ${8 - votes} more vote${8 - votes === 1 ? "" : "s"}
+        to unlock personalized movie recommendations.
+      </p>
+    `;
+    return;
+  }
+
+  const recommendations = getRecommendations(3);
+
+  if (!recommendations.length) {
+    container.innerHTML = `
+      <p class="muted">
+        No new recommendations are available yet. Try completing more tournaments
+        or remove some movies from your Watchlist.
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="recommendation-grid">
+      ${recommendations.map((result, index) => {
+        const movie = result.movie;
+        const saved = typeof isInWatchlist === "function"
+          ? isInWatchlist(movie.id)
+          : false;
+
+        return `
+          <article class="recommendation-item">
+            <div class="recommendation-rank">
+              Suggestion ${index + 1}
+            </div>
+
+            <div class="recommendation-title">
+              ${escapeHtml(movie.title)}
+            </div>
+
+            <div class="recommendation-meta">
+              ${escapeHtml(movie.year)} ·
+              ${escapeHtml(movie.genres.join(" · "))}<br>
+              ${escapeHtml(movie.actors.join(" · "))}
+            </div>
+
+            <div class="recommendation-reason">
+              ${escapeHtml(result.reason)}
+            </div>
+
+            <div class="recommendation-actions">
+              <a
+                class="watch-link"
+                href="${escapeHtml(watchSearchUrl(movie))}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Where to Watch
+              </a>
+
+              <button
+                class="button-watchlist"
+                data-watchlist-toggle="true"
+                data-movie="${escapeHtml(movie.id)}"
+              >
+                ${saved ? "✓ Saved" : "+ Watchlist"}
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+    
    function render() {
   const tournament = getCurrentTournament();
 
@@ -2491,6 +2818,7 @@ function posterHtml(movie) {
     renderNextTournamentPanel(tournament);
     renderHallOfFame();
     renderWatchlist();
+    renderRecommendations();
 
     if (tournament) {
       renderLeaderboards(tournament);
