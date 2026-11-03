@@ -710,11 +710,12 @@
 
     .recommendation-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      grid-template-columns: 1fr;
       gap: 0.75rem;
     }
 
     .recommendation-item {
+      position: relative;
       padding: 0.9rem;
       border: 1px solid #344668;
       border-radius: 10px;
@@ -734,8 +735,35 @@
       text-transform: uppercase;
     }
 
+    /* Dismiss (X) Button style */
+    .dismiss-suggestion {
+      position: absolute;
+      top: 0.7rem;
+      right: 0.7rem;
+      display: grid;
+      place-items: center;
+      width: 1.7rem;
+      height: 1.7rem;
+      padding: 0;
+      border: 1px solid #344668;
+      border-radius: 50%;
+      background: #141e35;
+      color: var(--muted);
+      font-size: 1.1rem;
+      font-weight: bold;
+      line-height: 1;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .dismiss-suggestion:hover {
+      background: #8c334d;
+      color: #ffe8ee;
+      border-color: #8c334d;
+    }
+
     .recommendation-title {
       margin-bottom: 0.3rem;
+      padding-right: 1.5rem;
       font-size: 1rem;
       font-weight: 900;
     }
@@ -1196,7 +1224,8 @@
     let state = {
       tournaments: [],
       ultimateQualifiers: [],
-      stats: {}
+      stats: {},
+      dismissedSuggestions: [] // Persistent array to track dismissed suggestion IDs
     };
 
     function clone(value) {
@@ -1277,7 +1306,8 @@
       state = {
         tournaments: [],
         ultimateQualifiers: [],
-        stats: {}
+        stats: {},
+        dismissedSuggestions: []
       };
       saveState();
       render();
@@ -2599,12 +2629,16 @@
         state.ultimateQualifiers.map(qualifier => qualifier.id)
       );
 
+      // Set to hold all dismissed suggestion IDs
+      const dismissedIds = new Set(state.dismissedSuggestions || []);
+
       return catalog
         .filter(movie => {
           return (
             !playedMovieIds.has(movie.id) &&
             !savedWatchlistIds.has(movie.id) &&
-            !qualifiedMovieIds.has(movie.id)
+            !qualifiedMovieIds.has(movie.id) &&
+            !dismissedIds.has(movie.id) // Filter out dismissed suggestions
           );
         })
         .map(movie => {
@@ -2631,6 +2665,18 @@
           );
         })
         .slice(0, limit);
+    }
+
+    // Interactive dismiss trigger
+    function dismissSuggestion(movieId) {
+      if (!state.dismissedSuggestions) {
+        state.dismissedSuggestions = [];
+      }
+      if (!state.dismissedSuggestions.includes(movieId)) {
+        state.dismissedSuggestions.push(movieId);
+      }
+      saveState();
+      render();
     }
 
     function renderRecommendations() {
@@ -2670,6 +2716,11 @@
               : false;
             return `
               <article class="recommendation-item">
+                <button 
+                  class="dismiss-suggestion" 
+                  data-dismiss-movie="${escapeHtml(movie.id)}" 
+                  title="Don't suggest this movie again"
+                >×</button>
                 <div class="recommendation-rank">
                   Suggestion ${index + 1}
                 </div>
@@ -2755,7 +2806,8 @@
           state = {
             tournaments: saved.tournaments || [],
             ultimateQualifiers: saved.ultimateQualifiers || [],
-            stats: saved.stats || {}
+            stats: saved.stats || {},
+            dismissedSuggestions: saved.dismissedSuggestions || []
           };
         }
         populateThemeControls();
@@ -2771,6 +2823,13 @@
     }
 
     document.addEventListener("click", event => {
+      // Handle Suggestion Dismiss Button
+      const dismissBtn = event.target.closest("[data-dismiss-movie]");
+      if (dismissBtn) {
+        dismissSuggestion(dismissBtn.dataset.dismissMovie);
+        return;
+      }
+
       const watchlistToggle = event.target.closest(
         "[data-watchlist-toggle='true']"
       );
