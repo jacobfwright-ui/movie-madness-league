@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Movie Madness League</title>
-
   <style>
     :root {
       --bg: #0a1020;
@@ -143,6 +142,24 @@
       align-items: baseline;
       gap: 0.75rem;
       margin-bottom: 1rem;
+    }
+
+    /* Side-by-side layout for Current Bracket + Suggested for You */
+    .bracket-and-suggestions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 1rem;
+      align-items: start;
+      margin-bottom: 1rem;
+    }
+
+    .bracket-and-suggestions > .panel {
+      margin-bottom: 0;
+      min-width: 0;
+    }
+
+    .bracket-and-suggestions .recommendation-grid {
+      grid-template-columns: 1fr;
     }
 
     .stats {
@@ -621,6 +638,140 @@
       display: none !important;
     }
 
+    .button-watchlist {
+      width: 100%;
+      margin-bottom: 0.6rem;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid #5d4a8f;
+      border-radius: 9px;
+      background: #3b2b62;
+      color: #f0e9ff;
+      font-weight: 800;
+    }
+
+    .button-watchlist:hover {
+      background: #523d83;
+    }
+
+    .watchlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .watchlist-item {
+      padding: 0.85rem;
+      border: 1px solid #344668;
+      border-radius: 10px;
+      background: #10182b;
+    }
+
+    .watchlist-title {
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .watchlist-meta {
+      margin-bottom: 0.45rem;
+      color: #7dd3fc;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .watchlist-actors {
+      margin-bottom: 0.75rem;
+      color: #f6d889;
+      font-size: 0.8rem;
+      line-height: 1.35;
+    }
+
+    .watchlist-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    .watchlist-actions button,
+    .watchlist-actions a {
+      padding: 0.6rem 0.45rem;
+      border-radius: 7px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .watchlist-remove {
+      border: 1px solid #8c334d;
+      background: #5e2034;
+      color: #ffe8ee;
+    }
+
+    .recommendation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .recommendation-item {
+      padding: 0.9rem;
+      border: 1px solid #344668;
+      border-radius: 10px;
+      background: #10182b;
+    }
+
+    .recommendation-rank {
+      display: inline-block;
+      margin-bottom: 0.5rem;
+      padding: 0.25rem 0.45rem;
+      border-radius: 5px;
+      background: #3b2b62;
+      color: #f0e9ff;
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .recommendation-title {
+      margin-bottom: 0.3rem;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .recommendation-meta {
+      margin-bottom: 0.45rem;
+      color: #7dd3fc;
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .recommendation-reason {
+      min-height: 2.4rem;
+      margin-bottom: 0.75rem;
+      color: #d8e2f7;
+      font-size: 0.82rem;
+      line-height: 1.4;
+    }
+
+    .recommendation-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 1150px) {
+      .bracket-and-suggestions {
+        grid-template-columns: 1fr;
+      }
+
+      .bracket-and-suggestions .recommendation-grid {
+        grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      }
+    }
+
     @media (max-width: 900px) {
       .topbar,
       .matchup,
@@ -643,260 +794,136 @@
         text-align: center;
       }
     }
+
     /* Mobile improvements */
-@media (max-width: 600px) {
-  .page {
-    width: 100%;
-    padding: 0.75rem;
-  }
+    @media (max-width: 600px) {
+      .page {
+        width: 100%;
+        padding: 0.75rem;
+      }
 
-  .topbar {
-    gap: 0.75rem;
-  }
+      .topbar {
+        gap: 0.75rem;
+      }
 
-  h1 {
-    font-size: 1.7rem;
-  }
+      h1 {
+        font-size: 1.7rem;
+      }
 
-  h2 {
-    font-size: 1.3rem;
-  }
+      h2 {
+        font-size: 1.3rem;
+      }
 
-  .panel {
-    padding: 0.85rem;
-    border-radius: 12px;
-  }
+      .panel {
+        padding: 0.85rem;
+        border-radius: 12px;
+      }
 
-  .panel-heading {
-    gap: 0.4rem;
-  }
+      .panel-heading {
+        gap: 0.4rem;
+      }
 
-  .actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    width: 100%;
-  }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+      }
 
-  .actions button {
-    width: 100%;
-    padding: 0.7rem 0.45rem;
-    font-size: 0.8rem;
-  }
+      .actions button {
+        width: 100%;
+        padding: 0.7rem 0.45rem;
+        font-size: 0.8rem;
+      }
 
-  .stats {
-    grid-template-columns: 1fr 1fr;
-    gap: 0.55rem;
-  }
+      .stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.55rem;
+      }
 
-  .stat {
-    padding: 0.7rem;
-  }
+      .stat {
+        padding: 0.7rem;
+      }
 
-  .stat-label {
-    font-size: 0.64rem;
-  }
+      .stat-label {
+        font-size: 0.64rem;
+      }
 
-  .stat-value {
-    font-size: 1rem;
-  }
+      .stat-value {
+        font-size: 1rem;
+      }
 
-  .movie-poster {
-    max-height: 340px;
-  }
+      .movie-poster {
+        max-height: 340px;
+      }
 
-  .movie-body {
-    padding: 0.85rem;
-  }
+      .movie-body {
+        padding: 0.85rem;
+      }
 
-  .movie-title {
-    font-size: 1.1rem;
-  }
+      .movie-title {
+        font-size: 1.1rem;
+      }
 
-  .movie-meta,
-  .actor-list,
-  .synopsis {
-    font-size: 0.82rem;
-  }
+      .movie-meta,
+      .actor-list,
+      .synopsis {
+        font-size: 0.82rem;
+      }
 
-  .watch-link,
-  .button-vote {
-    padding: 0.75rem 0.6rem;
-    font-size: 0.85rem;
-  }
+      .watch-link,
+      .button-vote {
+        padding: 0.75rem 0.6rem;
+        font-size: 0.85rem;
+      }
 
-  .theme-setup-grid {
-    gap: 0.65rem;
-  }
+      .theme-setup-grid {
+        gap: 0.65rem;
+      }
 
-  .theme-setup-grid select {
-    padding: 0.7rem;
-  }
+      .theme-setup-grid select {
+        padding: 0.7rem;
+      }
 
-  .reuse-option {
-    align-items: flex-start;
-    font-size: 0.82rem;
-    line-height: 1.35;
-  }
+      .reuse-option {
+        align-items: flex-start;
+        font-size: 0.82rem;
+        line-height: 1.35;
+      }
 
-  .qualifier-grid {
-    grid-template-columns: 1fr;
-  }
+      .qualifier-grid {
+        grid-template-columns: 1fr;
+      }
 
-  .qualifier {
-    padding: 0.55rem;
-  }
+      .qualifier {
+        padding: 0.55rem;
+      }
 
-  .bracket-wrap {
-    margin-left: -0.85rem;
-    margin-right: -0.85rem;
-    padding-left: 0.85rem;
-    padding-right: 0.85rem;
-  }
+      .bracket-wrap {
+        margin-left: -0.85rem;
+        margin-right: -0.85rem;
+        padding-left: 0.85rem;
+        padding-right: 0.85rem;
+      }
 
-  .bracket {
-    min-width: 900px;
-  }
+      .bracket {
+        min-width: 900px;
+      }
 
-  table {
-    font-size: 0.76rem;
-  }
+      table {
+        font-size: 0.76rem;
+      }
 
-  th,
-  td {
-    padding: 0.5rem 0.35rem;
-  }
+      th,
+      td {
+        padding: 0.5rem 0.35rem;
+      }
 
-  .leaderboard-card {
-    padding: 0.75rem;
-  }
-}
-.button-watchlist {
-  width: 100%;
-  margin-bottom: 0.6rem;
-  padding: 0.7rem 0.9rem;
-  border: 1px solid #5d4a8f;
-  border-radius: 9px;
-  background: #3b2b62;
-  color: #f0e9ff;
-  font-weight: 800;
-}
-
-.button-watchlist:hover {
-  background: #523d83;
-}
-
-.watchlist-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
-  gap: 0.75rem;
-}
-
-.watchlist-item {
-  padding: 0.85rem;
-  border: 1px solid #344668;
-  border-radius: 10px;
-  background: #10182b;
-}
-
-.watchlist-title {
-  margin-bottom: 0.3rem;
-  font-size: 1rem;
-  font-weight: 900;
-}
-
-.watchlist-meta {
-  margin-bottom: 0.45rem;
-  color: #7dd3fc;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.watchlist-actors {
-  margin-bottom: 0.75rem;
-  color: #f6d889;
-  font-size: 0.8rem;
-  line-height: 1.35;
-}
-
-.watchlist-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-}
-
-.watchlist-actions button,
-.watchlist-actions a {
-  padding: 0.6rem 0.45rem;
-  border-radius: 7px;
-  font-size: 0.78rem;
-  font-weight: 800;
-  text-align: center;
-  text-decoration: none;
-}
-
-.watchlist-remove {
-  border: 1px solid #8c334d;
-  background: #5e2034;
-  color: #ffe8ee;
-}
-
-.recommendation-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
-  gap: 0.75rem;
-}
-
-.recommendation-item {
-  padding: 0.9rem;
-  border: 1px solid #344668;
-  border-radius: 10px;
-  background: #10182b;
-}
-
-.recommendation-rank {
-  display: inline-block;
-  margin-bottom: 0.5rem;
-  padding: 0.25rem 0.45rem;
-  border-radius: 5px;
-  background: #3b2b62;
-  color: #f0e9ff;
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.recommendation-title {
-  margin-bottom: 0.3rem;
-  font-size: 1rem;
-  font-weight: 900;
-}
-
-.recommendation-meta {
-  margin-bottom: 0.45rem;
-  color: #7dd3fc;
-  font-size: 0.8rem;
-  font-weight: 700;
-  line-height: 1.35;
-}
-
-.recommendation-reason {
-  min-height: 3.2rem;
-  margin-bottom: 0.75rem;
-  color: #d8e2f7;
-  font-size: 0.82rem;
-  line-height: 1.4;
-}
-
-.recommendation-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-}
-    
+      .leaderboard-card {
+        padding: 0.75rem;
+      }
+    }
   </style>
 </head>
-
 <body>
   <main class="page">
     <header class="topbar">
@@ -906,45 +933,56 @@
           Select a genre or decade for each qualifying tournament. The Top 4 reach the Ultimate Final.
         </div>
       </div>
-
-     <div class="actions">
-  <button id="undoButton" class="button-secondary">Undo Last Vote</button>
-
-  <button id="resetButton" class="button-danger">
-    Reset All Data
-  </button>
-
-  <button
-    class="button-danger"
-    onclick="localStorage.removeItem('movieMadnessCatalogV1'); window.location.reload();"
-  >
-    Emergency Reset
-  </button>
-</div>
+      <div class="actions">
+        <button id="undoButton" class="button-secondary">Undo Last Vote</button>
+        <button id="resetButton" class="button-danger">
+          Reset All Data
+        </button>
+        <button
+          class="button-danger"
+          onclick="localStorage.removeItem('movieMadnessCatalogV1'); window.location.reload();"
+        >
+          Emergency Reset
+        </button>
+      </div>
     </header>
 
     <section id="summary"></section>
+
     <section id="currentMatchupPanel" class="panel"></section>
 
-    <section class="panel">
-      <div class="panel-heading">
-        <h2>Current Bracket</h2>
-        <span class="muted">
-          No movies automatically return. Each new tournament uses a new selected theme.
-        </span>
-      </div>
+    <!-- Side-by-Side Wrapper: Current Bracket + Suggested for You -->
+    <div class="bracket-and-suggestions">
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>Current Bracket</h2>
+          <span class="muted">
+            No movies automatically return. Each new tournament uses a new selected theme.
+          </span>
+        </div>
+        <div class="bracket-wrap">
+          <div id="bracket" class="bracket"></div>
+        </div>
+      </section>
 
-      <div class="bracket-wrap">
-        <div id="bracket" class="bracket"></div>
-      </div>
-    </section>
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h2>Suggested for You</h2>
+            <p class="muted">
+              Recommendations are based on your tournament winners, favorite genres, actors, and decades.
+            </p>
+          </div>
+        </div>
+        <div id="recommendations"></div>
+      </section>
+    </div>
 
     <section class="panel">
       <div class="panel-heading">
         <h2>Ultimate Final Qualifiers</h2>
         <span id="qualifierStatus" class="muted"></span>
       </div>
-
       <div id="ultimateQualifiers"></div>
     </section>
 
@@ -959,7 +997,6 @@
           </p>
         </div>
       </div>
-
       <div class="theme-setup-grid">
         <div>
           <label for="themeGenre">Genre</label>
@@ -967,14 +1004,12 @@
             <option value="All">All Genres</option>
           </select>
         </div>
-
         <div>
           <label for="themeDecade">Decade</label>
           <select id="themeDecade">
             <option value="All">All Decades</option>
           </select>
         </div>
-
         <div>
           <label for="themeBracketSize">Bracket Size</label>
           <select id="themeBracketSize">
@@ -984,53 +1019,35 @@
             <option value="8">8 Movies</option>
           </select>
         </div>
-
         <div>
           <button id="startThemeTournament" class="button-primary">
             Start Theme Tournament
           </button>
         </div>
       </div>
-
       <label class="reuse-option">
         <input id="allowReuse" type="checkbox" checked>
         Allow movies used in earlier qualifying tournaments to appear in a new theme bracket.
       </label>
-
       <div id="themeStatus" class="theme-status">
         Loading movie catalog...
       </div>
     </section>
 
     <section class="panel">
-  <div class="panel-heading">
-    <div>
-      <h2>My Watchlist <span id="watchlistCount">(0)</span></h2>
-      <p class="muted">
-        Save movies you may want to watch later. Your list remains saved across tournaments.
-      </p>
-    </div>
-
-    <button id="clearWatchlist" class="button-danger">
-      Clear Watchlist
-    </button>
-  </div>
-
-  <div id="watchlist"></div>
-</section>
-
-    <section class="panel">
-  <div class="panel-heading">
-    <div>
-      <h2>Suggested for You</h2>
-      <p class="muted">
-        Recommendations are based on your tournament winners, favorite genres, actors, and decades.
-      </p>
-    </div>
-  </div>
-
-  <div id="recommendations"></div>
-</section>
+      <div class="panel-heading">
+        <div>
+          <h2>My Watchlist <span id="watchlistCount">(0)</span></h2>
+          <p class="muted">
+            Save movies you may want to watch later. Your list remains saved across tournaments.
+          </p>
+        </div>
+        <button id="clearWatchlist" class="button-danger">
+          Clear Watchlist
+        </button>
+      </div>
+      <div id="watchlist"></div>
+    </section>
 
     <section class="panel">
       <div class="panel-heading">
@@ -1039,7 +1056,6 @@
           Win percentage = actor movie wins ÷ actor matchup appearances. Minimum three appearances.
         </span>
       </div>
-
       <div id="actorLeaderboards" class="leaderboard-grid"></div>
     </section>
 
@@ -1050,7 +1066,6 @@
           Win percentage = genre movie wins ÷ genre matchup appearances. Minimum three appearances.
         </span>
       </div>
-
       <div id="genreLeaderboards" class="leaderboard-grid"></div>
     </section>
 
@@ -1063,7 +1078,6 @@
           </p>
         </div>
       </div>
-
       <form
         class="suggestion-form"
         action="https://formspree.io/f/xaeqlynz"
@@ -1078,7 +1092,6 @@
             placeholder="Your name"
           >
         </div>
-
         <div>
           <label for="suggestion-email">Email for follow-up — optional</label>
           <input
@@ -1088,7 +1101,6 @@
             placeholder="name@example.com"
           >
         </div>
-
         <div>
           <label for="suggestion-type">Suggestion type</label>
           <select id="suggestion-type" name="suggestion_type">
@@ -1100,7 +1112,6 @@
             <option value="Other">Other</option>
           </select>
         </div>
-
         <div>
           <label for="suggestion-message">Feature suggestion</label>
           <textarea
@@ -1110,11 +1121,9 @@
             placeholder="Example: Add a rematch option for movies eliminated in the first round."
           ></textarea>
         </div>
-
         <button type="submit" class="button-primary">
           Submit Suggestion
         </button>
-
         <div class="form-note">
           Do not include sensitive or personal information. Email is optional and is used only for follow-up.
         </div>
@@ -1126,7 +1135,6 @@
         <h2>Movie Hall of Fame</h2>
         <span class="muted">Career records across all tournaments in this browser.</span>
       </div>
-
       <div class="table-wrap">
         <table>
           <thead>
@@ -1197,12 +1205,10 @@
 
     function shuffle(items) {
       const copy = [...items];
-
       for (let i = copy.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-
       return copy;
     }
 
@@ -1214,127 +1220,137 @@
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
     }
-function loadWatchlist() {
-  try {
-    const saved = localStorage.getItem(WATCHLIST_KEY);
-    return saved ? JSON.parse(saved) : [];
-  } catch {
-    return [];
-  }
-}
 
-function saveWatchlist() {
-  try {
-    localStorage.setItem(
-      WATCHLIST_KEY,
-      JSON.stringify(watchlist)
-    );
-  } catch {
-    console.warn("Watchlist could not be saved.");
-  }
-}
+    function loadWatchlist() {
+      try {
+        const saved = localStorage.getItem(WATCHLIST_KEY);
+        return saved ? JSON.parse(saved) : [];
+      } catch {
+        return [];
+      }
+    }
 
-function isInWatchlist(movieId) {
-  return watchlist.includes(movieId);
-}
+    function saveWatchlist() {
+      try {
+        localStorage.setItem(
+          WATCHLIST_KEY,
+          JSON.stringify(watchlist)
+        );
+      } catch {
+        console.warn("Watchlist could not be saved.");
+      }
+    }
 
-function toggleWatchlist(movieId) {
-  if (isInWatchlist(movieId)) {
-    watchlist = watchlist.filter(id => id !== movieId);
-  } else {
-    watchlist.push(movieId);
-  }
+    function isInWatchlist(movieId) {
+      return watchlist.includes(movieId);
+    }
 
-  saveWatchlist();
-  render();
-}
+    function toggleWatchlist(movieId) {
+      if (isInWatchlist(movieId)) {
+        watchlist = watchlist.filter(id => id !== movieId);
+      } else {
+        watchlist.push(movieId);
+      }
+      saveWatchlist();
+      render();
+    }
 
-function clearWatchlist() {
-  const confirmed = window.confirm(
-    "Clear every movie from your Watchlist?"
-  );
+    function clearWatchlist() {
+      const confirmed = window.confirm(
+        "Clear every movie from your Watchlist?"
+      );
+      if (!confirmed) {
+        return;
+      }
+      watchlist = [];
+      saveWatchlist();
+      render();
+    }
 
-  if (!confirmed) {
-    return;
-  }
+    function resetAllData() {
+      const confirmed = window.confirm(
+        "Reset all tournament progress and statistics?"
+      );
+      if (!confirmed) {
+        return;
+      }
+      state = {
+        tournaments: [],
+        ultimateQualifiers: [],
+        stats: {}
+      };
+      saveState();
+      render();
+    }
 
-  watchlist = [];
-  saveWatchlist();
-  render();
-}
+    function renderWatchlist() {
+      const container = document.querySelector("#watchlist");
+      const count = document.querySelector("#watchlistCount");
 
-function renderWatchlist() {
-  const container = document.querySelector("#watchlist");
-  const count = document.querySelector("#watchlistCount");
+      const validMovieIds = watchlist.filter(movieId => {
+        return Boolean(getMovie(movieId));
+      });
 
-  const validMovieIds = watchlist.filter(movieId => {
-    return Boolean(getMovie(movieId));
-  });
+      if (validMovieIds.length !== watchlist.length) {
+        watchlist = validMovieIds;
+        saveWatchlist();
+      }
 
-  if (validMovieIds.length !== watchlist.length) {
-    watchlist = validMovieIds;
-    saveWatchlist();
-  }
+      count.textContent = `(${watchlist.length})`;
 
-  count.textContent = `(${watchlist.length})`;
+      if (!watchlist.length) {
+        container.innerHTML = `
+          <p class="muted">
+            Your Watchlist is empty. Use “Add to Watchlist” on a movie matchup card.
+          </p>
+        `;
+        return;
+      }
 
-  if (!watchlist.length) {
-    container.innerHTML = `
-      <p class="muted">
-        Your Watchlist is empty. Use “Add to Watchlist” on a movie matchup card.
-      </p>
-    `;
-    return;
-  }
+      const movies = watchlist
+        .map(movieId => getMovie(movieId))
+        .filter(Boolean)
+        .sort((movieA, movieB) => {
+          return movieA.title.localeCompare(movieB.title);
+        });
 
-  const movies = watchlist
-    .map(movieId => getMovie(movieId))
-    .filter(Boolean)
-    .sort((movieA, movieB) => {
-      return movieA.title.localeCompare(movieB.title);
-    });
+      container.innerHTML = `
+        <div class="watchlist-grid">
+          ${movies.map(movie => `
+            <article class="watchlist-item">
+              <div class="watchlist-title">
+                ${escapeHtml(movie.title)}
+              </div>
+              <div class="watchlist-meta">
+                ${escapeHtml(movie.year)} ·
+                ${escapeHtml(movie.genres.join(" · "))}
+              </div>
+              <div class="watchlist-actors">
+                Starring: ${escapeHtml(getActors(movie.id).join(" · "))}
+              </div>
+              <div class="watchlist-actions">
+                <a
+                  class="watch-link"
+                  href="${escapeHtml(watchSearchUrl(movie))}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Where to Watch
+                </a>
+                <button
+                  class="watchlist-remove"
+                  data-watchlist-remove="true"
+                  data-movie="${escapeHtml(movie.id)}"
+                >
+                  Remove
+                </button>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      `;
+    }
 
-  container.innerHTML = `
-    <div class="watchlist-grid">
-      ${movies.map(movie => `
-        <article class="watchlist-item">
-          <div class="watchlist-title">
-            ${escapeHtml(movie.title)}
-          </div>
-
-          <div class="watchlist-meta">
-            ${escapeHtml(movie.year)} ·
-            ${escapeHtml(movie.genres.join(" · "))}
-          </div>
-
-          <div class="watchlist-actors">
-            Starring: ${escapeHtml(getActors(movie.id).join(" · "))}
-          </div>
-
-          <div class="watchlist-actions">
-            <a
-              class="watch-link"
-              href="${escapeHtml(watchSearchUrl(movie))}"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Where to Watch
-            </a>
-
-            <button
-              class="watchlist-remove"
-              data-watchlist-remove="true"
-              data-movie="${escapeHtml(movie.id)}"
-            >
-              Remove
-            </button>
-          </div>
-        </article>
-      `).join("")}
-    </div>
-  `;
-}
-    
     function loadState() {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
@@ -1356,21 +1372,17 @@ function renderWatchlist() {
       const response = await fetch("./movie-catalog.json", {
         cache: "no-store"
       });
-
       if (!response.ok) {
         throw new Error(
           `Could not load movie-catalog.json (${response.status}).`
         );
       }
-
       const data = await response.json();
-
       if (!Array.isArray(data.movies)) {
         throw new Error("movie-catalog.json does not contain a movies array.");
       }
-
-      catalog = data.movies.filter(movie => { 
-        return !movie.genres.includes("Animation"); 
+      catalog = data.movies.filter(movie => {
+        return !movie.genres.includes("Animation");
       });
     }
 
@@ -1379,11 +1391,9 @@ function renderWatchlist() {
         const response = await fetch("./catalog-coverage.json", {
           cache: "no-store"
         });
-
         if (!response.ok) {
           return;
         }
-
         const data = await response.json();
         coverage = Array.isArray(data.buckets) ? data.buckets : [];
       } catch {
@@ -1397,11 +1407,9 @@ function renderWatchlist() {
 
     function getActors(movieId) {
       const movie = getMovie(movieId);
-
       if (!movie || !Array.isArray(movie.actors)) {
         return ["Unknown", "Unknown"];
       }
-
       return movie.actors.filter(Boolean);
     }
 
@@ -1415,7 +1423,6 @@ function renderWatchlist() {
           lastFinish: "Not yet played"
         };
       }
-
       return state.stats[movieId];
     }
 
@@ -1431,28 +1438,23 @@ function renderWatchlist() {
     function getRoundLabels(fieldSize) {
       const labels = [];
       let size = fieldSize;
-
       while (size > 1) {
         if (size === 2) labels.push("Championship");
         else if (size === 4) labels.push("Final 4");
         else if (size === 8) labels.push("Elite 8");
         else if (size === 16) labels.push("Sweet 16");
         else labels.push(`Round of ${size}`);
-
         size /= 2;
       }
-
       return labels;
     }
 
     function seedOrder(size) {
       let order = [1, 2];
-
       while (order.length < size) {
         const nextSize = order.length * 2 + 1;
         order = order.flatMap(seed => [seed, nextSize - seed]);
       }
-
       return order;
     }
 
@@ -1460,10 +1462,8 @@ function renderWatchlist() {
       const rounds = [];
       const labels = getRoundLabels(fieldSize);
       let moviesRemaining = fieldSize;
-
       labels.forEach((label, roundIndex) => {
         const matchCount = moviesRemaining / 2;
-
         rounds.push({
           label,
           matches: Array.from({ length: matchCount }, (_, matchIndex) => ({
@@ -1473,10 +1473,8 @@ function renderWatchlist() {
             winnerId: null
           }))
         });
-
         moviesRemaining /= 2;
       });
-
       return rounds;
     }
 
@@ -1525,16 +1523,13 @@ function renderWatchlist() {
     function findNextPlayableMatch(tournament) {
       for (let roundIndex = 0; roundIndex < tournament.rounds.length; roundIndex++) {
         const round = tournament.rounds[roundIndex];
-
         for (let matchIndex = 0; matchIndex < round.matches.length; matchIndex++) {
           const match = round.matches[matchIndex];
-
           if (match.movieAId && match.movieBId && !match.winnerId) {
             return { roundIndex, matchIndex, match };
           }
         }
       }
-
       return null;
     }
 
@@ -1562,7 +1557,6 @@ function renderWatchlist() {
 
     function getMatchLoser(match) {
       if (!match.winnerId) return null;
-
       return match.movieAId === match.winnerId
         ? match.movieBId
         : match.movieAId;
@@ -1584,10 +1578,8 @@ function renderWatchlist() {
           "Ultimate Runner-Up",
           "Ultimate Champion"
         ];
-
         return labels[Math.max(0, Math.min(wins, labels.length - 1))];
       }
-
       const labels = [
         `Round of ${tournament.fieldSize}`,
         "Round of 32",
@@ -1597,14 +1589,12 @@ function renderWatchlist() {
         "Runner-Up",
         "Champion"
       ];
-
       return labels[Math.max(0, Math.min(wins, labels.length - 1))];
     }
 
     function finalizeRegularTournament(tournament) {
       const finalRoundIndex = tournament.rounds.length - 1;
       const semifinalRoundIndex = tournament.rounds.length - 2;
-
       const championshipMatch = tournament.rounds[finalRoundIndex].matches[0];
       const semifinalMatches = tournament.rounds[semifinalRoundIndex].matches;
 
@@ -1633,7 +1623,6 @@ function renderWatchlist() {
 
     function finalizeTournament(tournament) {
       tournament.status = "complete";
-
       const finalMatch = tournament.rounds[tournament.rounds.length - 1].matches[0];
       tournament.championId = finalMatch.winnerId;
 
@@ -1644,13 +1633,11 @@ function renderWatchlist() {
       tournament.entries.forEach(entry => {
         const stats = getMovieStats(entry.id);
         const wins = winsInTournament(tournament, entry.id);
-
         stats.lastFinish = finishLabel(tournament, wins);
 
         const sweet16Index = tournament.rounds.findIndex(
           round => round.label === "Sweet 16"
         );
-
         if (
           sweet16Index >= 0 &&
           tournament.rounds[sweet16Index].matches.some(
@@ -1668,11 +1655,9 @@ function renderWatchlist() {
 
     function castVote(roundIndex, matchIndex, winnerId) {
       const tournament = getCurrentTournament();
-
       if (!tournament || tournament.status !== "in_progress") return;
 
       const next = findNextPlayableMatch(tournament);
-
       if (
         !next ||
         next.roundIndex !== roundIndex ||
@@ -1683,7 +1668,6 @@ function renderWatchlist() {
       }
 
       const match = tournament.rounds[roundIndex].matches[matchIndex];
-
       if (![match.movieAId, match.movieBId].includes(winnerId)) {
         return;
       }
@@ -1695,7 +1679,6 @@ function renderWatchlist() {
       if (roundIndex < tournament.rounds.length - 1) {
         const nextRound = tournament.rounds[roundIndex + 1];
         const nextMatch = nextRound.matches[Math.floor(matchIndex / 2)];
-
         if (matchIndex % 2 === 0) {
           nextMatch.movieAId = winnerId;
         } else {
@@ -1711,14 +1694,12 @@ function renderWatchlist() {
 
     function undoLastVote() {
       const tournament = getCurrentTournament();
-
       if (!tournament || tournament.status === "complete") {
         alert("Completed tournaments are locked.");
         return;
       }
 
       const previousVote = tournament.history.pop();
-
       if (!previousVote) {
         alert("There are no votes to undo.");
         return;
@@ -1726,7 +1707,6 @@ function renderWatchlist() {
 
       const match = tournament.rounds[previousVote.roundIndex]
         .matches[previousVote.matchIndex];
-
       match.winnerId = null;
 
       const winnerStats = getMovieStats(previousVote.winnerId);
@@ -1737,7 +1717,6 @@ function renderWatchlist() {
         const nextMatch = nextRound.matches[
           Math.floor(previousVote.matchIndex / 2)
         ];
-
         if (previousVote.matchIndex % 2 === 0) {
           nextMatch.movieAId = null;
         } else {
@@ -1751,7 +1730,6 @@ function renderWatchlist() {
 
     function genreTheme(genres = []) {
       const text = genres.join(" ").toLowerCase();
-
       if (text.includes("horror")) return { label: "HORROR", symbol: "☾", colorA: "#120b16", colorB: "#65152e", colorC: "#ef4444" };
       if (text.includes("animation")) return { label: "ANIMATION", symbol: "✦", colorA: "#075985", colorB: "#7c3aed", colorC: "#f9a8d4" };
       if (text.includes("science fiction")) return { label: "SCI-FI", symbol: "✦", colorA: "#102a52", colorB: "#4c1d95", colorC: "#67e8f9" };
@@ -1763,144 +1741,128 @@ function renderWatchlist() {
       if (text.includes("war") || text.includes("western")) return { label: "WAR / WESTERN", symbol: "✹", colorA: "#26351f", colorB: "#556b2f", colorC: "#d6d3a7" };
       if (text.includes("musical")) return { label: "MUSICAL", symbol: "♫", colorA: "#4c1d95", colorB: "#be185d", colorC: "#f5c75c" };
       if (text.includes("drama")) return { label: "DRAMA", symbol: "●", colorA: "#1e293b", colorB: "#475569", colorC: "#cbd5e1" };
-
       return { label: "MOVIE", symbol: "◆", colorA: "#1e3a5f", colorB: "#43305f", colorC: "#7dd3fc" };
     }
 
-   function localPosterPath(movie) {
-  return `./posters/${movie.posterFile}`;
-}
+    function localPosterPath(movie) {
+      return `./posters/${movie.posterFile}`;
+    }
 
-function tmdbPosterUrl(movie) {
-  if (!movie.posterPath) {
-    return "";
-  }
+    function tmdbPosterUrl(movie) {
+      if (!movie.posterPath) {
+        return "";
+      }
+      return `https://image.tmdb.org/t/p/w500${movie.posterPath}`;
+    }
 
-  return `https://image.tmdb.org/t/p/w500${movie.posterPath}`;
-}
-
-function posterHtml(movie) {
-  const theme = genreTheme(movie.genres);
-  const localPath = localPosterPath(movie);
-  const tmdbPath = tmdbPosterUrl(movie);
-
-  return `
-    <div class="movie-poster">
-      <img
-        class="poster-image"
-        src="${escapeHtml(localPath)}"
-        data-tmdb-poster="${escapeHtml(tmdbPath)}"
-        alt="Poster for ${escapeHtml(movie.title)}"
-        loading="lazy"
-        onerror="
-          if (
-            this.dataset.tmdbPoster &&
-            !this.dataset.tmdbLoaded
-          ) {
-            this.dataset.tmdbLoaded = 'true';
-            this.src = this.dataset.tmdbPoster;
-          } else {
-            this.style.display = 'none';
-          }
-        "
-      >
-
-      <div
-        class="poster-fallback"
-        style="
-          --poster-a: ${theme.colorA};
-          --poster-b: ${theme.colorB};
-          --poster-c: ${theme.colorC};
-        "
-      >
-        <div>
-          <div class="genre-symbol">${theme.symbol}</div>
-          <div class="genre-label">${escapeHtml(theme.label)}</div>
-        </div>
-
-        <div class="poster-bottom">
-          <div class="poster-year">${escapeHtml(movie.year)}</div>
-          <div class="poster-title">${escapeHtml(movie.title)}</div>
-          <div class="poster-genre">
-            ${escapeHtml(movie.genres.join(" · "))}
+    function posterHtml(movie) {
+      const theme = genreTheme(movie.genres);
+      const localPath = localPosterPath(movie);
+      const tmdbPath = tmdbPosterUrl(movie);
+      return `
+        <div class="movie-poster">
+          <img
+            class="poster-image"
+            src="${escapeHtml(localPath)}"
+            data-tmdb-poster="${escapeHtml(tmdbPath)}"
+            alt="Poster for ${escapeHtml(movie.title)}"
+            loading="lazy"
+            onerror="
+              if (
+                this.dataset.tmdbPoster &&
+                !this.dataset.tmdbLoaded
+              ) {
+                this.dataset.tmdbLoaded = 'true';
+                this.src = this.dataset.tmdbPoster;
+              } else {
+                this.style.display = 'none';
+              }
+            "
+          >
+          <div
+            class="poster-fallback"
+            style="
+              --poster-a: ${theme.colorA};
+              --poster-b: ${theme.colorB};
+              --poster-c: ${theme.colorC};
+            "
+          >
+            <div>
+              <div class="genre-symbol">${theme.symbol}</div>
+              <div class="genre-label">${escapeHtml(theme.label)}</div>
+            </div>
+            <div class="poster-bottom">
+              <div class="poster-year">${escapeHtml(movie.year)}</div>
+              <div class="poster-title">${escapeHtml(movie.title)}</div>
+              <div class="poster-genre">
+                ${escapeHtml(movie.genres.join(" · "))}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  `;
-}
-    
+      `;
+    }
+
     function watchSearchUrl(movie) {
-  const searchText = `where to watch ${movie.title} ${movie.year}`;
+      const searchText = `where to watch ${movie.title} ${movie.year}`;
+      return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
+    }
 
-  return `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
-}
-    
-   function movieCard(movie, roundIndex, matchIndex) {
-  const isSaved = isInWatchlist(movie.id);
-
-  return `
-    <article class="movie-card">
-      ${posterHtml(movie)}
-
-      <div class="movie-body">
-        <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
-
-        <div class="movie-meta">
-          ${escapeHtml(movie.year)} ·
-          ${escapeHtml(movie.genres.join(" · "))}
-        </div>
-
-        <div class="actor-list">
-          Starring: ${escapeHtml(getActors(movie.id).join(" · "))}
-        </div>
-
-        <p class="synopsis">
-          Choose this movie to advance it in the bracket.
-        </p>
-
-        <a
-          class="watch-link"
-          href="${escapeHtml(watchSearchUrl(movie))}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Find Where to Watch
-        </a>
-
-        <button
-          class="button-watchlist"
-          data-watchlist-toggle="true"
-          data-movie="${escapeHtml(movie.id)}"
-        >
-          ${
-            isSaved
-              ? "✓ Added to Watchlist"
-              : "+ Add to Watchlist"
-          }
-        </button>
-
-        <button
-          class="button-vote"
-          data-vote="true"
-          data-round="${roundIndex}"
-          data-match="${matchIndex}"
-          data-movie="${escapeHtml(movie.id)}"
-        >
-          Vote for ${escapeHtml(movie.title)}
-        </button>
-      </div>
-    </article>
-  `;
-}
+    function movieCard(movie, roundIndex, matchIndex) {
+      const isSaved = isInWatchlist(movie.id);
+      return `
+        <article class="movie-card">
+          ${posterHtml(movie)}
+          <div class="movie-body">
+            <h3 class="movie-title">${escapeHtml(movie.title)}</h3>
+            <div class="movie-meta">
+              ${escapeHtml(movie.year)} ·
+              ${escapeHtml(movie.genres.join(" · "))}
+            </div>
+            <div class="actor-list">
+              Starring: ${escapeHtml(getActors(movie.id).join(" · "))}
+            </div>
+            <p class="synopsis">
+              Choose this movie to advance it in the bracket.
+            </p>
+            <a
+              class="watch-link"
+              href="${escapeHtml(watchSearchUrl(movie))}"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Find Where to Watch
+            </a>
+            <button
+              class="button-watchlist"
+              data-watchlist-toggle="true"
+              data-movie="${escapeHtml(movie.id)}"
+            >
+              ${
+                isSaved
+                  ? "✓ Added to Watchlist"
+                  : "+ Add to Watchlist"
+              }
+            </button>
+            <button
+              class="button-vote"
+              data-vote="true"
+              data-round="${roundIndex}"
+              data-match="${matchIndex}"
+              data-movie="${escapeHtml(movie.id)}"
+            >
+              Vote for ${escapeHtml(movie.title)}
+            </button>
+          </div>
+        </article>
+      `;
+    }
 
     function bracketTeam(tournament, movieId, winnerId) {
       if (!movieId) {
         return `<div class="bracket-team tbd">TBD</div>`;
       }
-
       const movie = getMovie(movieId);
-
       return `
         <div class="bracket-team ${movieId === winnerId ? "winner" : ""}">
           <span class="seed">${escapeHtml(getSeed(tournament, movieId))}</span>
@@ -1911,7 +1873,6 @@ function posterHtml(movie) {
 
     function calculateStats(tournaments, type) {
       const statMap = {};
-
       function getRecord(name) {
         if (!statMap[name]) {
           statMap[name] = {
@@ -1921,40 +1882,32 @@ function posterHtml(movie) {
             championships: 0
           };
         }
-
         return statMap[name];
       }
-
       function add(movieId, field) {
         const movie = getMovie(movieId);
         if (!movie) return;
-
         const labels = type === "actor"
           ? movie.actors
           : movie.genres;
-
         labels.forEach(label => {
           if (!label || label === "Unknown") return;
           getRecord(label)[field] += 1;
         });
       }
-
       tournaments.forEach(tournament => {
         tournament.rounds.forEach(round => {
           round.matches.forEach(match => {
             if (!match.movieAId || !match.movieBId || !match.winnerId) return;
-
             add(match.movieAId, "appearances");
             add(match.movieBId, "appearances");
             add(match.winnerId, "wins");
           });
         });
-
         if (tournament.championId) {
           add(tournament.championId, "championships");
         }
       });
-
       return Object.values(statMap)
         .map(record => ({
           ...record,
@@ -1974,12 +1927,10 @@ function posterHtml(movie) {
       const qualified = records
         .filter(record => record.appearances >= MIN_ACTOR_APPEARANCES)
         .slice(0, 15);
-
       return `
         <div class="leaderboard-card">
           <h3>${escapeHtml(title)}</h3>
           <p class="muted">${escapeHtml(subtitle)}</p>
-
           ${
             qualified.length
               ? `
@@ -2022,7 +1973,6 @@ function posterHtml(movie) {
           "Based only on the active tournament.",
           "Actor"
         )}
-
         ${leaderboardHtml(
           calculateStats(state.tournaments, "actor"),
           "Career Favorite Actors",
@@ -2030,7 +1980,6 @@ function posterHtml(movie) {
           "Actor"
         )}
       `;
-
       document.querySelector("#genreLeaderboards").innerHTML = `
         ${leaderboardHtml(
           calculateStats([tournament], "genre"),
@@ -2038,7 +1987,6 @@ function posterHtml(movie) {
           "Based only on the active tournament.",
           "Genre"
         )}
-
         ${leaderboardHtml(
           calculateStats(state.tournaments, "genre"),
           "Career Favorite Genres",
@@ -2051,62 +1999,52 @@ function posterHtml(movie) {
     function coverageForSelectedFilter() {
       const genre = document.querySelector("#themeGenre").value;
       const decade = document.querySelector("#themeDecade").value;
-
       if (genre === "All" || decade === "All") {
         return null;
       }
-
       return coverage.find(
         bucket => bucket.category === genre && bucket.decade === decade
       );
     }
 
-   function usedRegularMovieIds() {
-  const reuseCheckbox = document.querySelector("#allowReuse");
-
-  const allowReuse = reuseCheckbox
-    ? reuseCheckbox.checked
-    : true;
-
-  if (allowReuse) {
-    return new Set(
-      state.ultimateQualifiers.map(qualifier => qualifier.id)
-    );
-  }
-
-  return new Set(
-    state.tournaments
-      .filter(tournament => tournament.type === "regular")
-      .flatMap(tournament => tournament.entries.map(entry => entry.id))
-  );
-}
+    function usedRegularMovieIds() {
+      const reuseCheckbox = document.querySelector("#allowReuse");
+      const allowReuse = reuseCheckbox
+        ? reuseCheckbox.checked
+        : true;
+      if (allowReuse) {
+        return new Set(
+          state.ultimateQualifiers.map(qualifier => qualifier.id)
+        );
+      }
+      return new Set(
+        state.tournaments
+          .filter(tournament => tournament.type === "regular")
+          .flatMap(tournament => tournament.entries.map(entry => entry.id))
+      );
+    }
 
     function getThemeCandidates() {
-  const selectedGenre = document.querySelector("#themeGenre").value;
-  const selectedDecade = document.querySelector("#themeDecade").value;
-  const excludedMovieIds = usedRegularMovieIds();
+      const selectedGenre = document.querySelector("#themeGenre").value;
+      const selectedDecade = document.querySelector("#themeDecade").value;
+      const excludedMovieIds = usedRegularMovieIds();
 
-  return catalog.filter(movie => {
-    const movieGenres = Array.isArray(movie.genres)
-      ? movie.genres
-      : [];
-
-    const movieDecade = `${Math.floor(Number(movie.year) / 10) * 10}s`;
-
-    const matchesGenre =
-      selectedGenre === "All" ||
-      movieGenres.includes(selectedGenre);
-
-    const matchesDecade =
-      selectedDecade === "All" ||
-      movieDecade === selectedDecade;
-
-    const isExcluded =
-      excludedMovieIds.has(movie.id);
-
-    return matchesGenre && matchesDecade && !isExcluded;
-  });
-}
+      return catalog.filter(movie => {
+        const movieGenres = Array.isArray(movie.genres)
+          ? movie.genres
+          : [];
+        const movieDecade = `${Math.floor(Number(movie.year) / 10) * 10}s`;
+        const matchesGenre =
+          selectedGenre === "All" ||
+          movieGenres.includes(selectedGenre);
+        const matchesDecade =
+          selectedDecade === "All" ||
+          movieDecade === selectedDecade;
+        const isExcluded =
+          excludedMovieIds.has(movie.id);
+        return matchesGenre && matchesDecade && !isExcluded;
+      });
+    }
 
     function updateThemeStatus() {
       const status = document.querySelector("#themeStatus");
@@ -2150,43 +2088,41 @@ function posterHtml(movie) {
         `${candidates.length} eligible movies found. A ${bracketSize}-movie bracket is ready.`;
     }
 
-   function populateThemeControls() {
-  const genreSelect = document.querySelector("#themeGenre");
-  const decadeSelect = document.querySelector("#themeDecade");
-  const bracketSizeSelect = document.querySelector("#themeBracketSize");
-  const reuseCheckbox = document.querySelector("#allowReuse");
+    function populateThemeControls() {
+      const genreSelect = document.querySelector("#themeGenre");
+      const decadeSelect = document.querySelector("#themeDecade");
+      const bracketSizeSelect = document.querySelector("#themeBracketSize");
+      const reuseCheckbox = document.querySelector("#allowReuse");
 
-  if (!genreSelect || !decadeSelect || !bracketSizeSelect) {
-    console.error("Theme Tournament controls are missing from the page.");
-    return;
-  }
+      if (!genreSelect || !decadeSelect || !bracketSizeSelect) {
+        console.error("Theme Tournament controls are missing from the page.");
+        return;
+      }
 
-  genreSelect.innerHTML = `
-    <option value="All">All Genres</option>
-    ${GENRES.map(genre => `
-      <option value="${escapeHtml(genre)}">${escapeHtml(genre)}</option>
-    `).join("")}
-  `;
+      genreSelect.innerHTML = `
+        <option value="All">All Genres</option>
+        ${GENRES.map(genre => `
+          <option value="${escapeHtml(genre)}">${escapeHtml(genre)}</option>
+        `).join("")}
+      `;
 
-  decadeSelect.innerHTML = `
-    <option value="All">All Decades</option>
-    ${DECADES.map(decade => `
-      <option value="${escapeHtml(decade)}">${escapeHtml(decade)}</option>
-    `).join("")}
-  `;
+      decadeSelect.innerHTML = `
+        <option value="All">All Decades</option>
+        ${DECADES.map(decade => `
+          <option value="${escapeHtml(decade)}">${escapeHtml(decade)}</option>
+        `).join("")}
+      `;
 
-  genreSelect.addEventListener("change", updateThemeStatus);
-  decadeSelect.addEventListener("change", updateThemeStatus);
-  bracketSizeSelect.addEventListener("change", updateThemeStatus);
-
-  if (reuseCheckbox) {
-    reuseCheckbox.addEventListener("change", updateThemeStatus);
-  }
-}
+      genreSelect.addEventListener("change", updateThemeStatus);
+      decadeSelect.addEventListener("change", updateThemeStatus);
+      bracketSizeSelect.addEventListener("change", updateThemeStatus);
+      if (reuseCheckbox) {
+        reuseCheckbox.addEventListener("change", updateThemeStatus);
+      }
+    }
 
     function startThemeTournament() {
       const currentTournament = getCurrentTournament();
-
       if (currentTournament && currentTournament.status === "in_progress") {
         alert("Finish the current tournament before starting another one.");
         return;
@@ -2244,7 +2180,6 @@ function posterHtml(movie) {
 
     function startUltimateFinal() {
       const currentTournament = getCurrentTournament();
-
       if (!currentTournament || currentTournament.status !== "complete") {
         return;
       }
@@ -2338,7 +2273,6 @@ function posterHtml(movie) {
 
     function renderCurrentMatchup(tournament) {
       const panel = document.querySelector("#currentMatchupPanel");
-
       if (!tournament) {
         panel.innerHTML = `
           <div class="message">
@@ -2350,7 +2284,6 @@ function posterHtml(movie) {
 
       if (tournament.status === "complete") {
         const champion = getMovie(tournament.championId);
-
         panel.innerHTML = `
           <div class="champion">
             <div>${posterHtml(champion)}</div>
@@ -2396,7 +2329,6 @@ function posterHtml(movie) {
           </div>
           <strong>${totalVotes(tournament)} of ${totalMatches(tournament)} votes complete</strong>
         </div>
-
         <div class="matchup">
           ${movieCard(movieA, next.roundIndex, next.matchIndex)}
           <div class="versus">VS</div>
@@ -2407,9 +2339,9 @@ function posterHtml(movie) {
 
     function renderBracket(tournament) {
       const bracket = document.querySelector("#bracket");
-
       if (!tournament) {
-        bracket.innerHTML = "";
+        bracket.innerHTML = `<p class="muted">Start a tournament below to view the active bracket.</p>`;
+        bracket.style.gridTemplateColumns = "1fr";
         return;
       }
 
@@ -2450,7 +2382,6 @@ function posterHtml(movie) {
         <div class="qualifier-grid">
           ${qualifiers.map((qualifier, index) => {
             const movie = getMovie(qualifier.id);
-
             return `
               <div class="qualifier">
                 <div class="qualifier-number">${index + 1}</div>
@@ -2470,7 +2401,6 @@ function posterHtml(movie) {
 
     function renderNextTournamentPanel(tournament) {
       const panel = document.querySelector("#nextTournamentPanel");
-
       if (!tournament || tournament.status !== "complete") {
         panel.classList.add("hidden");
         panel.innerHTML = "";
@@ -2478,7 +2408,6 @@ function posterHtml(movie) {
       }
 
       panel.classList.remove("hidden");
-
       if (tournament.type === "ultimate") {
         panel.innerHTML = `
           <div class="message">
@@ -2511,7 +2440,6 @@ function posterHtml(movie) {
           </div>
           <strong>${state.ultimateQualifiers.length} / ${ULTIMATE_FIELD_SIZE} Qualifiers</strong>
         </div>
-
         <button id="startUltimateFinal" class="button-primary">
           Start Movie Madness Ultimate Final
         </button>
@@ -2547,303 +2475,273 @@ function posterHtml(movie) {
       `).join("");
     }
 
-function completedVoteCount() {
-  return state.tournaments.reduce((count, tournament) => {
-    return count + tournament.rounds.reduce((roundCount, round) => {
-      return roundCount + round.matches.filter(match => match.winnerId).length;
-    }, 0);
-  }, 0);
-}
-
-function addMovieToPreferenceProfile(profile, movie, weight) {
-  if (!movie) {
-    return;
-  }
-
-  movie.genres.forEach(genre => {
-    profile.genres[genre] = (profile.genres[genre] || 0) + (weight * 3);
-  });
-
-  movie.actors.forEach(actor => {
-    if (actor && actor !== "Unknown") {
-      profile.actors[actor] = (profile.actors[actor] || 0) + (weight * 4);
+    function completedVoteCount() {
+      return state.tournaments.reduce((count, tournament) => {
+        return count + tournament.rounds.reduce((roundCount, round) => {
+          return roundCount + round.matches.filter(match => match.winnerId).length;
+        }, 0);
+      }, 0);
     }
-  });
 
-  profile.decades[movie.decade] =
-    (profile.decades[movie.decade] || 0) + weight;
-}
-
-function recommendationMatchLoser(match) {
-  if (!match || !match.winnerId) {
-    return null;
-  }
-
-  return match.movieAId === match.winnerId
-    ? match.movieBId
-    : match.movieAId;
-}
-
-function buildRecommendationProfile() {
-  const profile = {
-    genres: {},
-    actors: {},
-    decades: {}
-  };
-
-  state.tournaments.forEach(tournament => {
-    tournament.rounds.forEach(round => {
-      round.matches.forEach(match => {
-        if (match.winnerId) {
-          addMovieToPreferenceProfile(
-            profile,
-            getMovie(match.winnerId),
-            1
-          );
+    function addMovieToPreferenceProfile(profile, movie, weight) {
+      if (!movie) {
+        return;
+      }
+      movie.genres.forEach(genre => {
+        profile.genres[genre] = (profile.genres[genre] || 0) + (weight * 3);
+      });
+      movie.actors.forEach(actor => {
+        if (actor && actor !== "Unknown") {
+          profile.actors[actor] = (profile.actors[actor] || 0) + (weight * 4);
         }
       });
-    });
+      profile.decades[movie.decade] =
+        (profile.decades[movie.decade] || 0) + weight;
+    }
 
-    if (tournament.status === "complete") {
-      const finalRoundIndex = tournament.rounds.length - 1;
-      const semifinalRoundIndex = tournament.rounds.length - 2;
+    function recommendationMatchLoser(match) {
+      if (!match || !match.winnerId) {
+        return null;
+      }
+      return match.movieAId === match.winnerId
+        ? match.movieBId
+        : match.movieAId;
+    }
 
-      const championshipMatch =
-        tournament.rounds[finalRoundIndex].matches[0];
+    function buildRecommendationProfile() {
+      const profile = {
+        genres: {},
+        actors: {},
+        decades: {}
+      };
 
-      const championId = championshipMatch.winnerId;
-      const runnerUpId = recommendationMatchLoser(championshipMatch);
-
-      addMovieToPreferenceProfile(profile, getMovie(championId), 5);
-      addMovieToPreferenceProfile(profile, getMovie(runnerUpId), 4);
-
-      if (semifinalRoundIndex >= 0) {
-        tournament.rounds[semifinalRoundIndex].matches.forEach(match => {
-          const semifinalLoser = recommendationMatchLoser(match);
-
-          addMovieToPreferenceProfile(
-            profile,
-            getMovie(semifinalLoser),
-            3
-          );
+      state.tournaments.forEach(tournament => {
+        tournament.rounds.forEach(round => {
+          round.matches.forEach(match => {
+            if (match.winnerId) {
+              addMovieToPreferenceProfile(
+                profile,
+                getMovie(match.winnerId),
+                1
+              );
+            }
+          });
         });
+
+        if (tournament.status === "complete") {
+          const finalRoundIndex = tournament.rounds.length - 1;
+          const semifinalRoundIndex = tournament.rounds.length - 2;
+          const championshipMatch =
+            tournament.rounds[finalRoundIndex].matches[0];
+          const championId = championshipMatch.winnerId;
+          const runnerUpId = recommendationMatchLoser(championshipMatch);
+
+          addMovieToPreferenceProfile(profile, getMovie(championId), 5);
+          addMovieToPreferenceProfile(profile, getMovie(runnerUpId), 4);
+
+          if (semifinalRoundIndex >= 0) {
+            tournament.rounds[semifinalRoundIndex].matches.forEach(match => {
+              const semifinalLoser = recommendationMatchLoser(match);
+              addMovieToPreferenceProfile(
+                profile,
+                getMovie(semifinalLoser),
+                3
+              );
+            });
+          }
+        }
+      });
+
+      return profile;
+    }
+
+    function getRecommendationReason(movie, profile) {
+      const sharedGenres = movie.genres
+        .filter(genre => profile.genres[genre])
+        .sort((a, b) => profile.genres[b] - profile.genres[a]);
+
+      const sharedActors = movie.actors
+        .filter(actor => profile.actors[actor])
+        .sort((a, b) => profile.actors[b] - profile.actors[a]);
+
+      const reasons = [];
+      if (sharedGenres.length) {
+        reasons.push(
+          `You frequently selected ${sharedGenres.slice(0, 2).join(" and ")} movies.`
+        );
+      }
+      if (sharedActors.length) {
+        reasons.push(
+          `You favored movies featuring ${sharedActors[0]}.`
+        );
+      }
+      if (profile.decades[movie.decade]) {
+        reasons.push(
+          `You often selected movies from the ${movie.decade}.`
+        );
+      }
+      return reasons.length
+        ? reasons.slice(0, 2).join(" ")
+        : "Recommended from your Movie Madness catalog.";
+    }
+
+    function getRecommendations(limit = 3) {
+      const profile = buildRecommendationProfile();
+      const playedMovieIds = new Set(
+        state.tournaments.flatMap(tournament =>
+          tournament.entries.map(entry => entry.id)
+        )
+      );
+      const savedWatchlistIds = typeof watchlist !== "undefined"
+        ? new Set(watchlist)
+        : new Set();
+      const qualifiedMovieIds = new Set(
+        state.ultimateQualifiers.map(qualifier => qualifier.id)
+      );
+
+      return catalog
+        .filter(movie => {
+          return (
+            !playedMovieIds.has(movie.id) &&
+            !savedWatchlistIds.has(movie.id) &&
+            !qualifiedMovieIds.has(movie.id)
+          );
+        })
+        .map(movie => {
+          let score = 0;
+          movie.genres.forEach(genre => {
+            score += profile.genres[genre] || 0;
+          });
+          movie.actors.forEach(actor => {
+            score += profile.actors[actor] || 0;
+          });
+          score += profile.decades[movie.decade] || 0;
+          return {
+            movie,
+            score,
+            reason: getRecommendationReason(movie, profile)
+          };
+        })
+        .filter(result => result.score > 0)
+        .sort((a, b) => {
+          return (
+            b.score - a.score ||
+            b.movie.year - a.movie.year ||
+            a.movie.title.localeCompare(b.movie.title)
+          );
+        })
+        .slice(0, limit);
+    }
+
+    function renderRecommendations() {
+      const container = document.querySelector("#recommendations");
+      if (!container) {
+        return;
+      }
+
+      const votes = completedVoteCount();
+      if (votes < 8) {
+        container.innerHTML = `
+          <p class="muted">
+            Complete at least ${8 - votes} more vote${8 - votes === 1 ? "" : "s"}
+            to unlock personalized movie recommendations.
+          </p>
+        `;
+        return;
+      }
+
+      const recommendations = getRecommendations(3);
+      if (!recommendations.length) {
+        container.innerHTML = `
+          <p class="muted">
+            No new recommendations are available yet. Try completing more tournaments
+            or remove some movies from your Watchlist.
+          </p>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="recommendation-grid">
+          ${recommendations.map((result, index) => {
+            const movie = result.movie;
+            const saved = typeof isInWatchlist === "function"
+              ? isInWatchlist(movie.id)
+              : false;
+            return `
+              <article class="recommendation-item">
+                <div class="recommendation-rank">
+                  Suggestion ${index + 1}
+                </div>
+                <div class="recommendation-title">
+                  ${escapeHtml(movie.title)}
+                </div>
+                <div class="recommendation-meta">
+                  ${escapeHtml(movie.year)} ·
+                  ${escapeHtml(movie.genres.join(" · "))}<br>
+                  ${escapeHtml(movie.actors.join(" · "))}
+                </div>
+                <div class="recommendation-reason">
+                  ${escapeHtml(result.reason)}
+                </div>
+                <div class="recommendation-actions">
+                  <a
+                    class="watch-link"
+                    href="${escapeHtml(watchSearchUrl(movie))}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Where to Watch
+                  </a>
+                  <button
+                    class="button-watchlist"
+                    data-watchlist-toggle="true"
+                    data-movie="${escapeHtml(movie.id)}"
+                  >
+                    ${saved ? "✓ Saved" : "+ Watchlist"}
+                  </button>
+                </div>
+              </article>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function render() {
+      const tournament = getCurrentTournament();
+      try {
+        renderSummary(tournament);
+        renderCurrentMatchup(tournament);
+        renderBracket(tournament);
+        renderUltimateQualifiers();
+        renderNextTournamentPanel(tournament);
+        renderHallOfFame();
+        renderWatchlist();
+        renderRecommendations();
+
+        if (tournament) {
+          renderLeaderboards(tournament);
+          document.querySelector("#undoButton").disabled =
+            tournament.status === "complete" ||
+            tournament.history.length === 0;
+        } else {
+          document.querySelector("#undoButton").disabled = true;
+          document.querySelector("#actorLeaderboards").innerHTML = "";
+          document.querySelector("#genreLeaderboards").innerHTML = "";
+        }
+
+        updateThemeStatus();
+      } catch (error) {
+        console.error("Movie Madness render error:", error);
+        document.querySelector("#currentMatchupPanel").innerHTML = `
+          <div class="message">
+            <strong>Bracket rendering error:</strong><br>
+            ${escapeHtml(error.message)}
+          </div>
+        `;
       }
     }
-  });
-
-  return profile;
-}
-
-function getRecommendationReason(movie, profile) {
-  const sharedGenres = movie.genres
-    .filter(genre => profile.genres[genre])
-    .sort((a, b) => profile.genres[b] - profile.genres[a]);
-
-  const sharedActors = movie.actors
-    .filter(actor => profile.actors[actor])
-    .sort((a, b) => profile.actors[b] - profile.actors[a]);
-
-  const reasons = [];
-
-  if (sharedGenres.length) {
-    reasons.push(
-      `You frequently selected ${sharedGenres.slice(0, 2).join(" and ")} movies.`
-    );
-  }
-
-  if (sharedActors.length) {
-    reasons.push(
-      `You favored movies featuring ${sharedActors[0]}.`
-    );
-  }
-
-  if (profile.decades[movie.decade]) {
-    reasons.push(
-      `You often selected movies from the ${movie.decade}.`
-    );
-  }
-
-  return reasons.length
-    ? reasons.slice(0, 2).join(" ")
-    : "Recommended from your Movie Madness catalog.";
-}
-
-function getRecommendations(limit = 3) {
-  const profile = buildRecommendationProfile();
-
-  const playedMovieIds = new Set(
-    state.tournaments.flatMap(tournament =>
-      tournament.entries.map(entry => entry.id)
-    )
-  );
-
-  const savedWatchlistIds = typeof watchlist !== "undefined"
-    ? new Set(watchlist)
-    : new Set();
-
-  const qualifiedMovieIds = new Set(
-    state.ultimateQualifiers.map(qualifier => qualifier.id)
-  );
-
-  return catalog
-    .filter(movie => {
-      return (
-        !playedMovieIds.has(movie.id) &&
-        !savedWatchlistIds.has(movie.id) &&
-        !qualifiedMovieIds.has(movie.id)
-      );
-    })
-    .map(movie => {
-      let score = 0;
-
-      movie.genres.forEach(genre => {
-        score += profile.genres[genre] || 0;
-      });
-
-      movie.actors.forEach(actor => {
-        score += profile.actors[actor] || 0;
-      });
-
-      score += profile.decades[movie.decade] || 0;
-
-      return {
-        movie,
-        score,
-        reason: getRecommendationReason(movie, profile)
-      };
-    })
-    .filter(result => result.score > 0)
-    .sort((a, b) => {
-      return (
-        b.score - a.score ||
-        b.movie.year - a.movie.year ||
-        a.movie.title.localeCompare(b.movie.title)
-      );
-    })
-    .slice(0, limit);
-}
-
-function renderRecommendations() {
-  const container = document.querySelector("#recommendations");
-
-  if (!container) {
-    return;
-  }
-
-  const votes = completedVoteCount();
-
-  if (votes < 8) {
-    container.innerHTML = `
-      <p class="muted">
-        Complete at least ${8 - votes} more vote${8 - votes === 1 ? "" : "s"}
-        to unlock personalized movie recommendations.
-      </p>
-    `;
-    return;
-  }
-
-  const recommendations = getRecommendations(3);
-
-  if (!recommendations.length) {
-    container.innerHTML = `
-      <p class="muted">
-        No new recommendations are available yet. Try completing more tournaments
-        or remove some movies from your Watchlist.
-      </p>
-    `;
-    return;
-  }
-
-  container.innerHTML = `
-    <div class="recommendation-grid">
-      ${recommendations.map((result, index) => {
-        const movie = result.movie;
-        const saved = typeof isInWatchlist === "function"
-          ? isInWatchlist(movie.id)
-          : false;
-
-        return `
-          <article class="recommendation-item">
-            <div class="recommendation-rank">
-              Suggestion ${index + 1}
-            </div>
-
-            <div class="recommendation-title">
-              ${escapeHtml(movie.title)}
-            </div>
-
-            <div class="recommendation-meta">
-              ${escapeHtml(movie.year)} ·
-              ${escapeHtml(movie.genres.join(" · "))}<br>
-              ${escapeHtml(movie.actors.join(" · "))}
-            </div>
-
-            <div class="recommendation-reason">
-              ${escapeHtml(result.reason)}
-            </div>
-
-            <div class="recommendation-actions">
-              <a
-                class="watch-link"
-                href="${escapeHtml(watchSearchUrl(movie))}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Where to Watch
-              </a>
-
-              <button
-                class="button-watchlist"
-                data-watchlist-toggle="true"
-                data-movie="${escapeHtml(movie.id)}"
-              >
-                ${saved ? "✓ Saved" : "+ Watchlist"}
-              </button>
-            </div>
-          </article>
-        `;
-      }).join("")}
-    </div>
-  `;
-}
-    
-   function render() {
-  const tournament = getCurrentTournament();
-
-  try {
-    renderSummary(tournament);
-    renderCurrentMatchup(tournament);
-    renderBracket(tournament);
-    renderUltimateQualifiers();
-    renderNextTournamentPanel(tournament);
-    renderHallOfFame();
-    renderWatchlist();
-    renderRecommendations();
-
-    if (tournament) {
-      renderLeaderboards(tournament);
-
-      document.querySelector("#undoButton").disabled =
-        tournament.status === "complete" ||
-        tournament.history.length === 0;
-    } else {
-      document.querySelector("#undoButton").disabled = true;
-      document.querySelector("#actorLeaderboards").innerHTML = "";
-      document.querySelector("#genreLeaderboards").innerHTML = "";
-    }
-
-    updateThemeStatus();
-  } catch (error) {
-    console.error("Movie Madness render error:", error);
-
-    document.querySelector("#currentMatchupPanel").innerHTML = `
-      <div class="message">
-        <strong>Bracket rendering error:</strong><br>
-        ${escapeHtml(error.message)}
-      </div>
-    `;
-  }
-}
 
     async function initialize() {
       try {
@@ -2851,11 +2749,8 @@ function renderRecommendations() {
           loadCatalog(),
           loadCoverage()
         ]);
-
         watchlist = loadWatchlist();
-
         const saved = loadState();
-
         if (saved && typeof saved === "object") {
           state = {
             tournaments: saved.tournaments || [],
@@ -2863,7 +2758,6 @@ function renderRecommendations() {
             stats: saved.stats || {}
           };
         }
-
         populateThemeControls();
         render();
       } catch (error) {
@@ -2877,30 +2771,28 @@ function renderRecommendations() {
     }
 
     document.addEventListener("click", event => {
-        const watchlistToggle = event.target.closest(
-    "[data-watchlist-toggle='true']"
-  );
+      const watchlistToggle = event.target.closest(
+        "[data-watchlist-toggle='true']"
+      );
+      if (watchlistToggle) {
+        toggleWatchlist(watchlistToggle.dataset.movie);
+        return;
+      }
 
-  if (watchlistToggle) {
-    toggleWatchlist(watchlistToggle.dataset.movie);
-    return;
-  }
+      const watchlistRemove = event.target.closest(
+        "[data-watchlist-remove='true']"
+      );
+      if (watchlistRemove) {
+        toggleWatchlist(watchlistRemove.dataset.movie);
+        return;
+      }
 
-  const watchlistRemove = event.target.closest(
-    "[data-watchlist-remove='true']"
-  );
+      if (event.target.closest("#clearWatchlist")) {
+        clearWatchlist();
+        return;
+      }
 
-  if (watchlistRemove) {
-    toggleWatchlist(watchlistRemove.dataset.movie);
-    return;
-  }
-
-  if (event.target.closest("#clearWatchlist")) {
-    clearWatchlist();
-    return;
-  }
       const voteButton = event.target.closest("[data-vote='true']");
-
       if (voteButton) {
         castVote(
           Number(voteButton.dataset.round),
