@@ -660,6 +660,7 @@
     }
 
     .watchlist-item {
+      position: relative; /* Fixed container referencing for absolute children close buttons */
       padding: 0.85rem;
       border: 1px solid #344668;
       border-radius: 10px;
@@ -668,6 +669,7 @@
 
     .watchlist-title {
       margin-bottom: 0.3rem;
+      padding-right: 1.5rem; /* Prevents text colliding with close buttons */
       font-size: 1rem;
       font-weight: 900;
     }
@@ -688,7 +690,7 @@
 
     .watchlist-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr; /* Stacked layout fits nicely alongside close buttons */
       gap: 0.5rem;
     }
 
@@ -703,9 +705,7 @@
     }
 
     .watchlist-remove {
-      border: 1px solid #8c334d;
-      background: #5e2034;
-      color: #ffe8ee;
+      display: none !important; /* Hide old redundant button styling from bottom grid */
     }
 
     .recommendation-grid {
@@ -735,11 +735,12 @@
       text-transform: uppercase;
     }
 
-    /* Dismiss (X) Button style */
+    /* Shared Dismiss (X) Button style */
     .dismiss-suggestion {
       position: absolute;
       top: 0.7rem;
       right: 0.7rem;
+      z-index: 10;
       display: grid;
       place-items: center;
       width: 1.7rem;
@@ -1225,7 +1226,7 @@
       tournaments: [],
       ultimateQualifiers: [],
       stats: {},
-      dismissedSuggestions: [] // Persistent array to track dismissed suggestion IDs
+      dismissedSuggestions: []
     };
 
     function clone(value) {
@@ -1348,6 +1349,12 @@
         <div class="watchlist-grid">
           ${movies.map(movie => `
             <article class="watchlist-item">
+              <button 
+                class="dismiss-suggestion" 
+                data-watchlist-remove="true" 
+                data-movie="${escapeHtml(movie.id)}"
+                title="Remove from Watchlist"
+              >×</button>
               <div class="watchlist-title">
                 ${escapeHtml(movie.title)}
               </div>
@@ -1367,13 +1374,6 @@
                 >
                   Where to Watch
                 </a>
-                <button
-                  class="watchlist-remove"
-                  data-watchlist-remove="true"
-                  data-movie="${escapeHtml(movie.id)}"
-                >
-                  Remove
-                </button>
               </div>
             </article>
           `).join("")}
@@ -2534,7 +2534,7 @@
         return null;
       }
       return match.movieAId === match.winnerId
-        ? match.movieBId
+        ? match.winnerId
         : match.movieAId;
     }
 
@@ -2629,7 +2629,6 @@
         state.ultimateQualifiers.map(qualifier => qualifier.id)
       );
 
-      // Set to hold all dismissed suggestion IDs
       const dismissedIds = new Set(state.dismissedSuggestions || []);
 
       return catalog
@@ -2638,7 +2637,7 @@
             !playedMovieIds.has(movie.id) &&
             !savedWatchlistIds.has(movie.id) &&
             !qualifiedMovieIds.has(movie.id) &&
-            !dismissedIds.has(movie.id) // Filter out dismissed suggestions
+            !dismissedIds.has(movie.id)
           );
         })
         .map(movie => {
@@ -2667,7 +2666,6 @@
         .slice(0, limit);
     }
 
-    // Interactive dismiss trigger
     function dismissSuggestion(movieId) {
       if (!state.dismissedSuggestions) {
         state.dismissedSuggestions = [];
