@@ -161,7 +161,7 @@ const result = await tmdbRequest("/discover/movie", {
 
   sort_by: "vote_count.desc",
 "vote_average.gte": "6.0",
-"vote_count.gte": decade.label === "2020s" ? "400" : "1000",,
+"vote_count.gte": decade.label === "2020s" ? "400" : "1000",
 
    with_genres: sourceGenreId,
    without_genres: animationGenreId,
