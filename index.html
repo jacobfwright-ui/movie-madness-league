@@ -90,6 +90,20 @@
       color: var(--text);
     }
 
+    .button-compact {
+      padding: 0.45rem 0.75rem;
+      border: 1px solid #4b628f;
+      border-radius: 8px;
+      background: #1e2d4d;
+      color: #dbeafe;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .button-compact:hover {
+      background: #2b3d62;
+    }
+
     .button-danger {
       background: #6d213b;
       color: #ffe9ee;
@@ -139,15 +153,15 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      align-items: baseline;
+      align-items: center;
       gap: 0.75rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.85rem;
     }
 
     /* Side-by-side layout for Current Bracket + Suggested for You */
     .bracket-and-suggestions {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 360px;
+      grid-template-columns: minmax(0, 1fr) 350px;
       gap: 1rem;
       align-items: start;
       margin-bottom: 1rem;
@@ -408,21 +422,68 @@
       line-height: 1.45;
     }
 
+    /* Compact, Sleek Scrollable Bracket Styles */
     .bracket-wrap {
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
+      max-height: 480px;
+      overflow: auto;
+      border: 1px solid #263554;
+      border-radius: 12px;
+      background: rgba(10, 16, 32, 0.65);
+      scrollbar-width: thin;
+      scrollbar-color: #3d5078 #0d1527;
+    }
+
+    .bracket-wrap.expanded {
+      max-height: none;
+    }
+
+    .bracket-wrap::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    .bracket-wrap::-webkit-scrollbar-track {
+      background: #0d1527;
+      border-radius: 8px;
+    }
+
+    .bracket-wrap::-webkit-scrollbar-thumb {
+      background: #3d5078;
+      border-radius: 8px;
     }
 
     .bracket {
       display: grid;
-      gap: 1rem;
-      min-width: 1180px;
+      gap: 0.75rem;
+      min-width: 900px;
+      padding: 0.75rem;
+    }
+
+    .round-column {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .round-matches {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      flex: 1;
+      gap: 0.45rem;
     }
 
     .round-title {
-      margin-bottom: 0.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 4;
+      margin: -0.75rem -0.2rem 0.6rem;
+      padding: 0.55rem 0.4rem;
+      border-bottom: 1px solid #2e3f60;
+      background: rgba(16, 24, 43, 0.92);
+      backdrop-filter: blur(8px);
       color: var(--gold);
-      font-size: 0.78rem;
+      font-size: 0.73rem;
       font-weight: 950;
       letter-spacing: 0.08em;
       text-align: center;
@@ -430,23 +491,43 @@
     }
 
     .bracket-match {
-      margin-bottom: 0.65rem;
+      position: relative;
       overflow: hidden;
-      border: 1px solid #344668;
-      border-radius: 10px;
+      border: 1px solid #2b3b5c;
+      border-radius: 8px;
       background: #10182b;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .bracket-match.active-match {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(245, 199, 92, 0.25);
+    }
+
+    .live-badge {
+      position: absolute;
+      top: 4px;
+      right: 5px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--gold);
+      color: #2d2000;
+      font-size: 0.58rem;
+      font-weight: 950;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
 
     .bracket-team {
       display: flex;
       align-items: center;
-      gap: 0.45rem;
-      min-height: 34px;
-      padding: 0.45rem 0.5rem;
+      gap: 0.4rem;
+      min-height: 27px;
+      padding: 0.28rem 0.45rem;
       overflow: hidden;
-      border-bottom: 1px solid #2a3958;
+      border-bottom: 1px solid #22304d;
       color: #cbd8f2;
-      font-size: 0.82rem;
+      font-size: 0.76rem;
       white-space: nowrap;
     }
 
@@ -455,21 +536,25 @@
     }
 
     .bracket-team.winner {
-      background: rgba(113,223,160,.16);
+      background: rgba(113, 223, 160, 0.16);
       color: #e7fff0;
       font-weight: 850;
     }
 
+    .bracket-team.loser {
+      opacity: 0.42;
+    }
+
     .bracket-team.tbd {
-      color: #7f8ba5;
+      color: #6b7894;
       font-style: italic;
     }
 
     .seed {
       flex: 0 0 auto;
-      width: 1.5rem;
+      width: 1.3rem;
       color: var(--gold);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 950;
       text-align: right;
     }
@@ -660,7 +745,7 @@
     }
 
     .watchlist-item {
-      position: relative; /* Fixed container referencing for absolute children close buttons */
+      position: relative;
       padding: 0.85rem;
       border: 1px solid #344668;
       border-radius: 10px;
@@ -669,7 +754,7 @@
 
     .watchlist-title {
       margin-bottom: 0.3rem;
-      padding-right: 1.5rem; /* Prevents text colliding with close buttons */
+      padding-right: 1.5rem;
       font-size: 1rem;
       font-weight: 900;
     }
@@ -690,7 +775,7 @@
 
     .watchlist-actions {
       display: grid;
-      grid-template-columns: 1fr; /* Stacked layout fits nicely alongside close buttons */
+      grid-template-columns: 1fr;
       gap: 0.5rem;
     }
 
@@ -702,10 +787,6 @@
       font-weight: 800;
       text-align: center;
       text-decoration: none;
-    }
-
-    .watchlist-remove {
-      display: none !important; /* Hide old redundant button styling from bottom grid */
     }
 
     .recommendation-grid {
@@ -927,15 +1008,8 @@
         padding: 0.55rem;
       }
 
-      .bracket-wrap {
-        margin-left: -0.85rem;
-        margin-right: -0.85rem;
-        padding-left: 0.85rem;
-        padding-right: 0.85rem;
-      }
-
       .bracket {
-        min-width: 900px;
+        min-width: 780px;
       }
 
       table {
@@ -984,12 +1058,17 @@
     <div class="bracket-and-suggestions">
       <section class="panel">
         <div class="panel-heading">
-          <h2>Current Bracket</h2>
-          <span class="muted">
-            No movies automatically return. Each new tournament uses a new selected theme.
-          </span>
+          <div>
+            <h2 style="margin-bottom: 0.2rem;">Current Bracket</h2>
+            <span class="muted" style="font-size: 0.85rem;">
+              Active matchup is highlighted in gold. Scroll inside the box to explore rounds.
+            </span>
+          </div>
+          <button id="toggleBracketSizeBtn" class="button-compact">
+            Expand Full Height
+          </button>
         </div>
-        <div class="bracket-wrap">
+        <div id="bracketWrap" class="bracket-wrap">
           <div id="bracket" class="bracket"></div>
         </div>
       </section>
@@ -1893,8 +1972,11 @@
         return `<div class="bracket-team tbd">TBD</div>`;
       }
       const movie = getMovie(movieId);
+      const isWinner = movieId === winnerId;
+      const isLoser = Boolean(winnerId && movieId !== winnerId);
+      const stateClass = isWinner ? "winner" : (isLoser ? "loser" : "");
       return `
-        <div class="bracket-team ${movieId === winnerId ? "winner" : ""}">
+        <div class="bracket-team ${stateClass}" title="${escapeHtml(movie.title)}">
           <span class="seed">${escapeHtml(getSeed(tournament, movieId))}</span>
           <span class="team-name">${escapeHtml(movie.title)}</span>
         </div>
@@ -2370,23 +2452,36 @@
     function renderBracket(tournament) {
       const bracket = document.querySelector("#bracket");
       if (!tournament) {
-        bracket.innerHTML = `<p class="muted">Start a tournament below to view the active bracket.</p>`;
+        bracket.innerHTML = `<p class="muted" style="margin: 0.25rem;">Start a tournament below to view the active bracket.</p>`;
         bracket.style.gridTemplateColumns = "1fr";
+        bracket.style.minWidth = "0";
         return;
       }
 
+      const nextPlayable = tournament.status === "in_progress"
+        ? findNextPlayableMatch(tournament)
+        : null;
+      const activeMatchId = nextPlayable ? nextPlayable.match.id : null;
+
+      bracket.style.minWidth = `${tournament.rounds.length * 190}px`;
       bracket.style.gridTemplateColumns =
-        `repeat(${tournament.rounds.length}, minmax(225px, 1fr))`;
+        `repeat(${tournament.rounds.length}, minmax(180px, 1fr))`;
 
       bracket.innerHTML = tournament.rounds.map(round => `
-        <section>
+        <section class="round-column">
           <div class="round-title">${escapeHtml(round.label)}</div>
-          ${round.matches.map(match => `
-            <div class="bracket-match">
-              ${bracketTeam(tournament, match.movieAId, match.winnerId)}
-              ${bracketTeam(tournament, match.movieBId, match.winnerId)}
-            </div>
-          `).join("")}
+          <div class="round-matches">
+            ${round.matches.map(match => {
+              const isActive = match.id === activeMatchId;
+              return `
+                <div class="bracket-match ${isActive ? "active-match" : ""}">
+                  ${isActive ? `<span class="live-badge">LIVE</span>` : ""}
+                  ${bracketTeam(tournament, match.movieAId, match.winnerId)}
+                  ${bracketTeam(tournament, match.movieBId, match.winnerId)}
+                </div>
+              `;
+            }).join("")}
+          </div>
         </section>
       `).join("");
     }
@@ -2534,7 +2629,7 @@
         return null;
       }
       return match.movieAId === match.winnerId
-        ? match.winnerId
+        ? match.movieBId
         : match.movieAId;
     }
 
@@ -2821,6 +2916,17 @@
     }
 
     document.addEventListener("click", event => {
+      // Handle Expand / Collapse Bracket Height Toggle
+      const toggleBracketBtn = event.target.closest("#toggleBracketSizeBtn");
+      if (toggleBracketBtn) {
+        const wrap = document.querySelector("#bracketWrap");
+        const isExpanded = wrap.classList.toggle("expanded");
+        toggleBracketBtn.textContent = isExpanded
+          ? "Compact View"
+          : "Expand Full Height";
+        return;
+      }
+
       // Handle Suggestion Dismiss Button
       const dismissBtn = event.target.closest("[data-dismiss-movie]");
       if (dismissBtn) {
