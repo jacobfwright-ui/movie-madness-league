@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-04T20:55:47.604Z",
+  "generatedAt": "2026-11-09T18:14:13.147Z",
   "source": "TMDb",
   "targetPerGenreDecade": 64,
   "movies": [
@@ -329,7 +329,7 @@
         "Nora Miao"
       ],
       "posterFile": "fist-of-fury-1972.jpg",
-      "posterPath": "/dlcipCOa9hlfBBz7kCAyjsf3q0E.jpg"
+      "posterPath": "/lWvugPXx0fuVRoNRq96q1PiMnbP.jpg"
     },
     {
       "id": "frenzy-1972",
@@ -500,7 +500,7 @@
         "John Saxon"
       ],
       "posterFile": "enter-the-dragon-1973.jpg",
-      "posterPath": "/fyrh2ULEcmLpGTVLPQqFW45hqr5.jpg"
+      "posterPath": "/vtoCU1PfAZSNTgt6uXnBOTLfpOk.jpg"
     },
     {
       "id": "high-plains-drifter-1973",
@@ -1673,7 +1673,7 @@
         "Shirley MacLaine"
       ],
       "posterFile": "being-there-1979.jpg",
-      "posterPath": "/yFHi5wiCB45loSa1D1O6KAFMC3A.jpg"
+      "posterPath": "/6auMTgXElSKJIBp5Cl3cqiWd5bK.jpg"
     },
     {
       "id": "dawn-of-the-dead-1979",
@@ -3300,7 +3300,7 @@
       ],
       "actors": [
         "Molly Ringwald",
-        "Michael Schoeffling"
+        "Justin Henry"
       ],
       "posterFile": "sixteen-candles-1984.jpg",
       "posterPath": "/A3WGCAgJF33kZdlxUdyXHYdbYax.jpg"
@@ -4194,6 +4194,23 @@
       ],
       "posterFile": "ferris-bueller-s-day-off-1986.jpg",
       "posterPath": "/9LTQNCvoLsKXP0LtaKAaYVtRaQL.jpg"
+    },
+    {
+      "id": "flight-of-the-navigator-1986",
+      "tmdbId": 10122,
+      "title": "Flight of the Navigator",
+      "year": 1986,
+      "decade": "1980s",
+      "genres": [
+        "Adventure",
+        "Science Fiction"
+      ],
+      "actors": [
+        "Joey Cramer",
+        "Paul Reubens"
+      ],
+      "posterFile": "flight-of-the-navigator-1986.jpg",
+      "posterPath": "/tdRgQWMximj0tL6OWu9kRTtePmI.jpg"
     },
     {
       "id": "heartbreak-ridge-1986",
@@ -5479,6 +5496,24 @@
       "posterPath": "/n6nT4SMY6fLozm7AuGySpXUmjry.jpg"
     },
     {
+      "id": "the-dead-pool-1988",
+      "tmdbId": 10651,
+      "title": "The Dead Pool",
+      "year": 1988,
+      "decade": "1980s",
+      "genres": [
+        "Action",
+        "Crime / Thriller",
+        "Drama"
+      ],
+      "actors": [
+        "Clint Eastwood",
+        "Patricia Clarkson"
+      ],
+      "posterFile": "the-dead-pool-1988.jpg",
+      "posterPath": "/krxLLDnFuDtjagN7KrCjuH6QrcW.jpg"
+    },
+    {
       "id": "the-naked-gun-from-the-files-of-police-squad-1988",
       "tmdbId": 37136,
       "title": "The Naked Gun: From the Files of Police Squad!",
@@ -6306,7 +6341,7 @@
         "Robert Duvall"
       ],
       "posterFile": "days-of-thunder-1990.jpg",
-      "posterPath": "/8UvcoeMJag8UWGF8sg7eYspzq0Q.jpg"
+      "posterPath": "/4kHzXHRJGcRxxRvkCvb5yTxZwml.jpg"
     },
     {
       "id": "die-hard-2-1990",
@@ -7926,7 +7961,7 @@
         "Patricia Arquette"
       ],
       "posterFile": "true-romance-1993.jpg",
-      "posterPath": "/39lXk6ud6KiJgGbbWI2PUKS7y2.jpg"
+      "posterPath": "/AqlPzcILRi0IW0JodKp7pMMNEFt.jpg"
     },
     {
       "id": "wayne-s-world-2-1993",
@@ -9765,23 +9800,6 @@
       "posterPath": "/bCpMIywuNZeWt3i5UMLEIc0VSwM.jpg"
     },
     {
-      "id": "cube-1997",
-      "tmdbId": 431,
-      "title": "Cube",
-      "year": 1997,
-      "decade": "1990s",
-      "genres": [
-        "Crime / Thriller",
-        "Science Fiction"
-      ],
-      "actors": [
-        "Nicole De Boer",
-        "Nicky Guadagni"
-      ],
-      "posterFile": "cube-1997.jpg",
-      "posterPath": "/x4BTjxdrOKC27FcSkBh8KPEgnum.jpg"
-    },
-    {
       "id": "dante-s-peak-1997",
       "tmdbId": 9619,
       "title": "Dante's Peak",
@@ -10338,6 +10356,23 @@
       ],
       "posterFile": "city-of-angels-1998.jpg",
       "posterPath": "/iuzxpUjHsbQJXV3kB9ZAdCimM60.jpg"
+    },
+    {
+      "id": "cube-1998",
+      "tmdbId": 431,
+      "title": "Cube",
+      "year": 1998,
+      "decade": "1990s",
+      "genres": [
+        "Crime / Thriller",
+        "Science Fiction"
+      ],
+      "actors": [
+        "Nicole De Boer",
+        "Nicky Guadagni"
+      ],
+      "posterFile": "cube-1998.jpg",
+      "posterPath": "/x4BTjxdrOKC27FcSkBh8KPEgnum.jpg"
     },
     {
       "id": "dark-city-1998",
@@ -12175,7 +12210,7 @@
         "Angelina Jolie"
       ],
       "posterFile": "gone-in-sixty-seconds-2000.jpg",
-      "posterPath": "/igB7rmmnMYepq6dycwjEHJzCy6h.jpg"
+      "posterPath": "/fToQDmkBtiXYGh9xfgAh3gpo6GZ.jpg"
     },
     {
       "id": "high-fidelity-2000",
@@ -12924,7 +12959,7 @@
         "Josh Hartnett"
       ],
       "posterFile": "pearl-harbor-2001.jpg",
-      "posterPath": "/y8A0Cvp8WQmZ3bjbnsL53lY0dsC.jpg"
+      "posterPath": "/giWL3kIA5E67VUTWY1PkfHgyZ1B.jpg"
     },
     {
       "id": "rush-hour-2-2001",
@@ -15778,10 +15813,10 @@
       ],
       "actors": [
         "Leonardo DiCaprio",
-        "Djimon Hounsou"
+        "Jennifer Connelly"
       ],
       "posterFile": "blood-diamond-2006.jpg",
-      "posterPath": "/sYAUuiWpoXGKHxUfHyjTj7Apj2h.jpg"
+      "posterPath": "/tnLxPpajkbVdbQl5B9CuD7sSpz9.jpg"
     },
     {
       "id": "borat-cultural-learnings-of-america-for-make-benefit-glorious-nation-of-kazakhstan-2006",
@@ -16008,7 +16043,7 @@
         "Toni Collette"
       ],
       "posterFile": "little-miss-sunshine-2006.jpg",
-      "posterPath": "/niNdhTpPHSgw22tK0PLjQMV640v.jpg"
+      "posterPath": "/wKn7AJw730emlmzLSmJtzquwaeW.jpg"
     },
     {
       "id": "lucky-number-slevin-2006",
@@ -16182,7 +16217,7 @@
         "Sean Bean"
       ],
       "posterFile": "silent-hill-2006.jpg",
-      "posterPath": "/r0bEDWO2w4a43K2xTNSF284qOsc.jpg"
+      "posterPath": "/6cZmJOZ6jpLF4jflBZqGCa2f4IP.jpg"
     },
     {
       "id": "step-up-2006",
@@ -17330,7 +17365,7 @@
       ],
       "actors": [
         "Daniel Day-Lewis",
-        "Malcolm Kelner"
+        "Paul Dano"
       ],
       "posterFile": "there-will-be-blood-2007.jpg",
       "posterPath": "/fa0RDkAlCec0STeMNAhPaF89q6U.jpg"
@@ -18105,7 +18140,6 @@
       "year": 2008,
       "decade": "2000s",
       "genres": [
-        "Action",
         "Adventure",
         "Fantasy"
       ],
@@ -20039,7 +20073,7 @@
         "Abbie Cornish"
       ],
       "posterFile": "sucker-punch-2011.jpg",
-      "posterPath": "/3Cuzw1KSzItbKAKvMcMYsMfuse.jpg"
+      "posterPath": "/jtaUDnvIiHUd2ranDcjB5AbPx6o.jpg"
     },
     {
       "id": "the-adjustment-bureau-2011",
@@ -20455,8 +20489,8 @@
         "Musical"
       ],
       "actors": [
-        "Regan Rodriguez",
-        "Eva Rodriguez"
+        "Mike Theodore",
+        "Dan DiMaggio"
       ],
       "posterFile": "searching-for-sugar-man-2012.jpg",
       "posterPath": "/ucM98HuBHSWmn44oiE83hIDc6VB.jpg"
@@ -20808,6 +20842,24 @@
       ],
       "posterFile": "12-years-a-slave-2013.jpg",
       "posterPath": "/xdANQijuNrJaw1HA61rDccME4Tm.jpg"
+    },
+    {
+      "id": "47-ronin-2013",
+      "tmdbId": 64686,
+      "title": "47 Ronin",
+      "year": 2013,
+      "decade": "2010s",
+      "genres": [
+        "Action",
+        "Drama",
+        "Fantasy"
+      ],
+      "actors": [
+        "Keanu Reeves",
+        "Hiroyuki Sanada"
+      ],
+      "posterFile": "47-ronin-2013.jpg",
+      "posterPath": "/xDHnmcroujCRG0ysYQaiswjbyHd.jpg"
     },
     {
       "id": "about-time-2013",
@@ -24040,7 +24092,7 @@
         "Margot Robbie"
       ],
       "posterFile": "whiskey-tango-foxtrot-2016.jpg",
-      "posterPath": "/wAxhQsY63VY6eF3EilXTkX0YRoU.jpg"
+      "posterPath": "/xhWbp0lCig5vkdFZPiOGNRL9oMf.jpg"
     },
     {
       "id": "x-men-apocalypse-2016",
@@ -24593,7 +24645,6 @@
       "decade": "2010s",
       "genres": [
         "Crime / Thriller",
-        "Drama",
         "Horror"
       ],
       "actors": [
@@ -25481,24 +25532,6 @@
       "posterPath": "/wTgomqYRTXT3BXQScnIo8uHDyWC.jpg"
     },
     {
-      "id": "tomb-raider-2018",
-      "tmdbId": 338970,
-      "title": "Tomb Raider",
-      "year": 2018,
-      "decade": "2010s",
-      "genres": [
-        "Action",
-        "Adventure",
-        "Fantasy"
-      ],
-      "actors": [
-        "Alicia Vikander",
-        "Dominic West"
-      ],
-      "posterFile": "tomb-raider-2018.jpg",
-      "posterPath": "/s4Qn5LF6OwK4rIifmthIDtbqDSs.jpg"
-    },
-    {
       "id": "venom-2018",
       "tmdbId": 335983,
       "title": "Venom",
@@ -25988,7 +26021,7 @@
     {
       "id": "once-upon-a-time-in-hollywood-2019",
       "tmdbId": 466272,
-      "title": "Once Upon a Time... in Hollywood",
+      "title": "Once Upon a Time in… Hollywood",
       "year": 2019,
       "decade": "2010s",
       "genres": [
@@ -26527,6 +26560,23 @@
       "posterPath": "/dqA2FCzz4OMmXLitKopzf476RVB.jpg"
     },
     {
+      "id": "i-m-thinking-of-ending-things-2020",
+      "tmdbId": 500840,
+      "title": "I'm Thinking of Ending Things",
+      "year": 2020,
+      "decade": "2020s",
+      "genres": [
+        "Crime / Thriller",
+        "Drama"
+      ],
+      "actors": [
+        "Jesse Plemons",
+        "Jessie Buckley"
+      ],
+      "posterFile": "i-m-thinking-of-ending-things-2020.jpg",
+      "posterPath": "/5ynWWapdl45hJXUh0KIevxSG9JQ.jpg"
+    },
+    {
       "id": "jingle-jangle-a-christmas-journey-2020",
       "tmdbId": 622855,
       "title": "Jingle Jangle: A Christmas Journey",
@@ -26652,7 +26702,6 @@
       "year": 2020,
       "decade": "2020s",
       "genres": [
-        "Adventure",
         "Drama",
         "War / Western"
       ],
@@ -27435,7 +27484,7 @@
         "Judy Greer"
       ],
       "posterFile": "halloween-kills-2021.jpg",
-      "posterPath": "/ir9eyz1mtgsohjvo7UYtqUfFuES.jpg"
+      "posterPath": "/4CclCDyQXBBgz62Qtp3CoflQE5g.jpg"
     },
     {
       "id": "hitman-s-wife-s-bodyguard-2021",
@@ -28849,7 +28898,6 @@
       "year": 2022,
       "decade": "2020s",
       "genres": [
-        "Drama",
         "Horror"
       ],
       "actors": [
@@ -30071,7 +30119,7 @@
         "Science Fiction"
       ],
       "actors": [
-        "Mackenyu",
+        "Mackenyu Maeda",
         "Madison Iseman"
       ],
       "posterFile": "knights-of-the-zodiac-2023.jpg",
@@ -30354,7 +30402,7 @@
         "Justin Timberlake"
       ],
       "posterFile": "reptile-2023.jpg",
-      "posterPath": "/bk4WUvoXSqPQGrhOAtt3AR0sUZf.jpg"
+      "posterPath": "/soIgqZBoTiTgMqUW0JtxsPWAilQ.jpg"
     },
     {
       "id": "saltburn-2023",
@@ -30707,6 +30755,7 @@
       "genres": [
         "Adventure",
         "Comedy",
+        "Drama",
         "Fantasy"
       ],
       "actors": [
@@ -32362,7 +32411,7 @@
         "Rachel Brosnahan"
       ],
       "posterFile": "superman-2025.jpg",
-      "posterPath": "/ldyfo0BKmz5rWtJJKCvwaNS4cJT.jpg"
+      "posterPath": "/ombsmhYUqR4qqOLOxAyr5V8hbyv.jpg"
     },
     {
       "id": "the-accountant-2025",
@@ -32639,7 +32688,7 @@
         "Jacob Elordi"
       ],
       "posterFile": "wuthering-heights-2026.jpg",
-      "posterPath": "/3YBce6dTh1D5oCMITXk2S5QhPt.jpg"
+      "posterPath": "/ywRO5dyE8RyyXJd6cvd69jLZeic.jpg"
     },
     {
       "id": "backrooms-2026",
@@ -32998,8 +33047,8 @@
         "Drama"
       ],
       "actors": [
-        "Anne Hathaway",
-        "Meryl Streep"
+        "Meryl Streep",
+        "Anne Hathaway"
       ],
       "posterFile": "the-devil-wears-prada-2-2026.jpg",
       "posterPath": "/fCAURTUx3YfsJ8k9I0UamjSILiR.jpg"
@@ -33074,7 +33123,7 @@
         "Tom Holland"
       ],
       "posterFile": "the-odyssey-2026.jpg",
-      "posterPath": "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg"
+      "posterPath": "/krVa7rKCQb4OBfsr2LTJv4rTz5q.jpg"
     },
     {
       "id": "tuner-2026",
