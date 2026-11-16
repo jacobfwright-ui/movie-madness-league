@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-09T18:14:13.147Z",
+  "generatedAt": "2026-11-16T18:20:55.316Z",
   "source": "TMDb",
   "targetPerGenreDecade": 64,
   "movies": [
@@ -671,7 +671,7 @@
         "Zamira Saunders"
       ],
       "posterFile": "the-holy-mountain-1973.jpg",
-      "posterPath": "/mP5FGQbNjFkrjcZ6AVHrvokPRe5.jpg"
+      "posterPath": "/7mRD6D7t4Mq6A7O1FSj7wWypxQd.jpg"
     },
     {
       "id": "the-mad-adventures-of-rabbi-jacob-1973",
@@ -822,7 +822,7 @@
       ],
       "actors": [
         "Albert Finney",
-        "Lauren Bacall"
+        "Martin Balsam"
       ],
       "posterFile": "murder-on-the-orient-express-1974.jpg",
       "posterPath": "/oJjKcuoH7SuiqZaEpHt2Nd5ZxNY.jpg"
@@ -1301,6 +1301,39 @@
       "posterPath": "/ochT2dykUUsk7RGrJjnJItLvreO.jpg"
     },
     {
+      "id": "the-wing-or-the-thigh-1976",
+      "tmdbId": 761,
+      "title": "The Wing or the Thigh?",
+      "year": 1976,
+      "decade": "1970s",
+      "genres": [
+        "Comedy"
+      ],
+      "actors": [
+        "Louis de Funès",
+        "Coluche"
+      ],
+      "posterFile": "the-wing-or-the-thigh-1976.jpg",
+      "posterPath": "/ywkIu5l3iAgPZvLFEVBDYxLouH8.jpg"
+    },
+    {
+      "id": "a-bridge-too-far-1977",
+      "tmdbId": 5902,
+      "title": "A Bridge Too Far",
+      "year": 1977,
+      "decade": "1970s",
+      "genres": [
+        "Drama",
+        "War / Western"
+      ],
+      "actors": [
+        "Dirk Bogarde",
+        "James Caan"
+      ],
+      "posterFile": "a-bridge-too-far-1977.jpg",
+      "posterPath": "/gneIarUvpURo2pQZ7j1bL3EbAES.jpg"
+    },
+    {
       "id": "aguirre-the-wrath-of-god-1977",
       "tmdbId": 2000,
       "title": "Aguirre, the Wrath of God",
@@ -1553,7 +1586,7 @@
         "Brooke Adams"
       ],
       "posterFile": "invasion-of-the-body-snatchers-1978.jpg",
-      "posterPath": "/skS02wdeH2C0nrbCQP3qKwJdZtZ.jpg"
+      "posterPath": "/dIjwNLwbs3ySlBNmNf6EE0cFIY8.jpg"
     },
     {
       "id": "jaws-2-1978",
@@ -1818,7 +1851,6 @@
       "year": 1979,
       "decade": "1970s",
       "genres": [
-        "Action",
         "Drama"
       ],
       "actors": [
@@ -2539,7 +2571,6 @@
       "year": 1982,
       "decade": "1980s",
       "genres": [
-        "Action",
         "Drama"
       ],
       "actors": [
@@ -3045,7 +3076,7 @@
         "Robert Englund"
       ],
       "posterFile": "a-nightmare-on-elm-street-1984.jpg",
-      "posterPath": "/wGTpGGRMZmyFCcrY2YoxVTIBlli.jpg"
+      "posterPath": "/b9rMHAAKISRmIonaQd9Cccx0S4X.jpg"
     },
     {
       "id": "amadeus-1984",
@@ -3890,7 +3921,6 @@
       "year": 1985,
       "decade": "1980s",
       "genres": [
-        "Action",
         "Drama"
       ],
       "actors": [
@@ -4884,7 +4914,7 @@
       ],
       "actors": [
         "Donald Pleasence",
-        "Lisa Blount"
+        "Jameson Parker"
       ],
       "posterFile": "prince-of-darkness-1987.jpg",
       "posterPath": "/jjcAOhtGuX4p8XvlVn1WXUT1jWi.jpg"
@@ -5422,7 +5452,7 @@
         "Richard Crenna"
       ],
       "posterFile": "rambo-iii-1988.jpg",
-      "posterPath": "/1eSQvGuD25ezKaiaQsyDDG3e9iN.jpg"
+      "posterPath": "/pTVm2HrqV5kOt8tG4ZURNuhrmAq.jpg"
     },
     {
       "id": "red-heat-1988",
@@ -5687,6 +5717,24 @@
       ],
       "posterFile": "bill-ted-s-excellent-adventure-1989.jpg",
       "posterPath": "/tV25lGWGWGEqUe3U0xjQTBgilSx.jpg"
+    },
+    {
+      "id": "black-rain-1989",
+      "tmdbId": 4105,
+      "title": "Black Rain",
+      "year": 1989,
+      "decade": "1980s",
+      "genres": [
+        "Action",
+        "Crime / Thriller",
+        "Drama"
+      ],
+      "actors": [
+        "Michael Douglas",
+        "Andy Garcia"
+      ],
+      "posterFile": "black-rain-1989.jpg",
+      "posterPath": "/funhGWt9ee3Uwb6Ar8SGCCvbJdV.jpg"
     },
     {
       "id": "born-on-the-fourth-of-july-1989",
@@ -8945,24 +8993,6 @@
       "posterPath": "/cBK2yL3HqhFvIVd7lLtazWlRZPR.jpg"
     },
     {
-      "id": "species-1995",
-      "tmdbId": 9348,
-      "title": "Species",
-      "year": 1995,
-      "decade": "1990s",
-      "genres": [
-        "Action",
-        "Horror",
-        "Science Fiction"
-      ],
-      "actors": [
-        "Natasha Henstridge",
-        "Ben Kingsley"
-      ],
-      "posterFile": "species-1995.jpg",
-      "posterPath": "/cT5wdyo8kT7dycqjrolJ2sHWkFx.jpg"
-    },
-    {
       "id": "strange-days-1995",
       "tmdbId": 281,
       "title": "Strange Days",
@@ -9951,7 +9981,7 @@
         "Russell Crowe"
       ],
       "posterFile": "l-a-confidential-1997.jpg",
-      "posterPath": "/lWCgf5sD5FpMljjpkRhcC8pXcch.jpg"
+      "posterPath": "/7jqrauDn3HabyvKfeKTBjzKNeom.jpg"
     },
     {
       "id": "liar-liar-1997",
@@ -10234,7 +10264,7 @@
         "Elisabeth Shue"
       ],
       "posterFile": "the-saint-1997.jpg",
-      "posterPath": "/sSKSQP1uOA17xt5apZD6ZzdhaPh.jpg"
+      "posterPath": "/z83Pxy1dSf8pJ0XiYCdTqs7jZUY.jpg"
     },
     {
       "id": "titanic-1997",
@@ -10317,7 +10347,7 @@
       ],
       "actors": [
         "Wesley Snipes",
-        "Stephen Dorff"
+        "N'Bushe Wright"
       ],
       "posterFile": "blade-1998.jpg",
       "posterPath": "/oWT70TvbsmQaqyphCZpsnQR7R32.jpg"
@@ -10425,7 +10455,7 @@
         "Gene Hackman"
       ],
       "posterFile": "enemy-of-the-state-1998.jpg",
-      "posterPath": "/x9pXrMKLsBGGOFyyZ0Gwt9YpVub.jpg"
+      "posterPath": "/xWGLT3AHPcqCrj1G11pwEO5nyNv.jpg"
     },
     {
       "id": "everafter-1998",
@@ -10789,7 +10819,6 @@
       "genres": [
         "Comedy",
         "Drama",
-        "Fantasy",
         "Romance"
       ],
       "actors": [
@@ -10994,7 +11023,7 @@
         "Anthony Hopkins"
       ],
       "posterFile": "the-mask-of-zorro-1998.jpg",
-      "posterPath": "/bdMufwGDDzqu4kTSQwrKc5WR4bu.jpg"
+      "posterPath": "/y7x5tAFqE589IHwTUfamstD53RM.jpg"
     },
     {
       "id": "the-negotiator-1998",
@@ -13881,7 +13910,7 @@
         "Ali Larter"
       ],
       "posterFile": "final-destination-2-2003.jpg",
-      "posterPath": "/vnFgxRlLTA9fDNcGXLiHmgwmIEo.jpg"
+      "posterPath": "/dg6Tf98InieJSClSKQJTQevYWmB.jpg"
     },
     {
       "id": "freaky-friday-2003",
@@ -14087,7 +14116,7 @@
         "Kiefer Sutherland"
       ],
       "posterFile": "phone-booth-2003.jpg",
-      "posterPath": "/r6lIwPKVDa6Q76qH2TbIBqPhXL3.jpg"
+      "posterPath": "/5bRvXrcLmYz9ZNQsPIPqs7HVwb2.jpg"
     },
     {
       "id": "pirates-of-the-caribbean-the-curse-of-the-black-pearl-2003",
@@ -14816,7 +14845,7 @@
         "Tobin Bell"
       ],
       "posterFile": "saw-2004.jpg",
-      "posterPath": "/rLNSOudrayDBo1uqXjrhxcjODIC.jpg"
+      "posterPath": "/4da0TS3iQ1IzuyhDS8elgkmOfrN.jpg"
     },
     {
       "id": "shaolin-soccer-2004",
@@ -15517,7 +15546,7 @@
         "Jessica Alba"
       ],
       "posterFile": "sin-city-2005.jpg",
-      "posterPath": "/i66G50wATMmPrvpP95f0XP6ZdVS.jpg"
+      "posterPath": "/cByFo9vMktkRsZ6ji6FvOZggBWv.jpg"
     },
     {
       "id": "star-wars-episode-iii-revenge-of-the-sith-2005",
@@ -15921,7 +15950,7 @@
         "Paula Patton"
       ],
       "posterFile": "deja-vu-2006.jpg",
-      "posterPath": "/eTX6hklzFOiEVqVukNCEedZKhix.jpg"
+      "posterPath": "/wJAz3m9kTbdTWfQ2ZJEFojWKeoj.jpg"
     },
     {
       "id": "dreamgirls-2006",
@@ -16043,7 +16072,7 @@
         "Toni Collette"
       ],
       "posterFile": "little-miss-sunshine-2006.jpg",
-      "posterPath": "/wKn7AJw730emlmzLSmJtzquwaeW.jpg"
+      "posterPath": "/niNdhTpPHSgw22tK0PLjQMV640v.jpg"
     },
     {
       "id": "lucky-number-slevin-2006",
@@ -19757,7 +19786,7 @@
         "Emma Bell"
       ],
       "posterFile": "final-destination-5-2011.jpg",
-      "posterPath": "/Akx1Po4ZLetOWfYJhQf75tbhTtK.jpg"
+      "posterPath": "/5zH9Qe6zaWW4LgtEA8aiTJVUSt4.jpg"
     },
     {
       "id": "footloose-2011",
@@ -20141,6 +20170,24 @@
       ],
       "posterFile": "the-intouchables-2011.jpg",
       "posterPath": "/1QU7HKgsQbGpzsJbJK4pAVQV9F5.jpg"
+    },
+    {
+      "id": "the-muppets-2011",
+      "tmdbId": 64328,
+      "title": "The Muppets",
+      "year": 2011,
+      "decade": "2010s",
+      "genres": [
+        "Adventure",
+        "Comedy",
+        "Musical"
+      ],
+      "actors": [
+        "Jason Segel",
+        "Amy Adams"
+      ],
+      "posterFile": "the-muppets-2011.jpg",
+      "posterPath": "/h5N6x5gS45wAALt5fsWVn0oCYQR.jpg"
     },
     {
       "id": "the-skin-i-live-in-2011",
@@ -21069,7 +21116,7 @@
         "Carey Mulligan"
       ],
       "posterFile": "inside-llewyn-davis-2013.jpg",
-      "posterPath": "/nNxK3pC3DMpPpWKMvo2p3liREVT.jpg"
+      "posterPath": "/cjiE3mMvDSYqVBh1iTmPs3RNY3x.jpg"
     },
     {
       "id": "insidious-chapter-2-2013",
@@ -22674,6 +22721,7 @@
       "year": 2015,
       "decade": "2010s",
       "genres": [
+        "Action",
         "Adventure",
         "Crime / Thriller",
         "Science Fiction"
@@ -23072,7 +23120,7 @@
         "Anne Hathaway"
       ],
       "posterFile": "the-intern-2015.jpg",
-      "posterPath": "/bTQ46fupPbjBfFBHuzfD3hxxL0Q.jpg"
+      "posterPath": "/rdWkIocdGPEPn9no4wKwQ9LmlY.jpg"
     },
     {
       "id": "the-man-from-u-n-c-l-e-2015",
@@ -24724,6 +24772,24 @@
       "posterPath": "/v4tbRRX0OSOHcgz2869rEjcBwOJ.jpg"
     },
     {
+      "id": "resident-evil-the-final-chapter-2017",
+      "tmdbId": 173897,
+      "title": "Resident Evil: The Final Chapter",
+      "year": 2017,
+      "decade": "2010s",
+      "genres": [
+        "Action",
+        "Horror",
+        "Science Fiction"
+      ],
+      "actors": [
+        "Milla Jovovich",
+        "Iain Glen"
+      ],
+      "posterFile": "resident-evil-the-final-chapter-2017.jpg",
+      "posterPath": "/gytKL6fimeiTIjd9kl5bfjY2k4C.jpg"
+    },
+    {
       "id": "spider-man-homecoming-2017",
       "tmdbId": 315635,
       "title": "Spider-Man: Homecoming",
@@ -25635,24 +25701,6 @@
       "posterPath": "/jtDv3lCnST0fZRvdYFwR5CVwK2x.jpg"
     },
     {
-      "id": "brightburn-2019",
-      "tmdbId": 531309,
-      "title": "Brightburn",
-      "year": 2019,
-      "decade": "2010s",
-      "genres": [
-        "Drama",
-        "Horror",
-        "Science Fiction"
-      ],
-      "actors": [
-        "Jackson A. Dunn",
-        "Elizabeth Banks"
-      ],
-      "posterFile": "brightburn-2019.jpg",
-      "posterPath": "/sJWwkYc9ajwnPRSkqj8Aue5JbKz.jpg"
-    },
-    {
       "id": "captain-marvel-2019",
       "tmdbId": 299537,
       "title": "Captain Marvel",
@@ -26021,7 +26069,7 @@
     {
       "id": "once-upon-a-time-in-hollywood-2019",
       "tmdbId": 466272,
-      "title": "Once Upon a Time in… Hollywood",
+      "title": "Once Upon a Time in... Hollywood",
       "year": 2019,
       "decade": "2010s",
       "genres": [
@@ -28760,7 +28808,6 @@
       "decade": "2020s",
       "genres": [
         "Comedy",
-        "Musical",
         "Romance"
       ],
       "actors": [
@@ -29973,8 +30020,6 @@
       "year": 2023,
       "decade": "2020s",
       "genres": [
-        "Action",
-        "Adventure",
         "Drama"
       ],
       "actors": [
@@ -31665,7 +31710,6 @@
       "genres": [
         "Comedy",
         "Drama",
-        "Musical",
         "Romance"
       ],
       "actors": [
@@ -32091,8 +32135,8 @@
         "Fantasy"
       ],
       "actors": [
-        "Lindsay Lohan",
-        "Jamie Lee Curtis"
+        "Jamie Lee Curtis",
+        "Lindsay Lohan"
       ],
       "posterFile": "freakier-friday-2025.jpg",
       "posterPath": "/9wV65OmsjLAqBfDnYTkMPutXH8j.jpg"
@@ -32254,6 +32298,24 @@
       ],
       "posterFile": "mickey-17-2025.jpg",
       "posterPath": "/edKpE9B5qN3e559OuMCLZdW1iBZ.jpg"
+    },
+    {
+      "id": "mission-impossible-the-final-reckoning-2025",
+      "tmdbId": 575265,
+      "title": "Mission: Impossible - The Final Reckoning",
+      "year": 2025,
+      "decade": "2020s",
+      "genres": [
+        "Action",
+        "Adventure",
+        "Crime / Thriller"
+      ],
+      "actors": [
+        "Tom Cruise",
+        "Hayley Atwell"
+      ],
+      "posterFile": "mission-impossible-the-final-reckoning-2025.jpg",
+      "posterPath": "/iKPsC9EFUafRP9SrUznI61getVP.jpg"
     },
     {
       "id": "no-other-choice-2025",
@@ -32448,22 +32510,6 @@
       "posterPath": "/5Il2EMSF2KecrUKZPuen6BZmaCP.jpg"
     },
     {
-      "id": "the-conjuring-last-rites-2025",
-      "tmdbId": 1038392,
-      "title": "The Conjuring: Last Rites",
-      "year": 2025,
-      "decade": "2020s",
-      "genres": [
-        "Horror"
-      ],
-      "actors": [
-        "Patrick Wilson",
-        "Vera Farmiga"
-      ],
-      "posterFile": "the-conjuring-last-rites-2025.jpg",
-      "posterPath": "/umvkcIb0XAk486TEmx1V5aVzhbm.jpg"
-    },
-    {
       "id": "the-fantastic-4-first-steps-2025",
       "tmdbId": 617126,
       "title": "The Fantastic 4: First Steps",
@@ -32586,23 +32632,6 @@
       ],
       "posterFile": "together-2025.jpg",
       "posterPath": "/80slKYVM5teFH3kz6ouWrZXveqj.jpg"
-    },
-    {
-      "id": "train-dreams-2025",
-      "tmdbId": 1241983,
-      "title": "Train Dreams",
-      "year": 2025,
-      "decade": "2020s",
-      "genres": [
-        "Drama",
-        "War / Western"
-      ],
-      "actors": [
-        "Joel Edgerton",
-        "Felicity Jones"
-      ],
-      "posterFile": "train-dreams-2025.jpg",
-      "posterPath": "/jnaOmD9PmAkNjgVtCn17o7clOYe.jpg"
     },
     {
       "id": "wake-up-dead-man-a-knives-out-mystery-2025",
@@ -32933,6 +32962,24 @@
       "posterPath": "/iOb2fjXLbpJgyQXe46n1WtGCnaa.jpg"
     },
     {
+      "id": "resident-evil-2026",
+      "tmdbId": 1423191,
+      "title": "Resident Evil",
+      "year": 2026,
+      "decade": "2020s",
+      "genres": [
+        "Adventure",
+        "Horror",
+        "Science Fiction"
+      ],
+      "actors": [
+        "Austin Abrams",
+        "Paul Walter Hauser"
+      ],
+      "posterFile": "resident-evil-2026.jpg",
+      "posterPath": "/gAgWJhUSQWCgtKR8170nMkYlBda.jpg"
+    },
+    {
       "id": "scary-movie-2026",
       "tmdbId": 1273221,
       "title": "Scary Movie",
@@ -32942,8 +32989,8 @@
         "Comedy"
       ],
       "actors": [
-        "Anna Faris",
-        "Regina Hall"
+        "Marlon Wayans",
+        "Shawn Wayans"
       ],
       "posterFile": "scary-movie-2026.jpg",
       "posterPath": "/znHT8peERZRWG1ME3r0Db0EV8k8.jpg"
@@ -33123,25 +33170,7 @@
         "Tom Holland"
       ],
       "posterFile": "the-odyssey-2026.jpg",
-      "posterPath": "/krVa7rKCQb4OBfsr2LTJv4rTz5q.jpg"
-    },
-    {
-      "id": "tuner-2026",
-      "tmdbId": 1340206,
-      "title": "Tuner",
-      "year": 2026,
-      "decade": "2020s",
-      "genres": [
-        "Crime / Thriller",
-        "Musical",
-        "Romance"
-      ],
-      "actors": [
-        "Leo Woodall",
-        "Dustin Hoffman"
-      ],
-      "posterFile": "tuner-2026.jpg",
-      "posterPath": "/5OvA3i9wZs5jHu0DCrfmXlzAM67.jpg"
+      "posterPath": "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg"
     },
     {
       "id": "voicemails-for-isabelle-2026",
