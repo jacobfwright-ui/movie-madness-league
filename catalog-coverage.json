@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T18:20:55.316Z",
+  "generatedAt": "2026-11-24T03:26:01.333Z",
   "targetPerGenreDecade": 64,
   "buckets": [
     {
@@ -19,7 +19,7 @@
     {
       "decade": "1970s",
       "category": "Comedy",
-      "found": 23,
+      "found": 24,
       "target": 64,
       "ready": false
     },
@@ -61,7 +61,7 @@
     {
       "decade": "1970s",
       "category": "Romance",
-      "found": 7,
+      "found": 8,
       "target": 64,
       "ready": false
     },
@@ -439,7 +439,7 @@
     {
       "decade": "2020s",
       "category": "Musical",
-      "found": 22,
+      "found": 23,
       "target": 64,
       "ready": false
     },

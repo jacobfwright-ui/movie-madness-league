@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-16T18:20:55.316Z",
+  "generatedAt": "2026-11-24T03:26:01.333Z",
   "source": "TMDb",
   "targetPerGenreDecade": 64,
   "movies": [
@@ -1014,6 +1014,23 @@
       "posterPath": "/lxM6kqilAdpdhqUl2biYp5frUxE.jpg"
     },
     {
+      "id": "love-and-death-1975",
+      "tmdbId": 11686,
+      "title": "Love and Death",
+      "year": 1975,
+      "decade": "1970s",
+      "genres": [
+        "Comedy",
+        "Romance"
+      ],
+      "actors": [
+        "Diane Keaton",
+        "Harold Gould"
+      ],
+      "posterFile": "love-and-death-1975.jpg",
+      "posterPath": "/oJXFd1UHZoOQ1UtoLxbyBLGJDox.jpg"
+    },
+    {
       "id": "monty-python-and-the-holy-grail-1975",
       "tmdbId": 762,
       "title": "Monty Python and the Holy Grail",
@@ -1945,6 +1962,23 @@
       "posterPath": "/oy1m5dd44foNrxV8U9l6Walx82V.jpg"
     },
     {
+      "id": "drunken-master-1980",
+      "tmdbId": 11230,
+      "title": "Drunken Master",
+      "year": 1980,
+      "decade": "1980s",
+      "genres": [
+        "Action",
+        "Comedy"
+      ],
+      "actors": [
+        "Jackie Chan",
+        "Simon Yuen Siu-Tien"
+      ],
+      "posterFile": "drunken-master-1980.jpg",
+      "posterPath": "/cf43J2SH8tECZVl9N5n0Q6Ckche.jpg"
+    },
+    {
       "id": "flash-gordon-1980",
       "tmdbId": 3604,
       "title": "Flash Gordon",
@@ -2147,7 +2181,7 @@
         "Nancy Allen"
       ],
       "posterFile": "blow-out-1981.jpg",
-      "posterPath": "/uFzMscVLDrTaYd6KXOXlr6dly7w.jpg"
+      "posterPath": "/eaX40QqDv5uKeM8ZI9EAPN3yU87.jpg"
     },
     {
       "id": "christiane-f-1981",
@@ -3415,7 +3449,6 @@
       "year": 1984,
       "decade": "1980s",
       "genres": [
-        "Action",
         "Drama"
       ],
       "actors": [
@@ -3946,7 +3979,7 @@
         "James Hampton"
       ],
       "posterFile": "teen-wolf-1985.jpg",
-      "posterPath": "/nLgRQBzhQ1ILHkfGXruWJRLrOpl.jpg"
+      "posterPath": "/bv9rY9eoue2Hat6tcvrKVQ0ow8v.jpg"
     },
     {
       "id": "the-breakfast-club-1985",
@@ -8128,7 +8161,7 @@
         "Robin Wright"
       ],
       "posterFile": "forrest-gump-1994.jpg",
-      "posterPath": "/saHP97rTPS5eLmrLQEcANmKrsFl.jpg"
+      "posterPath": "/Cw4hIUIAmSYfK9QfaUW5igp9La.jpg"
     },
     {
       "id": "four-weddings-and-a-funeral-1994",
@@ -8269,8 +8302,8 @@
         "Fantasy"
       ],
       "actors": [
-        "Mara Wilson",
-        "Richard Attenborough"
+        "Richard Attenborough",
+        "Elizabeth Perkins"
       ],
       "posterFile": "miracle-on-34th-street-1994.jpg",
       "posterPath": "/iUTPKkljdEjPlcPPYgbUz7APnHu.jpg"
@@ -8414,7 +8447,7 @@
         "Jennifer Jason Leigh"
       ],
       "posterFile": "the-hudsucker-proxy-1994.jpg",
-      "posterPath": "/xBQBr6Q1OTivouBK66oFgy86n03.jpg"
+      "posterPath": "/bp5Kg9iT9oSXsECgDkNJVqvIrxX.jpg"
     },
     {
       "id": "the-mask-1994",
@@ -8688,6 +8721,7 @@
       "year": 1995,
       "decade": "1990s",
       "genres": [
+        "Action",
         "Drama",
         "War / Western"
       ],
@@ -8816,7 +8850,7 @@
         "Mel Brooks"
       ],
       "posterFile": "dracula-dead-and-loving-it-1995.jpg",
-      "posterPath": "/5QmMhHdKpJ2eQp5i8NqopzGbw9r.jpg"
+      "posterPath": "/4rRfZz8YnHNRr16t3CFcJrPdXHi.jpg"
     },
     {
       "id": "first-knight-1995",
@@ -10209,7 +10243,7 @@
         "Sean Penn"
       ],
       "posterFile": "the-game-1997.jpg",
-      "posterPath": "/4UOa079915QjiTA2u5hT2yKVgUu.jpg"
+      "posterPath": "/eRInC7NTiDkt6dnm7Ryzu4hQZEs.jpg"
     },
     {
       "id": "the-jackal-1997",
@@ -10737,7 +10771,7 @@
         "Chris Tucker"
       ],
       "posterFile": "rush-hour-1998.jpg",
-      "posterPath": "/nwPhAsfnb7f46bZkWLG7IRP5HXr.jpg"
+      "posterPath": "/3WsLE6FtxEPRa6U9sbY1ckrn39s.jpg"
     },
     {
       "id": "rushmore-1998",
@@ -12081,24 +12115,6 @@
       ],
       "posterFile": "american-psycho-2000.jpg",
       "posterPath": "/9uGHEgsiUXjCNq8wdq4r49YL8A1.jpg"
-    },
-    {
-      "id": "bedazzled-2000",
-      "tmdbId": 1636,
-      "title": "Bedazzled",
-      "year": 2000,
-      "decade": "2000s",
-      "genres": [
-        "Comedy",
-        "Fantasy",
-        "Romance"
-      ],
-      "actors": [
-        "Brendan Fraser",
-        "Elizabeth Hurley"
-      ],
-      "posterFile": "bedazzled-2000.jpg",
-      "posterPath": "/sBV28EVvWsJRosMsEFCbVmpAZEl.jpg"
     },
     {
       "id": "billy-elliot-2000",
@@ -15739,7 +15755,7 @@
         "Reese Witherspoon"
       ],
       "posterFile": "walk-the-line-2005.jpg",
-      "posterPath": "/zMkD6FVikyPNnigoupO7vD5ti9p.jpg"
+      "posterPath": "/p8lPTjvjOjTfvC1E9pmMwcF9vkn.jpg"
     },
     {
       "id": "war-of-the-worlds-2005",
@@ -16010,9 +16026,7 @@
       "year": 2006,
       "decade": "2000s",
       "genres": [
-        "Adventure",
         "Comedy",
-        "Crime / Thriller",
         "Science Fiction"
       ],
       "actors": [
@@ -16558,6 +16572,7 @@
       "decade": "2000s",
       "genres": [
         "Crime / Thriller",
+        "Fantasy",
         "Horror"
       ],
       "actors": [
@@ -17445,7 +17460,7 @@
       ],
       "actors": [
         "Manuela Velasco",
-        "Javier Coromina"
+        "Ferrán Terraza"
       ],
       "posterFile": "rec-2008.jpg",
       "posterPath": "/hgyJR4sgMsee6xMFM3xYiG6cDCh.jpg"
@@ -18169,7 +18184,9 @@
       "year": 2008,
       "decade": "2000s",
       "genres": [
+        "Action",
         "Adventure",
+        "Drama",
         "Fantasy"
       ],
       "actors": [
@@ -20155,23 +20172,6 @@
       "posterPath": "/cKZu0Fdkj7dmwbfMpgDqVVCkLJQ.jpg"
     },
     {
-      "id": "the-intouchables-2011",
-      "tmdbId": 77338,
-      "title": "The Intouchables",
-      "year": 2011,
-      "decade": "2010s",
-      "genres": [
-        "Comedy",
-        "Drama"
-      ],
-      "actors": [
-        "François Cluzet",
-        "Omar Sy"
-      ],
-      "posterFile": "the-intouchables-2011.jpg",
-      "posterPath": "/1QU7HKgsQbGpzsJbJK4pAVQV9F5.jpg"
-    },
-    {
       "id": "the-muppets-2011",
       "tmdbId": 64328,
       "title": "The Muppets",
@@ -20663,7 +20663,7 @@
         "Emma Stone"
       ],
       "posterFile": "the-amazing-spider-man-2012.jpg",
-      "posterPath": "/jexoNYnPd6vVrmygwF6QZmWPFdu.jpg"
+      "posterPath": "/3zbb5XD0hEA8IpAcUmv1J9Rej3B.jpg"
     },
     {
       "id": "the-avengers-2012",
@@ -20769,6 +20769,23 @@
       ],
       "posterFile": "the-hunger-games-2012.jpg",
       "posterPath": "/apa5G43Hha7kH7wJG0gkkHT7FA9.jpg"
+    },
+    {
+      "id": "the-intouchables-2012",
+      "tmdbId": 77338,
+      "title": "The Intouchables",
+      "year": 2012,
+      "decade": "2010s",
+      "genres": [
+        "Comedy",
+        "Drama"
+      ],
+      "actors": [
+        "François Cluzet",
+        "Omar Sy"
+      ],
+      "posterFile": "the-intouchables-2012.jpg",
+      "posterPath": "/1QU7HKgsQbGpzsJbJK4pAVQV9F5.jpg"
     },
     {
       "id": "the-lucky-one-2012",
@@ -22260,7 +22277,7 @@
         "Josh Hutcherson"
       ],
       "posterFile": "the-hunger-games-mockingjay-part-1-2014.jpg",
-      "posterPath": "/meSGXQ8MXqiC8bXxkKu7lPqnu0L.jpg"
+      "posterPath": "/4FAA18ZIja70d1Tu5hr5cj2q1sB.jpg"
     },
     {
       "id": "the-imitation-game-2014",
@@ -22731,7 +22748,7 @@
         "Bryce Dallas Howard"
       ],
       "posterFile": "jurassic-world-2015.jpg",
-      "posterPath": "/rhr4y79GpxQF9IsfJItRXVaoGs4.jpg"
+      "posterPath": "/bkXjL03yWPmiuFqxWEp4zSYVZBY.jpg"
     },
     {
       "id": "kingsman-the-secret-service-2015",
@@ -23785,7 +23802,7 @@
         "Diego Luna"
       ],
       "posterFile": "rogue-one-a-star-wars-story-2016.jpg",
-      "posterPath": "/i0yw1mFbB7sNGHCs7EXZPzFkdA1.jpg"
+      "posterPath": "/1zoZ0e2q34FUnT7xuEnGazBFrbL.jpg"
     },
     {
       "id": "sing-street-2016",
@@ -25680,7 +25697,7 @@
         "Madison Iseman"
       ],
       "posterFile": "annabelle-comes-home-2019.jpg",
-      "posterPath": "/qWsHMrbg9DsBY3bCMk9jyYCRVRs.jpg"
+      "posterPath": "/qFjtLOeVl4jpzPUhp4cl4ieANHY.jpg"
     },
     {
       "id": "avengers-endgame-2019",
@@ -26829,7 +26846,7 @@
         "Bo Burnham"
       ],
       "posterFile": "promising-young-woman-2020.jpg",
-      "posterPath": "/2h4EkRxy36zSsBDkijXSUMJFDaz.jpg"
+      "posterPath": "/73QoFJFmUrJfDG2EynFjNc5gJxk.jpg"
     },
     {
       "id": "rebecca-2020",
@@ -27100,8 +27117,6 @@
       "year": 2020,
       "decade": "2020s",
       "genres": [
-        "Action",
-        "Adventure",
         "Horror",
         "Science Fiction"
       ],
@@ -27566,7 +27581,7 @@
         "Adam Driver"
       ],
       "posterFile": "house-of-gucci-2021.jpg",
-      "posterPath": "/oJCQjD2byiVF1EG408F9dBn9ndU.jpg"
+      "posterPath": "/2WFMS4v0oiDMtkeZQTdmiamjyaR.jpg"
     },
     {
       "id": "in-the-heights-2021",
@@ -28832,7 +28847,7 @@
         "Guy Pearce"
       ],
       "posterFile": "memory-2022.jpg",
-      "posterPath": "/4Q1n3TwieoULnuaztu9aFjqHDTI.jpg"
+      "posterPath": "/zGPLpljwrlK2y7AWXVpGx0ceIyH.jpg"
     },
     {
       "id": "men-2022",
@@ -30698,6 +30713,7 @@
       "decade": "2020s",
       "genres": [
         "Action",
+        "Adventure",
         "Science Fiction"
       ],
       "actors": [
@@ -31667,23 +31683,6 @@
       "posterPath": "/A7EByudX0eOzlkQ2FIbogzyazm2.jpg"
     },
     {
-      "id": "the-bikeriders-2024",
-      "tmdbId": 1008409,
-      "title": "The Bikeriders",
-      "year": 2024,
-      "decade": "2020s",
-      "genres": [
-        "Crime / Thriller",
-        "Drama"
-      ],
-      "actors": [
-        "Jodie Comer",
-        "Austin Butler"
-      ],
-      "posterFile": "the-bikeriders-2024.jpg",
-      "posterPath": "/ApMuukdDAOR2rgaFDZIcjfigi64.jpg"
-    },
-    {
       "id": "the-fall-guy-2024",
       "tmdbId": 746036,
       "title": "The Fall Guy",
@@ -32332,7 +32331,7 @@
         "Son Ye-jin"
       ],
       "posterFile": "no-other-choice-2025.jpg",
-      "posterPath": "/vc2S0dvgpsM0XfSiXZDMVkRCSSU.jpg"
+      "posterPath": "/sBpxTGLzKnvPSVtL5yQYpSxvKEb.jpg"
     },
     {
       "id": "nobody-2-2025",
@@ -33094,8 +33093,8 @@
         "Drama"
       ],
       "actors": [
-        "Meryl Streep",
-        "Anne Hathaway"
+        "Anne Hathaway",
+        "Meryl Streep"
       ],
       "posterFile": "the-devil-wears-prada-2-2026.jpg",
       "posterPath": "/fCAURTUx3YfsJ8k9I0UamjSILiR.jpg"
@@ -33171,6 +33170,41 @@
       ],
       "posterFile": "the-odyssey-2026.jpg",
       "posterPath": "/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg"
+    },
+    {
+      "id": "the-sheep-detectives-2026",
+      "tmdbId": 1301421,
+      "title": "The Sheep Detectives",
+      "year": 2026,
+      "decade": "2020s",
+      "genres": [
+        "Comedy",
+        "Crime / Thriller"
+      ],
+      "actors": [
+        "Hugh Jackman",
+        "Nicholas Braun"
+      ],
+      "posterFile": "the-sheep-detectives-2026.jpg",
+      "posterPath": "/iKy5460GdsoknM8ppmGlJbKxAKa.jpg"
+    },
+    {
+      "id": "tuner-2026",
+      "tmdbId": 1340206,
+      "title": "Tuner",
+      "year": 2026,
+      "decade": "2020s",
+      "genres": [
+        "Crime / Thriller",
+        "Musical",
+        "Romance"
+      ],
+      "actors": [
+        "Leo Woodall",
+        "Dustin Hoffman"
+      ],
+      "posterFile": "tuner-2026.jpg",
+      "posterPath": "/5OvA3i9wZs5jHu0DCrfmXlzAM67.jpg"
     },
     {
       "id": "voicemails-for-isabelle-2026",
